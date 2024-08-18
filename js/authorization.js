@@ -22,7 +22,7 @@ const auth = getAuth();
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         // User is not authenticated, redirect to login page
-        window.location.href = '../login.html'; // or wherever your login page is
+        window.location.href = '../lcde/login.html'; // or wherever your login page is
     } else {
         // User is authenticated, you can now access the page
         console.log('User is authenticated:', user.email);
