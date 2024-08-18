@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | La Casa de Espeso</title>
+    <link rel="stylesheet" href="css/account.css">
+</head>
+<body>
+    <div class="bg"></div>
+    
+    <div class="header">
+        <div class="menu-container">
+            <button class="menu-button" style="display: none;"><img src="img/menu.png" class="menuLogo"></button>
+            
+            <img src="img/logo.png" class="logo">
+        </div>
+        
+        <div class="header-right">
+            <h3 class="hello">Hello, Employee
+                <div class="date-time" id="dateTime"></div>
+            </h3>
+            <button id="logoutButton" class="logout-button">Logout</button>
+        </div>
+    </div>
+    
+    <div class="dashboard">
+        <div class="reservation"><p class="noReservationsFound">No reservation found.</p></div>
+        <div id="roomSelectionModal" class="roomSelectModal">
+            <div class="roomSelectModal-content">
+                <h3>Select a room to assign the reservation:</h3>
+                <div id="roomNumbersContainer" class="room-numbers">
+                    <div class="room-numbers-sub">
+                        <div class="room-number" data-room="1">1</div>
+                        <div class="room-number" data-room="2">2</div>
+                        <div class="room-number" data-room="3">3</div>
+                        <div class="room-number" data-room="4">4</div>
+                        <div class="room-number" data-room="5">5</div>
+                    </div>
+                    <div class="room-numbers-sub">
+                        <div class="room-number" data-room="6">6</div>
+                        <div class="room-number" data-room="7">7</div>
+                        <div class="room-number" data-room="8">8</div>
+                        <div class="room-number" data-room="9">9</div>
+                        <div class="room-number" data-room="10">10</div>
+                    </div>
+                </div>
+                <button id="closeRoomSelectionModal">&times;</button>
+            </div>
+        </div>
+        <div id="invalidReservationModal" class="invalidReservation">
+            <div class="invalidReservationModal-content">
+                <span class="closeInvalidModalBtn" id="closeInvalidModal">&times;</span>
+                <p id="invalidReservationMessage"></p>
+
+                <div class="moveToFailed">
+                    <p id="reasonLabel">Reason: </p><input type="text" class="reasonOfFailure">
+                </div>
+                <button id="moveToFailed">Delete Data</button>
+                <div class="editReservationValuesWindow">
+                    <select id="editReservationKey" name="editReservationKeytoEdit" class="editReservationKeySelect">
+                        <option value="lastName" class="reservationKeys">Last name: </option>
+                        <option value="firstName" class="reservationKeys">First name: </option>
+                        <option value="phoneNumber" class="reservationKeys">Phone number: </option>
+                        <option value="emailAddress" class="reservationKeys">Email address: </option>
+                    </select>
+                    <input type="text" class="editReservationValue" id="editReservationValue">
+                </div>
+                
+                <button id="editReservation">Edit Value</button>
+                <hr>
+                <p style="color: red;">The following values can not be edited. If the invalid value/s is/are found at the following. it is recommended to pass another reservation.</p>
+                <div class="reservationInfo">
+                    
+                    <div class="reservationInfo-content">
+                        <p>Reservation ID: <span id="reservationInfoId"></span></p>
+                        <p>Date of Check-in: <span id="reservationInfoCheckInDate"></span></p>
+                        <p>Time of Check-in: <span id="reservationInfoCheckInTime"></span></p>
+                        <p>Room Type: <span id="reservationInfoRoomType"></span></p>
+                        <p>Duration: <span id="reservationInfoDuration"></span></p>
+                    </div>
+                    <div class="reservationInfo-content">
+                        <p>Extension: <span id="reservationInfoExtension"></span></p>
+                        <p>Number of Guest: <span id="reservationInfoNumOfGuest"></span></p>
+                        <p>Amount to pay: <span id="reservationInfoTotalAmountPaid"></span></p>
+                    </div>
+                    
+                </div>
+                
+                
+            </div>
+        </div>
+        <div class="rooms-content">
+            <div class="rooms">
+                <button id="room1" class="room" data-room="1">
+                    ROOM 1 <i class="fa-solid fa-fan"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+                <button class="room aircon" id="room2" data-room="2">
+                    ROOM 2 <i class="fa-regular fa-snowflake"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+            </div>
+            <div class="rooms">
+                <button class="room non-aircon" id="room3" data-room="3">
+                    ROOM 3 <i class="fa-solid fa-fan"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+                <button class="room aircon" id="room4" data-room="4">
+                    ROOM 4 <i class="fa-regular fa-snowflake"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+            </div>
+            <div class="rooms">
+                <button class="room non-aircon" id="room5" data-room="5">
+                    ROOM 5 <i class="fa-solid fa-fan"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+                <button class="room aircon" id="room6" data-room="6">
+                    ROOM 6 <i class="fa-regular fa-snowflake"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+            </div>
+            <div class="rooms">
+                <button class="room non-aircon" id="room7" data-room="7">
+                    ROOM 7<i class="fa-solid fa-fan"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+                <button class="room aircon" id="room8" data-room="8">
+                    ROOM 8 <i class="fa-regular fa-snowflake"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+            </div>
+            <div class="rooms">
+                <button class="room non-aircon" id="room9" data-room="9">
+                    ROOM 9<i class="fa-regular fa-snowflake"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+                <button class="room aircon" id="room10" data-room="10">
+                    ROOM 10<i class="fa-regular fa-snowflake"></i>
+                    <span class="availability-text">Available</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sliding-panel" id="slidingPanelNonAirconAvail">
+        <div class="close-btn" id="closeBtnNonAircon">&times;</div>
+        <div id="roomInfoAircon">Select a room to see the details.</div>
+        <h3>STANDARD ROOM</h3>
+        <div class="numOfGuest">
+            NUMBER OF GUEST
+            <div class="numOfGuestInput">
+                <button onclick="updateGuestCount('numberOfGuestNonAircon', false)">-</button>
+                <input type="text" id="numberOfGuestNonAircon" value="2" oninput="validateInput(this)">
+                <button onclick="updateGuestCount('numberOfGuestNonAircon', true)">+</button>
+            </div>
+            <p style="color: red;">If the number of guests exceed 2 guests, additional fee of <b>PHP 200.00</b> per guest, maximum of 6 guests per room.</p>
+        </div>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Standard Room', 3, 300)">3 HOURS<br>PHP 300.00</button>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Standard Room', 6, 500)">6 HOURS<br>PHP 500.00</button>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Standard Room', 24, 1000)">24 HOURS<br>PHP 1000.00</button>
+    </div>
+    
+    <div class="sliding-panel" id="slidingPanelAirconAvail">
+        
+        <div class="close-btn" id="closeBtnAircon">&times;</div>
+        <div id="roomInfoNonAircon">Select a room to see the details.</div>
+        <h3>AIR-CONDITIONED ROOM</h3>
+        <div class="numOfGuest">
+            NUMBER OF GUEST
+            <div class="numOfGuestInput">
+                <button onclick="updateGuestCount('numberOfGuestAircon', false)">-</button>
+                <input type="text" id="numberOfGuestAircon" value="2" oninput="validateInput(this)">
+                <button onclick="updateGuestCount('numberOfGuestAircon', true)">+</button>
+            </div>
+            <p style="color: red;">If the number of guests exceed 2 guests, additional fee of <b>PHP 250.00</b> per guest, maximum of 6 guests per room.</p>
+        </div>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Air-conditioned Room', 3, 500)">3 HOURS<br>PHP 500.00</button>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Air-conditioned Room', 6, 800)">6 HOURS<br>PHP 800.00</button>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Air-conditioned Room', 24, 1500)">24 HOURS<br>PHP 1500.00</button>
+        
+    </div>
+
+    <div class="sliding-panel" id="slidingPanelUnavail">
+        <div class="close-btn" id="closeBtnUnavail">&times;</div>
+        <div id="roomInfoUnavail">Select a room to see the details.</div>
+        <h2 style="color: red;">OCCUPIED</h2>
+        
+        
+        <div id="unavailDetails">
+            <div class="unavailDetails-content">
+                <p>ID:<br><span id="UnavailCheckInId"></span></p>
+                <p>Room Number:<br><span id="UnavailRoomNum"></span></p>
+                <p>Room Type:<br><span id="UnavailRoomType"></span></p>
+                <p>Initial Duration:<br><span id="UnavailDuration"></span></p>
+                <p>Date of Check-in:<br><span id="UnavailCheckInDate"></span></p>
+                <p>Time In:<br><span id="UnavailCheckInTime"></span></p>
+            </div>
+            <div class="unavailDetails-content">
+                
+                <p>Extension:<br><span id="UnavailExtension"></span></p>
+                <p>Date of Check-out:<br><span id="UnavailCheckOutDate"></span></p>
+                <p>Time Out:<br><span id="UnavailCheckOutTime"></span></p>
+                <p>Total Duration:<br><span id="UnavailTotalDuration"></span></p>
+                <p>Number of Guest:<br><span id="UnavailNumOfGuest"></span></p>
+                <p>Amount paid:<br><span id="UnavailTotalAmountPaid"></span></p>
+            </div>
+            
+            
+        </div>
+        <button type="button" id="extendHr">EXTEND 1 HOUR</button><br>
+        <button type="button" id="timeOut">TIME OUT</button>
+    </div>
+    
+    <div class="confirmationWindow">
+        <div class="paymentConfirmation" id="popupPaymentWindow">
+            <h3>Are you sure the customer paid for the following:</h3>
+            <div class="paymentInfo">
+                <div id="ConfirmationroomNum">Room Number: </div>
+                <div id="ConfirmationroomType">Room Type: </div>
+                <div id="ConfirmationDuration">Duration: </div>
+                <hr>
+                <div id="ConfirmationCheckInDate">Date of Check-in: </div>
+                <div id="ConfirmationCheckInTime">Time In: </div>
+                <hr>
+                <div id="ConfirmationCheckOutDate">Date of Check-Out: </div>
+                <div id="ConfirmationCheckOutTime">Time Out: </div>
+                <hr>
+                <div id="ConfirmationAmountPaid">Room Rate: </div>
+                <div id="ConfirmationNumOfGuest">Number of Guest: </div>
+                
+                <div id="ConfirmationTotalAmountPaid">Total Amount Paid: </div>
+                <p style="color: red;">
+                    <input type="checkbox" id="paymentConfirmationChkbox">
+                    As the admin, I have read all the information above and if I agree to this action, it will be unreversable.
+                </p>
+                <div class="btnConfirmation">
+                    <button type="button" id="yesBtn" disabled>YES</button>
+                    <button type="button" id="noBtn" onclick="closePopUpPaymentWindow()">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="uselessDivs" style="display: none;">
+        <div id="workAccounts"></div>
+        <div id="dashboard"></div>
+        <div id="accounts"></div>
+        <div id="records"></div>
+        <div id="dashboardBtn"></div>
+        <div id="accountsBtn"></div>
+        <div id="recordsBtn"></div>
+        <div class="dashboard"></div>
+        <div class="accounts"></div>
+        <div class="records"></div>      
+    </div>
+
+
+    <div id="loadingScreen" class="loading-screen">
+        <div class="spinner"></div>
+        <p>Connecting to the database...</p>
+    </div>
+
+    <script type="module" src="js/dbcommand.js"></script>
+    <script type="module" src="js/roomManagement.js"></script>
+    <script type="module" src="js/authorization.js"></script>
+    
+    <script src="js/account.js"></script>
+    <script src="https://kit.fontawesome.com/b629388bc1.js" crossorigin="anonymous"></script>
+</body>
+</html>
