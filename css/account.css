@@ -1034,6 +1034,7 @@ nav ul li:hover {
     .accounts {
         flex-direction: column;
         gap: 20px;
+        width: 80%;
     }
     .accounts-container, .displayAccounts {
         width: 100%;
