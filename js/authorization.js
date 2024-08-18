@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutButton.addEventListener('click', () => {
             signOut(auth).then(() => {
                 // Sign-out successful.
-                window.location.href = '../login.html'; // Redirect to login page or homepage
+                window.location.href = '../lcde/login.html'; // Redirect to login page or homepage
             }).catch((error) => {
                 // An error occurred
                 console.error('Logout error:', error);
