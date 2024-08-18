@@ -151,7 +151,7 @@ nav ul li:hover {
     color: white; /* White text */
     border: none;
     border-radius: 30px;
-    padding: 8px 16px;
+    padding: 4px 4px;
     cursor: pointer;
 }
 
@@ -1046,9 +1046,13 @@ nav ul li:hover {
         width: 75%;
         font-size: 14px;
     }
+    .displayAccounts h1 {
+        font-size: 14px;
+    }
     .account-card {
         font-size: 12px;
     }
+
     .records {
         flex-direction: column;
         width: 80%;
