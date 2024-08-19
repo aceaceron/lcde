@@ -151,7 +151,7 @@ nav ul li:hover {
     color: white; /* White text */
     border: none;
     border-radius: 30px;
-    padding: 8px 8px;
+    padding: 8px 16px;
     cursor: pointer;
 }
 
@@ -706,11 +706,22 @@ nav ul li:hover {
     flex-direction: column;
     align-items: center;
     background-color: rgba(255, 255, 255, 1);
-    padding-top: 40px;
-    padding-bottom: 40px;
+    padding-top: 30px;
+    padding-bottom: 30px;
     border-radius: 30px;
 }
-#email, #password {
+.accounts-container-inputs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+#workAccountLastName, #workAccountFirstName, #workAccountAddressPurok, #workAccountAddressBrgy, #workAccountAddressMunicipality, #workAccountAddressProvince {
+    width: 8.7vw;
+    margin: 10px;
+
+}
+.accounts-container input {
     width: 20vw;
     padding: 10px;
     font-size: 16px;
@@ -718,7 +729,7 @@ nav ul li:hover {
     border-radius: 30px;
 } 
 #accountType, #createAccount {
-    width: 21.5vw;
+    width: 64%;
     padding: 10px;
     font-size: 16px;
     margin: 10px;
@@ -779,7 +790,7 @@ nav ul li:hover {
 }
 
 .records {
-    min-height: 550px;
+    min-height: 560px;
     width: 90%;
     display: flex;
     flex-direction: row;
@@ -791,7 +802,7 @@ nav ul li:hover {
 .tableNames {
     background: white;
     width: 12vw;
-    max-width: 30%;
+    width: 30%;
     padding: 20px; 
     border-radius: 30px;
     display: flex;
@@ -803,13 +814,14 @@ nav ul li:hover {
 }
 
 .tableNames p {
-    background-color: #5f5f5f;
-    color: white;
+    background-color: skyblue;
+    color: black;
     padding: 10px;
     border-radius: 30px;
     width: 90%;
     position: relative;
     text-align: center;
+    border: 1px solid black;
 }
 
 .toggle-list {
@@ -873,12 +885,24 @@ nav ul li:hover {
     border-right: 1px solid #ddd; /* Optional: Add a border to the right of the list */
     padding-right: 10px; /* Optional: Add some padding to the right of the list */
     cursor: pointer;
+    list-style: none;
+}
+
+.sub-id-list li {
+    list-style-type: none;
+    background-color: white;
+    color: black;
+    padding: 10px;
+    border-radius: 30px;
+    width: auto;
+    border: 1px solid black;
+    margin: 5px;
 }
 /* Style the table */
 .data-table {
     width: 100%;
     border-collapse: collapse; /* Ensure borders are collapsed */
-    font-size: 10px;
+    font-size: 14px;
 }
 
 /* Style table headers */
@@ -898,8 +922,59 @@ nav ul li:hover {
     background-color: #f9f9f9; /* Light grey for even rows */
 }
 
+.manualBooking {
+    height: 100%;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    border-radius: 30px;
+    align-items: center;
+}
 
+.manualBooking-container {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    background-color: white;
+}
+.manualBooking-content {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+}
 
+.manualBooking-inputs {
+    width: auto;
+    flex-direction: column;
+}
+.manualBooking-content input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 30px;
+}
+
+#saveManualBooking {
+    padding: 10px;
+    font-size: 30px;
+    width: 20vw;
+    border-radius: 30px;
+    cursor: pointer;
+    background-color: skyblue;
+    margin: 30px;
+    float: right;
+    transition: all 0.5s ease;
+}
+
+#saveManualBooking:hover {
+    background-color: blue;
+    color: white;
+}
 /* Spinner animation */
 @keyframes spin {
     0% {
@@ -1043,20 +1118,25 @@ nav ul li:hover {
         width: 80%;
         font-size: 14px;
     }
-    #email, #password {
+    .accounts-container-inputs {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+    }
+    .accounts-container input {
         width: 75%;
         font-size: 14px;
     }
-    .displayAccounts h1 {
-        font-size: 16px;
+    #workAccountLastName, #workAccountFirstName, #workAccountAddressPurok, #workAccountAddressBrgy, #workAccountAddressMunicipality, #workAccountAddressProvince {
+        width: 75%;
+        margin: 10px;
     }
-    .accounts h1 {
+    .displayAccounts h1, .accounts h1 {
         font-size: 16px;
     }
     .account-card {
         font-size: 12px;
     }
-
     .records {
         flex-direction: column;
         width: 80%;
@@ -1068,12 +1148,43 @@ nav ul li:hover {
         flex-direction: column;
         min-width: 90%;
     }
+    .tableNames ul {
+        align-items: center;
+        justify-content: center;
+    }
+    .tableNames ul li {
+        width: 90%;
+    }
     .tableDatas {
         margin-top: 2vh;
         width: 90%;
     }
     .data-table {
         font-size: 14px;
+    }
+    .manualBooking {
+        width: 80%;
+    }
+    .manualBooking h1 {
+        font-size: 18px;
+    }
+    .manualBooking-content {
+        width: 100%;
+        flex-direction: column;
+    }
+    .manualBooking-inputs {
+        flex-direction: row;
+        width: 100%;
+        margin-right: 4vw;
+    }
+    .manualBooking-content input {
+        width: 80%;
+    }
+    #saveManualBooking {
+        font-size: 20px;
+        width: 80%;
+        float: none;
+        margin-top: 0;
     }
 
 }
