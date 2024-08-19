@@ -16,15 +16,17 @@
                 <a href="#" id="dashboard">DASHBOARD</a>
                 <a href="#" id="accounts">ACCOUNTS</a>
                 <a href="#" id="records">RECORDS</a>
+                <a href="#" id="mnlBooking">MANUAL BOOKING</a>
             </div>
             <img src="img/logo.png" class="logo">
         </div>
         <div class="navigation">
             <nav>
                 <ul>
-                    <li id="dashboardBtn"><a><i class="fa-solid fa-table-columns"></i><p>DASHBOARD</p></a></li>
-                    <li id="accountsBtn"><a><i class="fa-regular fa-user"></i><p>ACCOUNTS</p></a></li>
-                    <li id="recordsBtn"><a><i class="fa-solid fa-list"></i><p>RECORDS</p></a></li>
+                    <li id="dashboardBtn"><a><i class="fa-solid fa-table-columns"></i><p></p></a></li>
+                    <li id="accountsBtn"><a><i class="fa-regular fa-user"></i><p></p></a></li>
+                    <li id="recordsBtn"><a><i class="fa-solid fa-list"></i><p></p></a></li>
+                    <li id="mnlBookingBtn"><a><i class="fa-solid fa-file-pen"></i><p></p></a></li>
                 </ul>
             </nav>
         </div>
@@ -32,7 +34,7 @@
             <h3 class="hello">Hello, Admin
                 <div class="date-time" id="dateTime"></div>
             </h3>
-            <button id="logoutButton" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i></button>
+            <button id="logoutButton" class="logout-button"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
         </div>
     </div>
     
@@ -263,6 +265,21 @@
                 <option value="Employee">Employee</option>
                 <option value="Admin">Admin</option>
             </select>
+            
+            <div class="accounts-container-inputs">
+                <input type="text" id="workAccountLastName" placeholder="Last Name" required>
+                <input type="text" id="workAccountFirstName" placeholder="First Name" required>
+            </div>
+            <div class="accounts-container-inputs">
+                <input type="text" id="workAccountAddressPurok" placeholder="Purok" required>
+                <input type="text" id="workAccountAddressBrgy" placeholder="Barangay" required>
+            </div>
+            
+            <div class="accounts-container-inputs">
+                <input type="text" id="workAccountAddressMunicipality" placeholder="Municipality" required>
+                <input type="text" id="workAccountAddressProvince" placeholder="Province" required>
+            </div>
+            
             <input type="email" id="email" placeholder="Email address" required>
             <input type="password" id="password" placeholder="Password" required>
             <button id="createAccount" type="submit">Create Account</button>
@@ -287,10 +304,38 @@
             <ul class="toggle-list"> 
                 <p id="workAccounts">ACCOUNTS</p>
             </ul>
+
+            <ul class="toggle-list"> 
+                <p id="clearData" style="background-color: red; color: white;">CLEAR</p>
+            </ul>
         </div>
         <div class = "tableDatas"></div>
         <div class ="sub-id-list-container"></div>
         
+    </div>
+
+    <div class="manualBooking">
+        <div class="manualBooking-container">
+            <h1>Manually Input Booking Data to Save</h1>
+            <p style="color: red;">Alternative way to save data to the database especially when can not connect to the internet.</p>
+            <div class="manualBooking-content">
+                <div class="manualBooking-inputs">
+                    <input type="text" id="mbRoomNum" placeholder="Room Number" required>
+                    <input type="text" id="mbCheckInDate" placeholder="Check-In Date: MM/DD/YYYY" required>
+                    <input type="text" id="mbCheckInTime" placeholder="Check-In Time: HH:MM:SS AM/PM" required>
+                    <input type="text" id="mbCheckOutDate" placeholder="Check-Out Date: MM/DD/YYYY" required>
+                    <input type="text" id="mbCheckOutTime" placeholder="Check-Out Time: HH:MM:SS AM/PM" required>
+                </div>
+                <div class="manualBooking-inputs">
+                    <input type="number" id="mbNumOfGuests" placeholder="Number of Guests" required>
+                    <input type="number" id="mbExtension" placeholder="Extension" required>
+                    <input type="number" id="mbInitialDuration" placeholder="Duration" required>
+                    <input type="number" id="mbTotalDuration" placeholder="Total Duration with Extension" required>
+                    <input type="number" id="mbTotalAmountPaid" placeholder="Total Amount Paid" required>      
+                </div>
+            </div>
+            <button id="saveManualBooking">SAVE</button>
+        </div>
     </div>
 
     <div id="loadingScreen" class="loading-screen">
@@ -301,10 +346,8 @@
     <script type="module" src="js/dbcommand.js"></script>
     <script type="module" src="js/createAccount.js"></script>
     <script type="module" src="js/roomManagement.js"></script>
-    <script type="module" src="js/authorization.js">
-        
-    </script>
-
+    <script type="module" src="js/authorization.js"></script>
+    
     <script src="js/account.js"></script>
     <script src="https://kit.fontawesome.com/b629388bc1.js" crossorigin="anonymous"></script>
 </body>
