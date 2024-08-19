@@ -21,6 +21,13 @@ const database = getDatabase();
 document.getElementById('createAccount').addEventListener('click', function (event) {
     event.preventDefault(); // Prevent the default form submission
 
+    const workAccountLastName = document.getElementById('workAccountLastName').value;
+    const workAccountFirstName = document.getElementById('workAccountFirstName').value;
+    const workAccountAddressPurok = document.getElementById('workAccountAddressPurok').value;
+    const workAccountAddressBrgy = document.getElementById('workAccountAddressBrgy').value;
+    const workAccountAddressMunicipality = document.getElementById('workAccountAddressMunicipality').value;
+    const workAccountAddressProvince = document.getElementById('workAccountAddressProvince').value;
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const accountType = document.getElementById('accountType').value;
@@ -33,12 +40,30 @@ document.getElementById('createAccount').addEventListener('click', function (eve
 
             // Save the account type in the database
             set(ref(database, 'workAccounts/' + sanitizedEmail), {
+                lastName : workAccountLastName,
+                firstName : workAccountFirstName,
+                addressPurok : workAccountAddressPurok,
+                addressBrgy : workAccountAddressBrgy,
+                addressMunicipality : workAccountAddressMunicipality,
+                addressProvince : workAccountAddressProvince,
                 email: email,
                 password: password,
                 accountType: accountType
             });
 
             alert(`${accountType} account created!`);
+
+
+            document.getElementById('workAccountLastName').value = '';
+            document.getElementById('workAccountFirstName').value = '';
+            document.getElementById('workAccountAddressPurok').value = '';
+            document.getElementById('workAccountAddressBrgy').value = '';
+            document.getElementById('workAccountAddressMunicipality').value = '';
+            document.getElementById('workAccountAddressProvince').value = '';
+
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('accountType').value = 'Employee';
         })
         .catch((error) => {
             const errorCode = error.code;
