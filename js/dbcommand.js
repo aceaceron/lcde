@@ -56,7 +56,7 @@ async function generateCheckInId() {
 }
 
 // Function to save check-in/check-out data to Firebase
-export async function saveCheckInData(roomNum, initialDuration, checkInDate, checkInTime, checkOutDate, checkOutTime, extension, totalDuration, numberOfGuests, totalAmountPaid) {
+export async function saveCheckInData(roomNum, initialDuration, checkInDate, checkInTime, checkOutDate, checkOutTime, extension, totalDuration, numberOfGuests, totalAmountPaid, shouldMoveToPast = false) {
     try {
         const checkInId = await generateCheckInId(); // Assuming this generates a unique ID
         const newCheckInCheckOutRef = ref(db, `currentCheckIn/${checkInId}`);
@@ -76,9 +76,29 @@ export async function saveCheckInData(roomNum, initialDuration, checkInDate, che
 
         await set(newCheckInCheckOutRef, checkInCheckOutData);
 
+        if (shouldMoveToPast) {
+            await moveDataToPastCheckIn(checkInId);
+        }
+
         return checkInId; // Return the generated check-in ID
     } catch (error) {
-        console.error('Error saving check-in/check-out data:', error);
+        console.error('Error in saveCheckInData function:', {
+            message: error.message,
+            stack: error.stack,
+            data: {
+                roomNum,
+                initialDuration,
+                checkInDate,
+                checkInTime,
+                checkOutDate,
+                checkOutTime,
+                extension,
+                totalDuration,
+                numberOfGuests,
+                totalAmountPaid
+            }
+        });
+        throw error;
     }
 }
 
@@ -191,7 +211,7 @@ async function moveDataToPastCheckIn(checkInId) {
             
             // Remove the old data from currentCheckIn
             await remove(checkInCheckOutRef);
-            
+
             location.reload(true);
         }
     } catch (error) {
@@ -447,12 +467,19 @@ async function displayReservations() {
                         <div class="reservation-buttons">
                             <button class="btn-book"><i class="fa-solid fa-check"></i></button>
                             <button class="btn-no-show"><i class="fa-solid fa-user-slash"></i></button>
-                            ${currentFile === 'admin.html' ? '<button class="btn-invalid"><i class="fa-solid fa-text-slash"></i></button>' : ''}
+                            <button class="btn-invalid"><i class="fa-solid fa-text-slash"></i></button>
                         </div>
                     `;
-                    reservationDiv.appendChild(reservationDivElement);
 
+                    reservationDiv.appendChild(reservationDivElement);
                     // Attach event listeners after the content is rendered
+
+                    if (currentFile === 'employee.html') {
+                        // If it's the employee page, hide the btn-invalid button
+                        const invalidButtons = document.querySelectorAll('.btn-invalid');
+                        invalidButtons.forEach(button => button.style.display = 'none');
+                    }
+
                     reservationDivElement.querySelector('.btn-book').addEventListener('click', function() {
                         const today = new Date();
                         const checkInDate = new Date(reservationData.reservationCheckInDate);
@@ -903,8 +930,6 @@ document.querySelectorAll('.tableNames ul li').forEach(li => {
         if (tableId === 'currentCheckIn') {
             // Specific logic for 'currentCheckIn'
             fetchCurrentCheckInData();
-        } else if (tableId === 'accounts') {
-
         }
         else {
             // General logic for other <li> elements
@@ -1133,54 +1158,115 @@ function fetchAndDisplayData(tableId, subId) {
     });
 }
 
+document.querySelector('#clearData').addEventListener('click', async function() {
+    document.querySelector('.tableDatas').textContent = '';
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     // Get elements
     const dashboardSection = document.querySelector('.dashboard');
     const accountsSection = document.querySelector('.accounts');
     const recordsSection = document.querySelector('.records');
+    const manualBookingSection = document.querySelector('.manualBooking');
 
     // Initially show the dashboard and hide records
     dashboardSection.style.display = 'flex';
     accountsSection.style.display = 'none';
     recordsSection.style.display = 'none';
+    manualBookingSection.style.display = 'none';
+
 
     // Add click event listeners
     document.querySelector('#dashboard').addEventListener('click', function() {
         dashboardSection.style.display = 'flex';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
+        manualBookingSection.style.display = 'none';
     });
 
     document.querySelector('#accounts').addEventListener('click', function() {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'flex';
         recordsSection.style.display = 'none';
+        manualBookingSection.style.display = 'none';
     });
 
     document.querySelector('#records').addEventListener('click', function() {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'flex';
+        manualBookingSection.style.display = 'none';
+    });
+    document.querySelector('#mnlBooking').addEventListener('click', function() {
+        dashboardSection.style.display = 'none';
+        accountsSection.style.display = 'none';
+        recordsSection.style.display = 'none';
+        manualBookingSection.style.display = 'flex';
     });
     document.querySelector('#dashboardBtn').addEventListener('click', function() {
         dashboardSection.style.display = 'flex';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
+        manualBookingSection.style.display = 'none';
     });
 
     document.querySelector('#accountsBtn').addEventListener('click', function() {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'flex';
         recordsSection.style.display = 'none';
+        manualBookingSection.style.display = 'none';
     });
 
     document.querySelector('#recordsBtn').addEventListener('click', function() {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'flex';
+        manualBookingSection.style.display = 'none';
+    });
+    document.querySelector('#mnlBookingBtn').addEventListener('click', function() {
+        dashboardSection.style.display = 'none';
+        accountsSection.style.display = 'none';
+        recordsSection.style.display = 'none';
+        manualBookingSection.style.display = 'flex';
     });
 });
 
+document.querySelector('#saveManualBooking').addEventListener('click', async function() {
+    const saveBooking = confirm('Are you sure the data is correct and accurate?\nThis action cannot be undone once saved.');
+
+        if (saveBooking) {
+            // Get input values
+            const checkInDate = document.getElementById('mbCheckInDate').value;
+            const checkInTime = document.getElementById('mbCheckInTime').value;
+            const checkOutDate = document.getElementById('mbCheckOutDate').value;
+            const checkOutTime = document.getElementById('mbCheckOutTime').value;
+    
+            // Convert numeric inputs
+            const numberOfGuests = parseInt(document.getElementById('mbNumOfGuests').value, 10);
+            const extension = parseInt(document.getElementById('mbExtension').value, 10);
+            const initialDuration = parseInt(document.getElementById('mbInitialDuration').value, 10);
+            const totalDuration = parseInt(document.getElementById('mbTotalDuration').value, 10);
+            const totalAmountPaid = parseFloat(document.getElementById('mbTotalAmountPaid').value); 
+    
+            try {
+                // Save the check-in data
+                await saveCheckInData(
+                    roomNum,
+                    initialDuration,
+                    checkInDate,
+                    checkInTime,
+                    checkOutDate,
+                    checkOutTime,
+                    extension,
+                    totalDuration,
+                    numberOfGuests,
+                    totalAmountPaid,
+                    true
+                );
+            } catch (error) {
+            }
+        }
+});
 
 // Call the function to display reservations when the page loads
 window.onload = displayReservations;

@@ -1,6 +1,6 @@
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,36 +18,37 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase();
 const auth = getAuth();
 
-// Check if user is authenticated
+// Redirect based on the current page
+const currentPage = window.location.pathname.split('/').pop();
+
+// Function to handle user redirection based on account type
+function handleRedirect(accountType) {
+    if (currentPage === 'admin.html' && accountType !== 'Admin') {
+        window.location.href = 'employee.html'; // Redirect if not admin
+    } else if (currentPage === 'employee.html' && accountType !== 'Employee') {
+        window.location.href = 'admin.html'; // Redirect if not employee
+    }
+}
+
+// Check if user is authenticated and redirect based on account type
 onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        // User is not authenticated, redirect to login page
-        window.location.href = 'login.html';
-    } else {
-        // User is authenticated, check their role
-        const userId = user.uid;
-        const userRef = ref(database, 'users/' + userId);
+    if (user) {
+        const email = user.email;
+        const sanitizedEmail = email.replace('.', ','); // Replace '.' with ',' in email to use as key
 
-        get(userRef).then((snapshot) => {
+        get(ref(database, 'workAccounts/' + sanitizedEmail)).then((snapshot) => {
             if (snapshot.exists()) {
-                const role = snapshot.val().role;
-                const currentPage = window.location.pathname;
-
-                if (role === "employee" && currentPage.includes('admin.html')) {
-                    // Employee trying to access admin page
-                    window.location.href = 'employee.html'; // Redirect to employee page
-                } else if (role === "admin" && currentPage.includes('employee.html')) {
-                    // Admin trying to access employee page
-                    window.location.href = 'admin.html'; // Redirect to admin page
-                } else {
-                    console.log('User is authenticated:', user.email);
-                }
+                const accountType = snapshot.val().accountType;
+                handleRedirect(accountType);
             } else {
-                console.error('No role found for this user');
+                window.location.href = 'login.html'; // Redirect if no account data
             }
         }).catch((error) => {
-            console.error('Error fetching user data:', error);
+            console.error('Error fetching account type:', error);
+            window.location.href = 'login.html'; // Redirect on error
         });
+    } else {
+        window.location.href = 'login.html'; // Redirect if not authenticated
     }
 });
 
@@ -57,10 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutButton) {
         logoutButton.addEventListener('click', () => {
             signOut(auth).then(() => {
-                // Sign-out successful.
-                window.location.href = 'login.html';
+                window.location.href = 'login.html'; // Redirect to login page or homepage
             }).catch((error) => {
-                // An error occurred
                 console.error('Logout error:', error);
             });
         });

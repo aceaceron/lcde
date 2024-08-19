@@ -231,6 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleLists.forEach(l => l.classList.remove('show')); // Hide all lists
             if (!isVisible) {
                 list.classList.add('show'); // Show the clicked list
+                
             }
         });
     });
