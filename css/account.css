@@ -1079,6 +1079,7 @@ nav ul li:hover {
     .duration {
         height: auto;
         font-size: 20px;
+        padding: 15px;
     }
     
     .roomSelectModal {
