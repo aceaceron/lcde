@@ -59,6 +59,7 @@ async function addComment() {
 
             // Clear form fields
             nameInput.value = '';
+            emailInput.value = '';
             dateTimeInput.value = '';
             fileInput.value = '';
             commentInput.value = '';
@@ -83,8 +84,9 @@ async function loadComments() {
 
     onValue(commentsRef, async (snapshot) => {
         commentsList.innerHTML = ''; // Clear existing comments
+        const promises = [];
 
-        snapshot.forEach(async (childSnapshot) => {
+        snapshot.forEach((childSnapshot) => {
             const commentData = childSnapshot.val();
             const fileURL = commentData.fileURL;
             const name = commentData.name;
@@ -132,8 +134,9 @@ async function loadComments() {
             newComment.appendChild(commentDetails);
 
             commentsList.appendChild(newComment);
-
         });
+    }, {
+        onlyOnce: false // Make sure the listener keeps running
     });
 }
 

@@ -838,7 +838,6 @@ function openInvalidModal(reservationId, reservationData) {
     invalidModal.style.display = 'flex'; // Show the modal
 }
 
-
 // Handle move to failed reservations
 moveToFailedBtn.onclick = async function() {
     const reason = document.querySelector('.reasonOfFailure').value.trim();
@@ -1167,7 +1166,6 @@ document.querySelector('#clearData').addEventListener('click', async function() 
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    displayComments();
     // Get elements
     const dashboardSection = document.querySelector('.dashboard');
     const accountsSection = document.querySelector('.accounts');
@@ -1260,39 +1258,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Function to display comments
 function displayComments() {
     const commentsRef = ref(db, 'comments');
     const commentsContainer = document.querySelector('.comments-container');
 
-    onValue(commentsRef, async (snapshot) => {
-        commentsContainer.innerHTML = ''; // Clear existing comments
-                    
-        const heading = document.createElement('h1');
-        heading.textContent = 'Comments';
-        commentsContainer.appendChild(heading);
+    // Clear existing comments
+    commentsContainer.innerHTML = '';
 
+    // Add a heading for comments
+    const heading = document.createElement('h1');
+    heading.textContent = 'Comments';
+    commentsContainer.appendChild(heading);
 
-        snapshot.forEach(async (childSnapshot) => {
+    // Fetch comments from Firebase Realtime Database
+    onValue(commentsRef, (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
             const commentData = childSnapshot.val();
-            const fileURL = commentData.fileURL;
-            const name = commentData.name;
+            const fileURL = commentData.fileURL || ''; // Default to empty string if fileURL is missing
+            const name = commentData.name || 'Anonymous'; // Default to 'Anonymous' if name is missing
+            const email = commentData.email || 'N/A'; // Default to 'N/A' if email is missing
             const dateAndTimeOfVisit = new Date(commentData.dateAndTimeOfVisit).toLocaleString();
-            const comment = commentData.comment;
+            const comment = commentData.comment || 'No comment'; // Default to 'No comment' if comment is missing
 
-            // Create comment element
+            // Create comment card element
             const commentCard = document.createElement('div');
             commentCard.className = 'comment-card';
 
+            // Create comment info container
             const commentInfo = document.createElement('div');
             commentInfo.className = 'comment-info';
 
+            // Add comment details
             const nameElem = document.createElement('div');
             nameElem.className = 'name';
             nameElem.textContent = `Name: ${name}`;
 
             const emailElem = document.createElement('div');
             emailElem.className = 'email';
-            emailElem.textContent = `Email: ${commentData.email}`;
+            emailElem.textContent = `Email: ${email}`;
 
             const dateTimeElem = document.createElement('div');
             dateTimeElem.className = 'date-time';
@@ -1302,11 +1306,16 @@ function displayComments() {
             commentText.className = 'comment';
             commentText.textContent = `Comment: ${comment}`;
 
-            const photoLink = document.createElement('a');
-            photoLink.href = fileURL;
-            photoLink.target = '_blank'; // Open in a new tab
-            photoLink.textContent = 'View Photo';
+            // Add photo link if available
+            if (fileURL) {
+                const photoLink = document.createElement('a');
+                photoLink.href = fileURL;
+                photoLink.target = '_blank'; // Open in a new tab
+                photoLink.textContent = 'View Photo';
+                commentInfo.appendChild(photoLink);
+            }
 
+            // Create delete button
             const deleteButton = document.createElement('button');
             deleteButton.className = 'comments-delete-button';
             deleteButton.textContent = 'Delete';
@@ -1324,19 +1333,21 @@ function displayComments() {
                 }
             });
 
+            // Append elements to the comment card
             commentInfo.appendChild(nameElem);
             commentInfo.appendChild(emailElem);
             commentInfo.appendChild(dateTimeElem);
             commentInfo.appendChild(commentText);
-            commentInfo.appendChild(photoLink);
 
             commentCard.appendChild(commentInfo);
             commentCard.appendChild(deleteButton);
 
+            // Append comment card to the comments container
             commentsContainer.appendChild(commentCard);
         });
     });
 }
+
 
 document.querySelector('#saveManualBooking').addEventListener('click', async function() {
     const saveBooking = confirm('Are you sure the data is correct and accurate?\nThis action cannot be undone once saved.');
@@ -1378,5 +1389,6 @@ document.querySelector('#saveManualBooking').addEventListener('click', async fun
 
 // Call the function to display reservations when the page loads
 window.onload = displayReservations;
+window.onload = displayComments;
 
 console.log('Firebase script loaded and ready');
