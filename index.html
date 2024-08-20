@@ -169,10 +169,9 @@
                         <ul>
                             <li>This is only a reservation, you will not be paying through this reservation process but
                                 you will pay once you are in the receptionist and you must inform about your
-                                reservation ID.</li>
-                            
-                            <li>Arriving 10 minutes before the selected time is a must.</li>
-                            <li>If you arrived more than 10 minutes into your selected time of check-in, your reservation is
+                                reservation.</li>
+                            <li>Arriving less than 10 minutes before the selected time is a must.</li>
+                            <li>If you arrived exactly 10 minutes after into your selected time in, your reservation is
                                 INVALID</li>
                         </ul>
                         </p>
@@ -292,11 +291,12 @@
             <h2>Leave a Comment</h2>
             <div class="input-group">
                 Name: <input type="text" id="nameInput">
+                Email: <input type="email" id="emailInput">
                 Time and date of visit: <input type="datetime-local" id="dateTimeInput">
                 Proof of visit: <input type="file" id="fileInput">
                 Comment / rating: <textarea id="commentInput" rows="4"></textarea>
             </div>
-            <button onclick="addComment()">Submit</button>
+            <button id="submitComment">Submit</button>
         </div>
         <br>
         <div class="comments-list" id="commentsList">
@@ -379,6 +379,7 @@
     </footer>
     
     <script type="module" src="js/savingReservation.js"></script>
+    <script type="module" src="js/commentHandling.js"></script>
     <script src="js/script.js"></script>
 
 </body>

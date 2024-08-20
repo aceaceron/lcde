@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin | La Casa de Espeso</title>
-    <link rel="stylesheet" href="css/account.css">
+    <link rel="stylesheet" href="css/staffs.css">
 </head>
 <body>
     <div class="bg"></div>
@@ -16,6 +16,7 @@
                 <a href="#" id="dashboard">DASHBOARD</a>
                 <a href="#" id="accounts">ACCOUNTS</a>
                 <a href="#" id="records">RECORDS</a>
+                <a href="#" id="commentsList">COMMENTS</a>
                 <a href="#" id="mnlBooking">MANUAL BOOKING</a>
             </div>
             <img src="img/logo.png" class="logo">
@@ -26,7 +27,8 @@
                     <li id="dashboardBtn"><a><i class="fa-solid fa-table-columns"></i><p></p></a></li>
                     <li id="accountsBtn"><a><i class="fa-regular fa-user"></i><p></p></a></li>
                     <li id="recordsBtn"><a><i class="fa-solid fa-list"></i><p></p></a></li>
-                    <li id="mnlBookingBtn"><a><i class="fa-solid fa-file-pen"></i><p></p></a></li>
+                    <li id="commentsListBtn"><a><i class="fa-regular fa-comment"></i><p></p></a></li>
+                    <li id="mnlBookingBtn"><a><i class="fa-regular fa-pen-to-square"></i><p></p></a></li>
                 </ul>
             </nav>
         </div>
@@ -63,48 +65,51 @@
                 <button id="closeRoomSelectionModal">&times;</button>
             </div>
         </div>
-        <div id="invalidReservationModal" class="invalidReservation">
-            <div class="invalidReservationModal-content">
-                <span class="closeInvalidModalBtn" id="closeInvalidModal">&times;</span>
-                <p id="invalidReservationMessage"></p>
-
-                <div class="moveToFailed">
-                    <p id="reasonLabel">Reason: </p><input type="text" class="reasonOfFailure">
-                </div>
-                <button id="moveToFailed">Delete Data</button>
-                <div class="editReservationValuesWindow">
-                    <select id="editReservationKey" name="editReservationKeytoEdit" class="editReservationKeySelect">
-                        <option value="lastName" class="reservationKeys">Last name: </option>
-                        <option value="firstName" class="reservationKeys">First name: </option>
-                        <option value="phoneNumber" class="reservationKeys">Phone number: </option>
-                        <option value="emailAddress" class="reservationKeys">Email address: </option>
-                    </select>
-                    <input type="text" class="editReservationValue" id="editReservationValue">
-                </div>
-                
-                <button id="editReservation">Edit Value</button>
-                <hr>
-                <p style="color: red;">The following values can not be edited. If the invalid value/s is/are found at the following. it is recommended to pass another reservation.</p>
-                <div class="reservationInfo">
-                    
-                    <div class="reservationInfo-content">
-                        <p>Reservation ID: <span id="reservationInfoId"></span></p>
-                        <p>Date of Check-in: <span id="reservationInfoCheckInDate"></span></p>
-                        <p>Time of Check-in: <span id="reservationInfoCheckInTime"></span></p>
-                        <p>Room Type: <span id="reservationInfoRoomType"></span></p>
-                        <p>Duration: <span id="reservationInfoDuration"></span></p>
+        <div class="invalidRsvn" id="invalidRsvn">
+            <div id="invalidReservationModal" class="invalidReservation">
+                <div class="invalidReservationModal-content">
+                    <span class="closeInvalidModalBtn" id="closeInvalidModal">&times;</span>
+                    <p id="invalidReservationMessage"></p>
+    
+                    <div class="moveToFailed">
+                        <p id="reasonLabel">Reason: </p><input type="text" class="reasonOfFailure">
                     </div>
-                    <div class="reservationInfo-content">
-                        <p>Extension: <span id="reservationInfoExtension"></span></p>
-                        <p>Number of Guest: <span id="reservationInfoNumOfGuest"></span></p>
-                        <p>Amount to pay: <span id="reservationInfoTotalAmountPaid"></span></p>
+                    <button id="moveToFailed">Delete Data</button>
+                    <div class="editReservationValuesWindow">
+                        <select id="editReservationKey" name="editReservationKeytoEdit" class="editReservationKeySelect">
+                            <option value="lastName" class="reservationKeys">Last name: </option>
+                            <option value="firstName" class="reservationKeys">First name: </option>
+                            <option value="phoneNumber" class="reservationKeys">Phone number: </option>
+                            <option value="emailAddress" class="reservationKeys">Email address: </option>
+                        </select>
+                        <input type="text" class="editReservationValue" id="editReservationValue">
                     </div>
                     
+                    <button id="editReservation">Edit Value</button>
+                    <hr>
+                    <p style="color: red;">The following values can not be edited. If the invalid value/s is/are found at the following. it is recommended to pass another reservation.</p>
+                    <div class="reservationInfo">
+                        
+                        <div class="reservationInfo-content">
+                            <p>Reservation ID: <span id="reservationInfoId"></span></p>
+                            <p>Date of Check-in: <span id="reservationInfoCheckInDate"></span></p>
+                            <p>Time of Check-in: <span id="reservationInfoCheckInTime"></span></p>
+                            <p>Room Type: <span id="reservationInfoRoomType"></span></p>
+                            <p>Duration: <span id="reservationInfoDuration"></span></p>
+                        </div>
+                        <div class="reservationInfo-content">
+                            <p>Extension: <span id="reservationInfoExtension"></span></p>
+                            <p>Number of Guest: <span id="reservationInfoNumOfGuest"></span></p>
+                            <p>Amount to pay: <span id="reservationInfoTotalAmountPaid"></span></p>
+                        </div>
+                        
+                    </div>
+                    
+                    
                 </div>
-                
-                
             </div>
         </div>
+        
         <div class="rooms-content">
             <div class="rooms">
                 <button id="room1" class="room" data-room="1">
@@ -290,7 +295,7 @@
 
     <div class="records">
         <div class="tableNames">
-            <h1>RECORDS</h1>
+            <h1>Records</h1>
             <ul class="toggle-list"> <p>CHECK-INS</p>
                 <li id="currentCheckIn"><a>CURRENT CHECK-IN DETAILS</a></li>
                 <li id="pastCheckIn"><a>PAST CHECK-IN DETAILS</a></li>
@@ -314,6 +319,9 @@
         
     </div>
 
+    <div class="comments">
+        <div class="comments-container"></div>
+    </div>
     <div class="manualBooking">
         <div class="manualBooking-container">
             <h1>Manually Input Booking Data to Save</h1>
@@ -343,12 +351,12 @@
         <p>Connecting to the database...</p>
     </div>
 
-    <script type="module" src="js/dbcommand.js"></script>
-    <script type="module" src="js/createAccount.js"></script>
+    <script type="module" src="js/dbCommands.js"></script>
+    <script type="module" src="js/userAccountManagement.js"></script>
     <script type="module" src="js/roomManagement.js"></script>
     <script type="module" src="js/authorization.js"></script>
     
-    <script src="js/account.js"></script>
+    <script src="js/staffs.js"></script>
     <script src="https://kit.fontawesome.com/b629388bc1.js" crossorigin="anonymous"></script>
 </body>
 </html>
