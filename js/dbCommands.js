@@ -1166,6 +1166,8 @@ document.querySelector('#clearData').addEventListener('click', async function() 
 });
 
 document.addEventListener('DOMContentLoaded', function() {
+    displayReservations();
+    displayComments();
     // Get elements
     const dashboardSection = document.querySelector('.dashboard');
     const accountsSection = document.querySelector('.accounts');
@@ -1386,9 +1388,3 @@ document.querySelector('#saveManualBooking').addEventListener('click', async fun
             }
         }
 });
-
-// Call the function to display reservations when the page loads
-window.onload = displayReservations;
-window.onload = displayComments;
-
-console.log('Firebase script loaded and ready');
