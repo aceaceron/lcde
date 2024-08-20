@@ -30,6 +30,14 @@ function handleRedirect(accountType) {
     }
 }
 
+// Function to display the user's first name
+function displayUserName(firstName) {
+    const helloElement = document.querySelector('.hello');
+    if (helloElement) {
+        helloElement.innerHTML = `Hello, ${firstName} <div class="date-time" id="dateTime"></div>`;
+    }
+}
+
 // Check if user is authenticated and redirect based on account type
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -38,8 +46,12 @@ onAuthStateChanged(auth, (user) => {
 
         get(ref(database, 'workAccounts/' + sanitizedEmail)).then((snapshot) => {
             if (snapshot.exists()) {
-                const accountType = snapshot.val().accountType;
+                const accountData = snapshot.val();
+                const accountType = accountData.accountType;
+                const firstName = accountData.firstName;
+
                 handleRedirect(accountType);
+                displayUserName(firstName); // Display the user's first name
             } else {
                 window.location.href = 'login.html'; // Redirect if no account data
             }

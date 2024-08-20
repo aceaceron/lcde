@@ -611,7 +611,9 @@ async function displayReservations() {
                     
                 }
             }
-        } 
+        } else {
+            hideLoadingScreen();
+        }
     } catch (error) {
         console.error('Error fetching reservations:', error);
     }
@@ -1241,7 +1243,7 @@ document.querySelector('#saveManualBooking').addEventListener('click', async fun
             const checkOutDate = document.getElementById('mbCheckOutDate').value;
             const checkOutTime = document.getElementById('mbCheckOutTime').value;
             const roomNum = document.getElementById('mbRoomNum').value;
-    
+
             // Convert numeric inputs
             const numberOfGuests = parseInt(document.getElementById('mbNumOfGuests').value, 10);
             const extension = parseInt(document.getElementById('mbExtension').value, 10);

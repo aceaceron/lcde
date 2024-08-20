@@ -18,7 +18,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
-document.getElementById('loginForm').addEventListener('submit', function (event) {
+function handleLogin(event) {
     event.preventDefault(); // Prevent the default form submission
 
     const email = document.getElementById('email').value;
@@ -56,4 +56,14 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
             const errorMessage = error.message;
             alert(errorMessage);
         });
+}
+
+// Add event listener for form submission
+document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+// Add event listener for the "Enter" key
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        handleLogin(event);
+    }
 });
