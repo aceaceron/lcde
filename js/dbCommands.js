@@ -866,13 +866,16 @@ editReservationBtn.onclick = async function() {
         return;
     }
 
-    // Update the reservation data
-    currentReservationData[selectedKey] = newValue;
+    // Update the specific reservation field
+    // Convert the reservationCheckInDate from MM/DD/YYYY to YYYY-MM-DD
+    const checkInDate = currentReservationData.reservationCheckInDate;
+    const [month, day, year] = checkInDate.split('/');
+    const formattedCheckInDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 
     try {
-        const reservationRef = ref(db, `activeReservations/${currentReservationData.reservationCheckInDate}/${currentReservationId}`);
-        await set(reservationRef, currentReservationData);
-        
+        const reservationRef = ref(db, `activeReservations/${formattedCheckInDate}/${currentReservationId}`);
+        await update(reservationRef, { [selectedKey]: newValue });
+
         alert(`Reservation updated successfully!`);
         invalidModal.style.display = 'none';
         location.reload(true); // Reload the page to reflect changes
@@ -908,7 +911,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Function to listen for WebSocket errors
 window.addEventListener('error', function(event) {
     // Check if the error is related to WebSocket or Firebase and if it includes "ERR_NETWORK_CHANGED"
-    if (event.message && event.message.includes('ERR_NETWORK_CHANGED')) {
+    if (event.message && event.message.includes('ERR_NETWORK_CHANGEDk')) {
         alert('No internet connection. Please check your network and try again.');
     }
 });
