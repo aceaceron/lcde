@@ -79,6 +79,10 @@ function displayAccounts() {
     onValue(accountsRef, (snapshot) => {
         const accountsContainer = document.querySelector('.displayAccounts');
         accountsContainer.innerHTML = ''; // Clear any existing content
+        
+        const heading = document.createElement('h1');
+        heading.textContent = 'Active work accounts';
+        accountsContainer.appendChild(heading);
 
         // Loop through each account and display it
         snapshot.forEach((childSnapshot) => {
