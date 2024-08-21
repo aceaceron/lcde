@@ -34,7 +34,7 @@ body {
 }
 
 .hello {
-    width: 16vw;
+    width: 18vw;
     padding-right: 30px;
     font-size: 1.5vw;
 }
@@ -1082,7 +1082,7 @@ nav ul li:hover {
     }
 
     .hello, #dateTime {
-        font-size: 14px;
+        font-size: 15px;
         width: 18vw;
     }
 
