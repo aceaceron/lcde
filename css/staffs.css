@@ -1431,7 +1431,7 @@ nav ul li:hover {
     #roomSelected, #tableFilter {
         font-size: 12px;
         padding: 2%;
-        width: 100%;
-        margin: 1%;
+        width: 90%;
+        margin: 10px;
     }
 }
