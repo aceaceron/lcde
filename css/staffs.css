@@ -1407,7 +1407,7 @@ nav ul li:hover {
     }
     .inventory-header {
         flex-direction: column;
-        font-size: 14px;
+        font-size: 12px;
         text-align: center;
     }
     .inventory-container {
