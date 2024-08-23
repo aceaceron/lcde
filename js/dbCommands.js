@@ -200,24 +200,43 @@ async function moveDataToPastCheckIn(checkInId) {
         const checkInCheckOutData = checkInCheckOutSnapshot.val();
 
         if (checkInCheckOutData) {
-            // Get the current date
-            const currentDate = new Date().toLocaleDateString('en-CA'); // Format: YYYY-MM-DD
+            // Get the current date and time
+            const now = new Date();
+            
+            // Format the check-out time as HH:MM:SS AM/PM
+            const hours = now.getHours() % 12 || 12; // Convert 0 to 12 for AM/PM
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+            const formattedTime = `${hours}:${minutes}:${seconds} ${ampm}`;
+            
+            // Format the check-out date as MM/DD/YYYY or M/DD/YYYY
+            const month = now.getMonth() + 1; // getMonth() is zero-based
+            const day = now.getDate();
+            const year = now.getFullYear();
+            const formattedDate = `${month}/${day}/${year}`;
+            
+            // Overwrite the checkOutTime and checkOutDate
+            checkInCheckOutData.checkOutTime = formattedTime;
+            checkInCheckOutData.checkOutDate = formattedDate;
+
+            const checkOutDateDirectory = convertDateToISOFormat(formattedDate);
+            console.log(checkOutDateDirectory);
 
             // Save the data to the pastCheckIn table under the current date using the unique ID
-            const pastCheckInRef = ref(db, `pastCheckIn/${currentDate}/${checkInId}`);
+            const pastCheckInRef = ref(db, `pastCheckIn/${checkOutDateDirectory}/${checkInId}`);
             
             // Save the data to the pastCheckIn table
             await set(pastCheckInRef, checkInCheckOutData);
             
             // Remove the old data from currentCheckIn
             await remove(checkInCheckOutRef);
-
-            location.reload(true);
         }
     } catch (error) {
         console.error('Error moving data to pastCheckIn:', error);
     }
 }
+
 
 // Constants for additional fees
 const ADDITIONAL_EXTENSIONFEE_NON_AIRCON = 100;
@@ -352,7 +371,7 @@ document.getElementById('timeOut').addEventListener('click', async function() {
         
         try {
             // Update the room's availability in Firebase
-            const roomRef = ref(db, `roomsAvailability/${roomNum}/isAvailable`);
+            const roomRef = ref(db, `rooms/${roomNum}/isRoomAvailable`);
             await set(roomRef, true);
             console.log(`Room ${roomNum} availability updated to true`);
 
@@ -364,6 +383,8 @@ document.getElementById('timeOut').addEventListener('click', async function() {
             
             // Clear the countdown interval
             clearInterval(countdown);
+
+            location.reload();
         } catch (error) {
             console.error('Error during time-out process:', error);
         }
@@ -373,38 +394,37 @@ document.getElementById('timeOut').addEventListener('click', async function() {
 });
 
 // Function to save room state (availability) to Firebase
-export async function saveRoomState(roomId, isAvailable) {
+export async function saveRoomState(roomNum, isRoomAvailable) {
     try {
-        const roomRef = ref(db, `roomsAvailability/${roomId}`);
-        await set(roomRef, {
-            isAvailable
-        });
-        console.log('Room state saved:', roomId, 'Availability:', isAvailable);
+        const roomRef = ref(db, `rooms/${roomNum}/isRoomAvailable`);
+        await set(roomRef, isRoomAvailable);
+        console.log(`Room ${roomNum} availability updated to ${isRoomAvailable}`);
     } catch (error) {
         console.error('Error saving room state:', error);
     }
 }
 
+
 // Function to retrieve room state from Firebase
 async function getRoomState(roomId) {
     try {
-        const roomRef = ref(db, `roomsAvailability/${roomId}`);
+        const roomRef = ref(db, `rooms/${roomId}`);
         const snapshot = await get(roomRef);
         if (snapshot.exists()) {
             return snapshot.val();
         } else {
-            return { isAvailable: true }; // Default to available if no data
+            return { isRoomAvailable: true }; // Default to available if no data
         }
     } catch (error) {
         console.error('Error retrieving room state:', error);
-        return { isAvailable: true }; // Default to available in case of error
+        return { isRoomAvailable: true }; // Default to available in case of error
     }
 }
 
 // Function to initialize room with Firebase data
 export async function initializeRoom(roomElement, roomId) {
     const roomState = await getRoomState(roomId);
-    if (roomState && !roomState.isAvailable) {
+    if (roomState && !roomState.isRoomAvailable) {
         roomElement.style.backgroundColor = 'red';
         roomElement.style.color = 'white';
         changeAvailability(roomElement);
@@ -646,11 +666,11 @@ async function setupRoomSelectionModal(roomType) {
             roomDiv.classList.add('disabled');
             roomDiv.style.backgroundColor = 'Gray'; // Set background color to gray
             roomDiv.style.cursor = 'not-allowed'; // Set cursor to not-allowed
-        } else if (roomState && !roomState.isAvailable) {
+        } else if (roomState && !roomState.isRoomAvailable) {
             roomDiv.style.backgroundColor = 'red';
             roomDiv.style.cursor = 'not-allowed';
             roomDiv.classList.add('disabled');
-        } else if (roomState && roomState.isAvailable) {
+        } else if (roomState && roomState.isRoomAvailable) {
             roomDiv.style.backgroundColor = 'green';
         }
     }
@@ -872,6 +892,11 @@ editReservationBtn.onclick = async function() {
     const [month, day, year] = checkInDate.split('/');
     const formattedCheckInDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 
+    console.log('Updating reservation with path:', `activeReservations/${formattedCheckInDate}/${currentReservationId}`);
+    console.log('Selected Key:', selectedKey);
+    console.log('New Value:', newValue);
+    console.log(formattedCheckInDate);
+
     try {
         const reservationRef = ref(db, `activeReservations/${formattedCheckInDate}/${currentReservationId}`);
         await update(reservationRef, { [selectedKey]: newValue });
@@ -884,7 +909,6 @@ editReservationBtn.onclick = async function() {
         alert('Failed to update the reservation. Please try again.');
     }
 };
-
 // Close the modal when the user clicks on the close button
 closeInvalidModal.onclick = function() {
     invalidModal.style.display = 'none';
@@ -911,7 +935,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Function to listen for WebSocket errors
 window.addEventListener('error', function(event) {
     // Check if the error is related to WebSocket or Firebase and if it includes "ERR_NETWORK_CHANGED"
-    if (event.message && event.message.includes('ERR_NETWORK_CHANGEDk')) {
+    if (event.message && event.message.includes('ERR_NETWORK_CHANGED')) {
         alert('No internet connection. Please check your network and try again.');
     }
 });
@@ -1171,12 +1195,14 @@ document.querySelector('#clearData').addEventListener('click', async function() 
 document.addEventListener('DOMContentLoaded', function() {
     displayReservations();
     displayComments();
+    
     // Get elements
     const dashboardSection = document.querySelector('.dashboard');
     const accountsSection = document.querySelector('.accounts');
     const recordsSection = document.querySelector('.records');
     const manualBookingSection = document.querySelector('.manualBooking');
     const commentsSection = document.querySelector('.comments');
+    const inventorySection = document.querySelector('.inventory');
 
     // Initially show the dashboard and hide records
     dashboardSection.style.display = 'flex';
@@ -1184,6 +1210,7 @@ document.addEventListener('DOMContentLoaded', function() {
     recordsSection.style.display = 'none';
     manualBookingSection.style.display = 'none';
     commentsSection.style.display = 'none';
+    inventorySection.style.display = 'none';
 
 
     // Add click event listeners
@@ -1193,6 +1220,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'none';
         manualBookingSection.style.display = 'none';
         commentsSection.style.display = 'none';
+        inventorySection.style.display = 'none';
     });
 
     document.querySelector('#accounts').addEventListener('click', function() {
@@ -1201,6 +1229,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'none';
         manualBookingSection.style.display = 'none';
         commentsSection.style.display = 'none';
+        inventorySection.style.display = 'none';
     });
 
     document.querySelector('#records').addEventListener('click', function() {
@@ -1209,6 +1238,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'flex';
         manualBookingSection.style.display = 'none';
         commentsSection.style.display = 'none';
+        inventorySection.style.display = 'none';
     });
     document.querySelector('#commentsList').addEventListener('click', function() {
         dashboardSection.style.display = 'none';
@@ -1216,6 +1246,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'none';
         manualBookingSection.style.display = 'none';
         commentsSection.style.display = 'flex';
+        inventorySection.style.display = 'none';
     });
     document.querySelector('#mnlBooking').addEventListener('click', function() {
         dashboardSection.style.display = 'none';
@@ -1223,6 +1254,15 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'none';
         manualBookingSection.style.display = 'flex';
         commentsSection.style.display = 'none';
+        inventorySection.style.display = 'none';
+    });
+    document.querySelector('#inventory').addEventListener('click', function() {
+        dashboardSection.style.display = 'none';
+        accountsSection.style.display = 'none';
+        recordsSection.style.display = 'none';
+        manualBookingSection.style.display = 'none';
+        commentsSection.style.display = 'none';
+        inventorySection.style.display = 'flex';
     });
     document.querySelector('#dashboardBtn').addEventListener('click', function() {
         dashboardSection.style.display = 'flex';
@@ -1230,6 +1270,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'none';
         manualBookingSection.style.display = 'none';
         commentsSection.style.display = 'none';
+        inventorySection.style.display = 'none';
     });
 
     document.querySelector('#accountsBtn').addEventListener('click', function() {
@@ -1238,6 +1279,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'none';
         manualBookingSection.style.display = 'none';
         commentsSection.style.display = 'none';
+        inventorySection.style.display = 'none';
     });
 
     document.querySelector('#recordsBtn').addEventListener('click', function() {
@@ -1246,6 +1288,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'flex';
         manualBookingSection.style.display = 'none';
         commentsSection.style.display = 'none';
+        inventorySection.style.display = 'none';
     });
     document.querySelector('#mnlBookingBtn').addEventListener('click', function() {
         dashboardSection.style.display = 'none';
@@ -1253,6 +1296,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'none';
         manualBookingSection.style.display = 'flex';
         commentsSection.style.display = 'none';
+        inventorySection.style.display = 'none';
     });
     document.querySelector('#commentsListBtn').addEventListener('click', function() {
         dashboardSection.style.display = 'none';
@@ -1260,6 +1304,15 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsSection.style.display = 'none';
         manualBookingSection.style.display = 'none';
         commentsSection.style.display = 'flex';
+        inventorySection.style.display = 'none';
+    });
+    document.querySelector('#inventoryBtn').addEventListener('click', function() {
+        dashboardSection.style.display = 'none';
+        accountsSection.style.display = 'none';
+        recordsSection.style.display = 'none';
+        manualBookingSection.style.display = 'none';
+        commentsSection.style.display = 'none';
+        inventorySection.style.display = 'flex';
     });
 });
 
@@ -1353,7 +1406,6 @@ function displayComments() {
     });
 }
 
-
 document.querySelector('#saveManualBooking').addEventListener('click', async function() {
     const saveBooking = confirm('Are you sure the data is correct and accurate?\nThis action cannot be undone once saved.');
 
@@ -1391,3 +1443,307 @@ document.querySelector('#saveManualBooking').addEventListener('click', async fun
             }
         }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Function to fetch and update inventory data with filtering
+    async function updateInventoryData(selectedRoom, filter = 'all') {
+        if (selectedRoom) {
+            try {
+                const roomRef = ref(db, `rooms/${selectedRoom}`);
+                const roomSnapshot = await get(roomRef);
+                const roomData = roomSnapshot.val();
+
+                if (roomData) {
+                    let tableHTML = '<table class="data-table">';
+                    tableHTML += '<thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>';
+
+                    const roomTableKeySelect = document.getElementById('roomTableKey');
+                    roomTableKeySelect.innerHTML = ''; // Clear previous options
+
+                    for (const key in roomData) {
+                        const value = roomData[key];
+
+                        // Apply the filter
+                        if (filter === 'quantity' && !key.toLowerCase().includes('quantity')) continue;
+                        if (filter === 'status' && !key.toLowerCase().includes('status')) continue;
+                        if (filter === 'present' && !key.toLowerCase().includes('present')) continue;
+                        if (filter === 'boolean' && typeof value !== 'boolean') continue;
+
+                        tableHTML += `<tr><td>${key}</td><td>${value}</td></tr>`;
+
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = key;
+                        option.dataset.value = value;
+                        roomTableKeySelect.appendChild(option);
+                    }
+
+                    tableHTML += '</tbody></table>';
+                    document.querySelector('.inventory-data').innerHTML = tableHTML;
+
+                    const firstOption = roomTableKeySelect.options[0];
+                    if (firstOption) {
+                        const selectedValue = firstOption.dataset.value;
+                        const updateInput = document.querySelector('.inventory-update input[type="text"]');
+                        updateInput.placeholder = selectedValue || "Select a value";
+                        document.querySelector('.inventory-update input[type="text"]').value = ''; // Clear the input field after update
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching room data:', error);
+            }
+        }
+    }
+
+    // Initial room selection event listener
+    document.getElementById('roomSelected').addEventListener('change', function () {
+        const selectedRoom = this.value;
+        const tableFilter = document.getElementById('tableFilter');
+
+        if (selectedRoom === 'all') {
+            displayCombinedRoomData();
+            tableFilter.disabled = true;
+        } else if (selectedRoom) {
+            const filter = document.getElementById('tableFilter').value;
+            updateInventoryData(selectedRoom, filter);
+            tableFilter.disabled = false;
+        }
+    });
+
+    async function displayCombinedRoomData() {
+        try {
+            const roomNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'eventHall'];
+            let combinedData = {};
+    
+            const fetchPromises = roomNumbers.map(async (roomNumber) => {
+                const roomRef = ref(db, `rooms/${roomNumber === 'eventHall' ? 'eventHall' : roomNumber}`);
+                const roomSnapshot = await get(roomRef);
+                return roomSnapshot.val();
+            });
+    
+            const allRoomsData = await Promise.all(fetchPromises);
+    
+            allRoomsData.forEach(roomData => {
+                if (roomData) {
+                    Object.keys(roomData).forEach(key => {
+                        if (key.toLowerCase().includes('quantity') && typeof roomData[key] === 'number') {
+                            if (!combinedData[key]) {
+                                combinedData[key] = 0;
+                            }
+                            combinedData[key] += roomData[key];
+                        }
+                    });
+                }
+            });
+    
+            displayData(combinedData);
+        } catch (error) {
+            console.error('Error fetching and combining room data:', error);
+            alert('An error occurred while fetching and combining data.');
+        }
+    }
+    
+    
+    function displayData(data) {
+        const outputElement = document.querySelector('.inventory-data'); // Target the .inventory-data container
+        outputElement.innerHTML = ''; // Clear any previous content
+        
+        let tableHTML = '<table class="data-table">';
+        tableHTML += '<thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>';
+        
+        for (const [key, value] of Object.entries(data)) {
+            tableHTML += `<tr><td>${key}</td><td>${value}</td></tr>`;
+        }
+        
+        tableHTML += '</tbody></table>';
+        outputElement.innerHTML = tableHTML; // Insert the generated HTML into the container
+    }
+    
+    // Filter event listener
+    document.getElementById('tableFilter').addEventListener('change', function () {
+        const selectedRoom = document.getElementById('roomSelected').value;
+        const filter = this.value;
+        updateInventoryData(selectedRoom, filter);
+    });
+
+    document.getElementById('updateButton').addEventListener('click', async function () {
+        const selectedRoom = document.getElementById('roomSelected').value;
+        const selectedKey = document.getElementById('roomTableKey').value;
+        var newValueRaw = document.querySelector('.inventory-update input[type="text"]').value;
+    
+        if (selectedRoom && selectedKey && newValueRaw) {
+            try {
+                const keyRef = ref(db, `rooms/${selectedRoom}/${selectedKey}`);
+                const keySnapshot = await get(keyRef);
+                const currentValue = keySnapshot.val();
+    
+                // Determine the type of the existing value
+                const currentType = typeof currentValue;
+    
+                // Convert the new value to match the current type
+                let newValue;
+                switch (currentType) {
+                    case 'number':
+                        newValue = parseFloat(newValueRaw);
+                        if (isNaN(newValue)) {
+                            alert('Please enter a valid number.');
+                            // Clear the input field after update
+                            document.querySelector('.inventory-update input[type="text"]').value = '';
+                            return;
+                        } 
+                        alert('Value updated successfully');
+                        break;
+                    case 'boolean':
+                        if (newValueRaw.toLowerCase() === 'true' || newValueRaw.toLowerCase() === 'false') {
+                            newValue = newValueRaw.toLowerCase() === 'true';
+                            alert('Value updated successfully');
+                        } else {
+                            alert('Please enter a valid value (True or False only).');
+                            // Clear the input field after update
+                            document.querySelector('.inventory-update input[type="text"]').value = '';
+                            return;
+                        }
+                        break;
+                    case 'string':
+                        newValue = newValueRaw;
+                        alert('Value updated successfully');
+                        break;
+                    default:
+                        console.error('Unsupported data type:', currentType);
+                        // Clear the input field after update
+                        document.querySelector('.inventory-update input[type="text"]').value = '';
+                        return;
+                }
+    
+                await set(keyRef, newValue);
+                updateInventoryData(selectedRoom); // Update inventory data
+                // Clear the input field after update
+                document.querySelector('.inventory-update input[type="text"]').value = '';
+            } catch (error) {
+                console.error('Error updating key:', error);
+            }
+        } else {
+            alert('Please select a room, a key, and provide a value.');
+        }
+    });
+    
+    document.getElementById('addButton').addEventListener('click', async function () {
+        
+        const valueDataTypeSelect = document.getElementById('valueDataType');
+        const selectedRoom = document.getElementById('roomSelected').value;
+        const addKey = document.getElementById('inventory-addKey').value;
+        const addValueRaw = document.getElementById('inventory-addValue').value;
+        const selectedType = valueDataTypeSelect.value;
+    
+        if (selectedRoom && addKey && addValueRaw) {
+            try {
+                // Reference the room data
+                const roomRef = ref(db, `rooms/${selectedRoom}/${addKey}`);
+                const keySnapshot = await get(roomRef);
+                const existingValue = keySnapshot.val();
+                let addValue;
+    
+                // If the key already exists, match the data type of the existing value
+                if (existingValue !== null) {
+                    alert("Key exists in the database! Update if wanted to change the value.");
+                    document.getElementById('inventory-addKey').value = '';
+                    document.getElementById('inventory-addValue').value = '';
+                    return;
+                } else {
+                    // If the key doesn't exist, match the data type based on user selection
+                    switch (selectedType) {
+                        case 'Number':
+                            addValue = parseFloat(addValueRaw);
+                            if (isNaN(addValue)) {
+                                alert('Please enter a valid number.');
+                                document.getElementById('inventory-addValue').value = '';
+                                return;
+                            }
+                            alert('Key and value added successfully');
+                            break;
+                        case 'Boolean':
+                            if (addValueRaw.toLowerCase() === 'true' || addValueRaw.toLowerCase() === 'false') {
+                                addValue = addValueRaw.toLowerCase() === 'true';
+                                alert('Key and value added successfully');
+                            } else {
+                                alert('Please enter a valid value (True or False only).');
+                                document.getElementById('inventory-addValue').value = '';
+                            }
+                            break;
+                        case 'Date':
+                            addValue = addValueRaw.replace(/(^|\/)0+/g, '$1'); // Remove leading zeros
+                            break;
+                        case 'Time':
+                        case 'String':
+                        default:
+                            addValue = addValueRaw;
+                            break;
+                    }
+                }
+    
+                await set(roomRef, addValue);
+                updateInventoryData(selectedRoom);
+                document.getElementById('inventory-addKey').value = '';
+                document.getElementById('inventory-addValue').value = ''; // Update inventory data
+            } catch (error) {
+                console.error('Error adding key:', error);
+            }
+        } else {
+            alert('Please provide a room, key, and value.');
+        }
+    });
+
+    document.getElementById('deleteButton').addEventListener('click', async function () {
+        const selectedRoom = document.getElementById('roomSelected').value;
+        const selectedKey = document.getElementById('roomTableKey').value;
+
+        if (selectedRoom && selectedKey) {
+            try {
+                const keyRef = ref(db, `rooms/${selectedRoom}/${selectedKey}`);
+                await remove(keyRef);
+                console.log('Key removed successfully');
+                updateInventoryData(selectedRoom); 
+                // Clear the input field after update
+                document.querySelector('.inventory-update input[type="text"]').value = '';
+            } catch (error) {
+                console.error('Error removing key:', error);
+            }
+        } else {
+            console.log('Please select a room and a key.');
+        }
+    });
+
+    const valueDataTypeSelect = document.getElementById('valueDataType');
+    const valueInput = document.getElementById('inventory-addValue');
+
+    // Update placeholder based on selected data type
+    valueDataTypeSelect.addEventListener('change', function () {
+        valueInput.value = "";
+        const selectedType = valueDataTypeSelect.value;
+        if (selectedType === 'Date') {
+            valueInput.placeholder = 'MM/DD/YYYY';
+        } else if (selectedType === 'Time') {
+            valueInput.placeholder = 'HH:MM:SS AM/PM';
+        } else if (selectedType === 'Boolean') {
+            valueInput.placeholder = 'True/False only';
+        } else {
+            valueInput.placeholder = 'Value';
+        }
+    });
+
+});
+
+// Handle the change event on the roomTableKey select element
+document.getElementById('roomTableKey').addEventListener('change', function () {
+    const selectedKey = this.value;
+    const selectedValue = this.options[this.selectedIndex].dataset.value;
+
+    if (selectedKey) {
+        // Set the value in the input field
+        const updateInput = document.querySelector('.inventory-update input[type="text"]');
+        updateInput.placeholder = selectedValue;
+        updateInput.value = "";
+    }
+});
+
+console.log('Firebase script loaded and ready');
