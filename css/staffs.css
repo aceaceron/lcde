@@ -708,7 +708,6 @@ nav ul li:hover {
     padding-top: 30px;
     padding-bottom: 30px;
     border-radius: 30px;
-    max-height: 600px;
 }
 .accounts-container-inputs {
     display: flex;
@@ -1052,7 +1051,98 @@ nav ul li:hover {
     background-color: #cc0000;
 }
 
+.inventory {
+    min-height: 600px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    border-radius: 30px;
+    align-items: center;
+    margin-top: 50px;
+}
 
+.inventory-header {
+    text-align: left;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 20px;
+    justify-content: space-around;
+    padding: 10px;
+}
+.inventory-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+}  
+.inventory-data {
+    width: 60%;
+    margin-top: 30px;
+    border-radius: 30px;
+    height: 400px;
+    background-color: white;
+    padding: 2%;
+    overflow-y: auto;
+}
+#roomSelected, #tableFilter {
+    font-size: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 30px;
+}
+.inventory-management {
+    width: 30%;
+    height: 400px;
+    margin-top: 30px;
+    border-radius: 30px;
+    background-color: white;
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.inventory-management button, .inventory-management select {
+    padding: 10px;
+    width: 95%;
+    border-radius: 30px;
+    margin: 1%;
+    cursor: pointer;
+}
+
+.inventory-management input {
+    padding: 10px;
+    width: 90%;
+    border-radius: 30px;
+    margin: 1%;
+}
+
+.inventory-update, .inventory-add {
+    width: 100%;
+    text-align: center;
+}
+
+#updateButton {
+    background-color: rgb(249, 249, 134);
+}
+
+#deleteButton {
+    background-color: rgb(255, 125, 78);
+}
+
+#addButton {
+    background-color: skyblue;
+}
 /* Spinner animation */
 @keyframes spin {
     0% {
@@ -1083,7 +1173,7 @@ nav ul li:hover {
 
     .hello, #dateTime {
         font-size: 15px;
-        width: 18vw;
+        width: 19vw;
     }
 
     .menu-button {
@@ -1193,18 +1283,25 @@ nav ul li:hover {
         gap: 20px;
         width: 80%;
         margin-top: 0;
-        height: auto;
+        max-height: 100%;
     }
     .accounts-container, .displayAccounts {
         width: 100%;
+        max-height: 100%;
     }
     #accountType, #createAccount {
         width: 80%;
         font-size: 14px;
+        max-height: auto;
+    }
+    .displayAccounts {
+        overflow-y:visible;
+        max-height: auto;
     }
     .account-card {
         flex-direction: column;
         align-items: flex-start;
+        max-height: auto;
     }
     .delete-button {
         width: 100%;
@@ -1287,13 +1384,13 @@ nav ul li:hover {
     .comments h1 {
         font-size: 18px;
     }
+    .comments-container {
+        overflow: visible;
+    }
     .comment-card {
         width: 70%;
         flex-direction: column;
         align-items: center;
-    }
-    .comments-container {
-        overflow: visible;
     }
     .comment-info {
         width: 100%;
@@ -1303,5 +1400,31 @@ nav ul li:hover {
         font-size: 16px;
         width: 100%;
         height: auto;
+    }
+    .inventory {
+        width: 80%;
+    }
+    .inventory-header {
+        flex-direction: column;
+        font-size: 14px;
+        text-align: center;
+    }
+    .inventory-container {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .inventory-data {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        min-height: auto;
+        overflow-y: visible;
+    }
+    .inventory-management {
+        width: 100%;
+    }
+    #roomSelected, #tableFilter {
+        font-size: 20px;
     }
 }
