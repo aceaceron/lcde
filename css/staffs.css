@@ -1404,7 +1404,7 @@ nav ul li:hover {
     }
     .inventory {
         width: 80%;
-        margin-top: 0;
+        margin-top: 0px;
     }
     .inventory-header {
         flex-direction: column;
@@ -1429,6 +1429,7 @@ nav ul li:hover {
        
     }
     #roomSelected, #tableFilter {
-        font-size: 12px;
+        font-size: 8px;
+        padding: 1%;
     }
 }
