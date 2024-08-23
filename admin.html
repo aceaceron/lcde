@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin | La Casa de Espeso</title>
     <link rel="stylesheet" href="css/staffs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
 <body>
     <div class="bg"></div>
@@ -330,7 +332,7 @@
             <div>
                 <select id="roomSelected">
                     <option value="" disabled selected hidden>Select a room</option>
-                    <option value="1" data-room="1">Room 1</option>
+                    <option value="1">Room 1</option>
                     <option value="2" data-room="2">Room 2</option>
                     <option value="3" data-room="3">Room 3</option>
                     <option value="4" data-room="4">Room 4</option>
@@ -349,8 +351,8 @@
                     <option value="quantity">Quantities</option>
                     <option value="status">Status</option>
                     <option value="present">Present</option>
+                    <option value="forRepair">Need For Repair</option>
                     <option value="boolean">Booleans</option>
-
                 </select>
             </div>
         </div>
@@ -359,10 +361,20 @@
             <div class="inventory-management">
                 Update or Delete Elements
                 <div class="inventory-update">
+
                     <select id="roomTableKey">
                         <option value="" disabled selected hidden>Select a room</option>
                     </select>
-                    <input type="text" placeholder=""><br>
+
+                    <select id="valueForStatusKeyType" style="display: none;">
+                        <option value="All Working">All Working</option>
+                        <option value="Some are working, some are broken">Some are working, some are broken</option>
+                        <option value="Need cleaning">Need cleaning</option>
+                        <option value="Not Working">Not Working</option>
+                    </select>
+
+                    <input type="text" placeholder="" id="updateValue"><br>
+
                     <button id="updateButton">UPDATE</button>
                     <button id="deleteButton">DELETE</button>
                 </div>
@@ -374,16 +386,22 @@
                         <option value="" disabled selected hidden>Select the data type for the value</option>
                         <option id="String">Text</option>
                         <option id="Number">Number</option>
+                        <option value="equipmentStatus">Equipment Status</option>
                         <option id="Boolean">Boolean</option>
                         <option id="Date">Date</option>
                         <option id="Time">Time</option>
                     </select>
                     <input type="text" placeholder="Value" id="inventory-addValue">
+                    <select id="valueForStatusKeyTypeForAdd" style="display: none;">
+                        <option value="All Working">All Working</option>
+                        <option value="Some are working, some are broken">Some are working, some are broken</option>
+                        <option value="Need cleaning">Need cleaning</option>
+                        <option value="Not Working">Not Working</option>
+                    </select>
                     <button id="addButton">ADD</button>
                 </div>
             </div>
         </div>
-        
     </div>
     
     <div class="manualBooking">
