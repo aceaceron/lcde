@@ -1446,47 +1446,70 @@ document.querySelector('#saveManualBooking').addEventListener('click', async fun
 
 document.addEventListener('DOMContentLoaded', function () {
     // Function to fetch and update inventory data with filtering
-    async function updateInventoryData(selectedRoom, filter = 'all') {
+    async function updateInventoryData(selectedRoom, filter) {
         if (selectedRoom) {
             try {
                 const roomRef = ref(db, `rooms/${selectedRoom}`);
                 const roomSnapshot = await get(roomRef);
                 const roomData = roomSnapshot.val();
-
+    
                 if (roomData) {
                     let tableHTML = '<table class="data-table">';
                     tableHTML += '<thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>';
-
+    
                     const roomTableKeySelect = document.getElementById('roomTableKey');
                     roomTableKeySelect.innerHTML = ''; // Clear previous options
-
+    
                     for (const key in roomData) {
                         const value = roomData[key];
-
+    
                         // Apply the filter
                         if (filter === 'quantity' && !key.toLowerCase().includes('quantity')) continue;
                         if (filter === 'status' && !key.toLowerCase().includes('status')) continue;
                         if (filter === 'present' && !key.toLowerCase().includes('present')) continue;
                         if (filter === 'boolean' && typeof value !== 'boolean') continue;
-
-                        tableHTML += `<tr><td>${key}</td><td>${value}</td></tr>`;
-
+                        if (filter === 'forRepair' && (!key.toLowerCase().includes('status') || value === 'All Working')) continue;
+    
+                        // Display value with or without icon
+                        let displayValue = document.createElement('span');
+                        displayValue.textContent = value;
+    
+                        if (key.toLowerCase().includes('status') && value !== 'All Working') {
+                            const icon = document.createElement('i');
+                            icon.className = ' fa-solid fa-triangle-exclamation';
+                            displayValue.appendChild(icon);
+                        }
+    
+                        tableHTML += `<tr><td>${key}</td><td>${displayValue.outerHTML}</td></tr>`;
+    
                         const option = document.createElement('option');
                         option.value = key;
                         option.textContent = key;
                         option.dataset.value = value;
                         roomTableKeySelect.appendChild(option);
                     }
-
+    
                     tableHTML += '</tbody></table>';
                     document.querySelector('.inventory-data').innerHTML = tableHTML;
-
+    
+                    const updateInput = document.querySelector('.inventory-update input[type="text"]');
+                    const statusDropdown = document.getElementById('valueForStatusKeyType');
+    
                     const firstOption = roomTableKeySelect.options[0];
+                    // Automatically toggle input fields based on the filter
+                    if (filter === 'status' || filter === 'forRepair') {
+                        updateInput.style.display = 'none';
+                        statusDropdown.style.display = 'inline';
+                        statusDropdown.value = firstOption.dataset.value;
+                    } else {
+                        updateInput.style.display = 'inline';
+                        statusDropdown.style.display = 'none';
+                    }
+    
                     if (firstOption) {
                         const selectedValue = firstOption.dataset.value;
-                        const updateInput = document.querySelector('.inventory-update input[type="text"]');
                         updateInput.placeholder = selectedValue || "Select a value";
-                        document.querySelector('.inventory-update input[type="text"]').value = ''; // Clear the input field after update
+                        updateInput.value = ''; // Clear the input field after update
                     }
                 }
             } catch (error) {
@@ -1494,7 +1517,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-
+    
+    
     // Initial room selection event listener
     document.getElementById('roomSelected').addEventListener('change', function () {
         const selectedRoom = this.value;
@@ -1543,7 +1567,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     
-    
     function displayData(data) {
         const outputElement = document.querySelector('.inventory-data'); // Target the .inventory-data container
         outputElement.innerHTML = ''; // Clear any previous content
@@ -1564,12 +1587,24 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedRoom = document.getElementById('roomSelected').value;
         const filter = this.value;
         updateInventoryData(selectedRoom, filter);
+
     });
 
     document.getElementById('updateButton').addEventListener('click', async function () {
         const selectedRoom = document.getElementById('roomSelected').value;
         const selectedKey = document.getElementById('roomTableKey').value;
-        var newValueRaw = document.querySelector('.inventory-update input[type="text"]').value;
+        const filter = document.getElementById('tableFilter').value;
+    
+        let newValueRaw;
+    
+        // Check if the selected key contains "status"
+        if (selectedKey.toLowerCase().includes('status')) {
+            // Use the value from the status dropdown
+            newValueRaw = document.getElementById('valueForStatusKeyType').value;
+        } else {
+            // Use the value from the input field
+            newValueRaw = document.querySelector('.inventory-update input[type="text"]').value;
+        }
     
         if (selectedRoom && selectedKey && newValueRaw) {
             try {
@@ -1587,38 +1622,32 @@ document.addEventListener('DOMContentLoaded', function () {
                         newValue = parseFloat(newValueRaw);
                         if (isNaN(newValue)) {
                             alert('Please enter a valid number.');
-                            // Clear the input field after update
-                            document.querySelector('.inventory-update input[type="text"]').value = '';
+                            clearInputFields();
                             return;
-                        } 
-                        alert('Value updated successfully');
+                        }
                         break;
                     case 'boolean':
                         if (newValueRaw.toLowerCase() === 'true' || newValueRaw.toLowerCase() === 'false') {
                             newValue = newValueRaw.toLowerCase() === 'true';
-                            alert('Value updated successfully');
                         } else {
                             alert('Please enter a valid value (True or False only).');
-                            // Clear the input field after update
-                            document.querySelector('.inventory-update input[type="text"]').value = '';
+                            clearInputFields();
                             return;
                         }
                         break;
                     case 'string':
                         newValue = newValueRaw;
-                        alert('Value updated successfully');
                         break;
                     default:
                         console.error('Unsupported data type:', currentType);
-                        // Clear the input field after update
-                        document.querySelector('.inventory-update input[type="text"]').value = '';
+                        clearInputFields();
                         return;
                 }
     
                 await set(keyRef, newValue);
-                updateInventoryData(selectedRoom); // Update inventory data
-                // Clear the input field after update
-                document.querySelector('.inventory-update input[type="text"]').value = '';
+                alert('Value updated successfully');
+                updateInventoryData(selectedRoom, filter);
+                clearInputFields();
             } catch (error) {
                 console.error('Error updating key:', error);
             }
@@ -1627,12 +1656,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     
+    // Utility function to clear input fields
+    function clearInputFields() {
+        document.querySelector('.inventory-update input[type="text"]').value = '';
+        document.getElementById('valueForStatusKeyType').value = 'All Working';
+    }
+
+    // Handle the change event on the roomTableKey select element
+    document.getElementById('roomTableKey').addEventListener('change', function () {
+        const selectedKey = this.value;
+        const selectedValue = this.options[this.selectedIndex].dataset.value;
+    
+        if (selectedKey.toLowerCase().includes('status')) {
+            document.querySelector('.inventory-update input[type="text"]').style.display = 'none';
+            document.getElementById('valueForStatusKeyType').style.display = 'inline';
+        } else {
+            document.querySelector('.inventory-update input[type="text"]').style.display = 'inline';
+            document.getElementById('valueForStatusKeyType').style.display = 'none';
+            const updateInput = document.querySelector('.inventory-update input[type="text"]');
+            updateInput.placeholder = selectedValue;
+            updateInput.value = "";
+        }
+    });
+
+
     document.getElementById('addButton').addEventListener('click', async function () {
         
         const valueDataTypeSelect = document.getElementById('valueDataType');
         const selectedRoom = document.getElementById('roomSelected').value;
         const addKey = document.getElementById('inventory-addKey').value;
         const addValueRaw = document.getElementById('inventory-addValue').value;
+        const filter = document.getElementById('tableFilter').value;
         const selectedType = valueDataTypeSelect.value;
     
         if (selectedRoom && addKey && addValueRaw) {
@@ -1682,7 +1736,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
     
                 await set(roomRef, addValue);
-                updateInventoryData(selectedRoom);
+                updateInventoryData(selectedRoom, filter);
                 document.getElementById('inventory-addKey').value = '';
                 document.getElementById('inventory-addValue').value = ''; // Update inventory data
             } catch (error) {
@@ -1696,13 +1750,14 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('deleteButton').addEventListener('click', async function () {
         const selectedRoom = document.getElementById('roomSelected').value;
         const selectedKey = document.getElementById('roomTableKey').value;
+        const filter = document.getElementById('tableFilter').value;
 
         if (selectedRoom && selectedKey) {
             try {
                 const keyRef = ref(db, `rooms/${selectedRoom}/${selectedKey}`);
                 await remove(keyRef);
                 console.log('Key removed successfully');
-                updateInventoryData(selectedRoom); 
+                updateInventoryData(selectedRoom, filter); 
                 // Clear the input field after update
                 document.querySelector('.inventory-update input[type="text"]').value = '';
             } catch (error) {
@@ -1713,13 +1768,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    const valueDataTypeSelect = document.getElementById('valueDataType');
-    const valueInput = document.getElementById('inventory-addValue');
-
     // Update placeholder based on selected data type
-    valueDataTypeSelect.addEventListener('change', function () {
+    document.getElementById('valueDataType').addEventListener('change', function () {
+        const valueInput = document.getElementById('inventory-addValue');
         valueInput.value = "";
-        const selectedType = valueDataTypeSelect.value;
+        const selectedType = document.getElementById('valueDataType').value;
         if (selectedType === 'Date') {
             valueInput.placeholder = 'MM/DD/YYYY';
         } else if (selectedType === 'Time') {
@@ -1729,21 +1782,19 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             valueInput.placeholder = 'Value';
         }
+
+        const valueDataType = this.value; // Get the selected value of the dropdown
+        const equipmentStatusValue = 'equipmentStatus'; // String to compare with
+    
+        if (valueDataType === equipmentStatusValue) {
+            document.getElementById('valueForStatusKeyTypeForAdd').style.display = 'inline';
+            document.getElementById('inventory-addValue').style.display = 'none';
+        } else {
+            document.getElementById('valueForStatusKeyTypeForAdd').style.display = 'none';
+            document.getElementById('inventory-addValue').style.display = 'inline';
+        }
     });
-
-});
-
-// Handle the change event on the roomTableKey select element
-document.getElementById('roomTableKey').addEventListener('change', function () {
-    const selectedKey = this.value;
-    const selectedValue = this.options[this.selectedIndex].dataset.value;
-
-    if (selectedKey) {
-        // Set the value in the input field
-        const updateInput = document.querySelector('.inventory-update input[type="text"]');
-        updateInput.placeholder = selectedValue;
-        updateInput.value = "";
-    }
+    
 });
 
 console.log('Firebase script loaded and ready');
