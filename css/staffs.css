@@ -1094,15 +1094,14 @@ nav ul li:hover {
 }
 #roomSelected, #tableFilter {
     font-size: 30px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 10px;
     padding: 10px;
     border-radius: 30px;
 }
 .inventory-management {
     width: 30%;
-    min-height: 400px;
-    height: 100%;
+    max-height: 400px;
+    min-height: 100%;
     margin-top: 30px;
     border-radius: 30px;
     background-color: white;
@@ -1144,6 +1143,11 @@ nav ul li:hover {
 #addButton {
     background-color: skyblue;
 }
+
+.fa-triangle-exclamation {
+    color: red;
+}
+
 /* Spinner animation */
 @keyframes spin {
     0% {
@@ -1410,6 +1414,8 @@ nav ul li:hover {
         flex-direction: column;
         font-size: 14px;
         text-align: center;
+        align-items: center;
+        justify-content: center;
     }
     .inventory-container {
         flex-direction: column;
@@ -1425,13 +1431,14 @@ nav ul li:hover {
     }
     .inventory-management {
         width: 100%;
-        min-height: 100%;
-       
+        max-height: 100%;
+        padding-top: 20px;
+        padding-bottom: 20px;
     }
     #roomSelected, #tableFilter {
         font-size: 16px;
         padding: 2%;
-        width: 90%;
-        margin: 10px;
+        width: 100%;
+        margin-left: 0px;
     }
 }
