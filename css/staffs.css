@@ -1101,7 +1101,8 @@ nav ul li:hover {
 }
 .inventory-management {
     width: 30%;
-    height: 400px;
+    min-height: 400px;
+    height: 100%;
     margin-top: 30px;
     border-radius: 30px;
     background-color: white;
@@ -1423,6 +1424,8 @@ nav ul li:hover {
     }
     .inventory-management {
         width: 100%;
+        min-height: 100%;
+       
     }
     #roomSelected, #tableFilter {
         font-size: 20px;
