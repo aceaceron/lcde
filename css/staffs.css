@@ -1429,7 +1429,7 @@ nav ul li:hover {
        
     }
     #roomSelected, #tableFilter {
-        font-size: 8px;
-        padding: 1%;
+        font-size: 12px;
+        padding: 2%;
     }
 }
