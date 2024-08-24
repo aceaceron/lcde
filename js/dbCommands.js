@@ -1485,7 +1485,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const option = document.createElement('option');
                         option.value = key;
                         option.textContent = key;
-                        option.dataset.value = value;
+                        option.dataset.value = value !== undefined ? value : null;
                         roomTableKeySelect.appendChild(option);
                     }
     
@@ -1496,19 +1496,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     const statusDropdown = document.getElementById('valueForStatusKeyType');
     
                     const firstOption = roomTableKeySelect.options[0];
-                    // Automatically toggle input fields based on the filter
-                    if (filter === 'status' || filter === 'forRepair') {
-                        updateInput.style.display = 'none';
-                        statusDropdown.style.display = 'inline';
-                        statusDropdown.value = firstOption.dataset.value;
-                    } else {
-                        updateInput.style.display = 'inline';
-                        statusDropdown.style.display = 'none';
-                    }
-    
+
                     if (firstOption) {
+                        // Automatically toggle input fields based on the filter
+                        if (filter === 'status' || filter === 'forRepair') {
+                            updateInput.style.display = 'none';
+                            statusDropdown.style.display = 'inline';
+                            statusDropdown.value = firstOption.dataset.value !== undefined ? firstOption.dataset.value : null;
+                        } else {
+                            updateInput.style.display = 'inline';
+                            statusDropdown.style.display = 'none';
+                        }
+
                         const selectedValue = firstOption.dataset.value;
                         updateInput.placeholder = selectedValue || "Select a value";
+                        updateInput.value = ''; // Clear the input field after update
+                    } else {
+                        // Handle the case where there are no options available
+                        updateInput.style.display = 'inline';
+                        statusDropdown.style.display = 'none';
+                        updateInput.placeholder = "No options available";
                         updateInput.value = ''; // Clear the input field after update
                     }
                 }
@@ -1517,7 +1524,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-    
     
     // Initial room selection event listener
     document.getElementById('roomSelected').addEventListener('change', function () {
@@ -1635,6 +1641,29 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
                         break;
+                        case 'Date':
+                            // Validate MM/DD/YYYY format
+                            const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+                            if (datePattern.test(newValueRaw)) {
+                                // Remove leading zeros from month and day
+                                newValue = newValueRaw.replace(/(^|\/)0+/g, '$1');
+                            } else {
+                                alert('Please enter a valid date in the format MM/DD/YYYY.');
+                                clearInputFields();
+                                return;
+                            }
+                            break;
+                        case 'Time':
+                            // Validate HH:MM AM/PM format
+                            const timePattern = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
+                            if (timePattern.test(newValueRaw)) {
+                                newValue = newValueRaw.replace(/^0+/, '');
+                            } else {
+                                alert('Please enter a valid time in the format HH:MM AM/PM.');
+                                clearInputFields();
+                                return;
+                            }
+                            break;
                     case 'string':
                         newValue = newValueRaw;
                         break;
@@ -1643,11 +1672,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         clearInputFields();
                         return;
                 }
-    
-                await set(keyRef, newValue);
-                alert('Value updated successfully');
-                updateInventoryData(selectedRoom, filter);
-                clearInputFields();
+                const userConfirmed = confirm(`Are you sure you want to update the value for ${selectedKey}?`);
+                if (userConfirmed) {
+                    await set(keyRef, newValue);
+                    alert('Value updated successfully');
+                    updateInventoryData(selectedRoom, filter);
+                    updateRoomSelectionOptions();
+                    clearInputFields();
+                }
+
             } catch (error) {
                 console.error('Error updating key:', error);
             }
@@ -1679,32 +1712,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
     document.getElementById('addButton').addEventListener('click', async function () {
-        
         const valueDataTypeSelect = document.getElementById('valueDataType');
         const selectedRoom = document.getElementById('roomSelected').value;
         const addKey = document.getElementById('inventory-addKey').value;
         const addValueRaw = document.getElementById('inventory-addValue').value;
+        const statusDropdown = document.getElementById('valueForStatusKeyTypeForAdd');
         const filter = document.getElementById('tableFilter').value;
         const selectedType = valueDataTypeSelect.value;
-    
-        if (selectedRoom && addKey && addValueRaw) {
+        
+        if ((selectedRoom && addKey && addValueRaw) || selectedType) {
             try {
-                // Reference the room data
                 const roomRef = ref(db, `rooms/${selectedRoom}/${addKey}`);
                 const keySnapshot = await get(roomRef);
                 const existingValue = keySnapshot.val();
                 let addValue;
     
-                // If the key already exists, match the data type of the existing value
                 if (existingValue !== null) {
-                    alert("Key exists in the database! Update if wanted to change the value.");
+                    alert("Key exists in the database! Update if you want to change the value.");
                     document.getElementById('inventory-addKey').value = '';
                     document.getElementById('inventory-addValue').value = '';
                     return;
                 } else {
-                    // If the key doesn't exist, match the data type based on user selection
                     switch (selectedType) {
                         case 'Number':
                             addValue = parseFloat(addValueRaw);
@@ -1713,32 +1742,57 @@ document.addEventListener('DOMContentLoaded', function () {
                                 document.getElementById('inventory-addValue').value = '';
                                 return;
                             }
-                            alert('Key and value added successfully');
+                            break;
+                        case 'equipmentStatus': // Matching the correct value
+                            addValue = statusDropdown.value; // Use the selected value from the dropdown
                             break;
                         case 'Boolean':
                             if (addValueRaw.toLowerCase() === 'true' || addValueRaw.toLowerCase() === 'false') {
                                 addValue = addValueRaw.toLowerCase() === 'true';
-                                alert('Key and value added successfully');
                             } else {
                                 alert('Please enter a valid value (True or False only).');
                                 document.getElementById('inventory-addValue').value = '';
+                                return;
                             }
                             break;
-                        case 'Date':
-                            addValue = addValueRaw.replace(/(^|\/)0+/g, '$1'); // Remove leading zeros
-                            break;
-                        case 'Time':
+                            case 'Date':
+                                // Validate MM/DD/YYYY format
+                                const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+                                if (datePattern.test(addValueRaw)) {
+                                    // Remove leading zeros from month and day
+                                    addValue = addValueRaw.replace(/(^|\/)0+/g, '$1');
+                                } else {
+                                    alert('Please enter a valid date in the format MM/DD/YYYY.');
+                                    document.getElementById('inventory-addValue').value = '';
+                                    return;
+                                }
+                                break;
+                            case 'Time':
+                                // Validate HH:MM AM/PM format
+                                const timePattern = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
+                                if (timePattern.test(addValueRaw)) {
+                                    addValue = addValueRaw.replace(/^0+/, '');
+                                } else {
+                                    alert('Please enter a valid time in the format HH:MM AM/PM.');
+                                    document.getElementById('inventory-addValue').value = '';
+                                    return;
+                                }
+                                break;
                         case 'String':
                         default:
                             addValue = addValueRaw;
                             break;
                     }
                 }
-    
-                await set(roomRef, addValue);
-                updateInventoryData(selectedRoom, filter);
-                document.getElementById('inventory-addKey').value = '';
-                document.getElementById('inventory-addValue').value = ''; // Update inventory data
+                const userConfirmed = confirm(`Are you sure you want to add Key: ${addKey}, Value: ${addValue}?`);
+                if (userConfirmed) {
+                    await set(roomRef, addValue);
+                    updateInventoryData(selectedRoom, filter);
+                    alert('Key and value added successfully');
+                    document.getElementById('inventory-addKey').value = '';
+                    document.getElementById('inventory-addValue').value = '';
+                    updateRoomSelectionOptions();
+                }
             } catch (error) {
                 console.error('Error adding key:', error);
             }
@@ -1746,6 +1800,7 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Please provide a room, key, and value.');
         }
     });
+    
 
     document.getElementById('deleteButton').addEventListener('click', async function () {
         const selectedRoom = document.getElementById('roomSelected').value;
@@ -1755,11 +1810,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (selectedRoom && selectedKey) {
             try {
                 const keyRef = ref(db, `rooms/${selectedRoom}/${selectedKey}`);
-                await remove(keyRef);
-                console.log('Key removed successfully');
-                updateInventoryData(selectedRoom, filter); 
-                // Clear the input field after update
-                document.querySelector('.inventory-update input[type="text"]').value = '';
+                const userConfirmed = confirm(`Are you sure you want to delete Key: ${selectedKey}?`);
+                if (userConfirmed) {
+                    await remove(keyRef);
+                    console.log('Key removed successfully');
+                    updateInventoryData(selectedRoom, filter); 
+                    // Clear the input field after update
+                    document.querySelector('.inventory-update input[type="text"]').value = '';
+                    updateRoomSelectionOptions();
+                }
             } catch (error) {
                 console.error('Error removing key:', error);
             }
@@ -1776,7 +1835,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (selectedType === 'Date') {
             valueInput.placeholder = 'MM/DD/YYYY';
         } else if (selectedType === 'Time') {
-            valueInput.placeholder = 'HH:MM:SS AM/PM';
+            valueInput.placeholder = 'HH:MM AM/PM';
         } else if (selectedType === 'Boolean') {
             valueInput.placeholder = 'True/False only';
         } else {
@@ -1794,6 +1853,49 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('inventory-addValue').style.display = 'inline';
         }
     });
+
+    async function updateRoomSelectionOptions() {
+        try {
+            const roomNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'eventHall'];
+            const roomSelected = document.getElementById('roomSelected');
+            
+            for (const roomNumber of roomNumbers) {
+                const roomRef = ref(db, `rooms/${roomNumber === 'eventHall' ? 'eventHall' : roomNumber}`);
+                const roomSnapshot = await get(roomRef);
+                const roomData = roomSnapshot.val();
+
+                if (roomData) {
+                    let roomStatusAlert = false;
+                    for (const key in roomData) {
+                        if (key.toLowerCase().includes('status') && roomData[key] !== 'All Working') {
+                            roomStatusAlert = true;
+                            break;
+                        }
+                    }
+
+                    // Update the option text with the warning icon if needed
+                    const option = roomSelected.querySelector(`option[value="${roomNumber}"]`);
+                    
+                    if (option) {
+                        if (roomNumber === `eventHall` && roomStatusAlert) {
+                            option.textContent = `Event Hall ⚠️`;
+                        } else if (roomNumber === `eventHall` && !roomStatusAlert) {
+                            option.textContent = `Event Hall`;
+                        } else if (roomStatusAlert) {
+                            option.textContent = `Room ${roomNumber} ⚠️`;
+                        } else {
+                            option.textContent = `Room ${roomNumber}`;
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error updating room selection options:', error);
+        }
+    }
+
+    // Call the function to update room selection options
+    updateRoomSelectionOptions();
     
 });
 
