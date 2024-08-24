@@ -1098,6 +1098,9 @@ nav ul li:hover {
     padding: 10px;
     border-radius: 30px;
 }
+#roomSelected option {
+    min-height: 1000px;
+}
 .inventory-management {
     width: 30%;
     max-height: 400px;
