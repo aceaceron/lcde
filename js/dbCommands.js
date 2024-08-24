@@ -1641,19 +1641,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
                         break;
-                        case 'Date':
-                            // Validate MM/DD/YYYY format
-                            const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
-                            if (datePattern.test(newValueRaw)) {
-                                // Remove leading zeros from month and day
-                                newValue = newValueRaw.replace(/(^|\/)0+/g, '$1');
-                            } else {
-                                alert('Please enter a valid date in the format MM/DD/YYYY.');
-                                clearInputFields();
-                                return;
-                            }
-                            break;
-                        case 'Time':
+
                             // Validate HH:MM AM/PM format
                             const timePattern = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
                             if (timePattern.test(newValueRaw)) {
@@ -1665,7 +1653,36 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                             break;
                     case 'string':
-                        newValue = newValueRaw;
+                        if (selectedKey.toLowerCase().includes('date')) {
+                            // Validate MM/DD/YYYY format for date
+                            const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+                            if (datePattern.test(newValueRaw)) {
+                                // Remove leading zeros from month and day
+                                newValue = newValueRaw.replace(/(^|\/)0+/g, '$1');
+                            } else {
+                                alert('Please enter a valid date in the format MM/DD/YYYY.');
+                                clearInputFields();
+                                return;
+                            }
+                        } else if (selectedKey.toLowerCase().includes('time')) {
+                            // Validate HH:MM AM/PM format for time
+                            const timePattern = /^(0?[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
+                            if (timePattern.test(newValueRaw)) {
+                                // Parse the input time
+                                let [time, period] = newValueRaw.split(/\s+/);
+                                let [hour, minute] = time.split(':');
+                                
+                                // Combine with seconds and period
+                                newValue = `${hour}:${minute}:00 ${period.toUpperCase()}`;
+                                newValue = newValue.replace(/^0/, '');
+                            } else {
+                                alert('Please enter a valid time in the format HH:MM:SS AM/PM.');
+                                clearInputFields();
+                                return;
+                            }
+                        } else {
+                            newValue = newValueRaw;
+                        }
                         break;
                     default:
                         console.error('Unsupported data type:', currentType);
@@ -1755,29 +1772,43 @@ document.addEventListener('DOMContentLoaded', function () {
                                 return;
                             }
                             break;
-                            case 'Date':
-                                // Validate MM/DD/YYYY format
-                                const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
-                                if (datePattern.test(addValueRaw)) {
-                                    // Remove leading zeros from month and day
-                                    addValue = addValueRaw.replace(/(^|\/)0+/g, '$1');
-                                } else {
-                                    alert('Please enter a valid date in the format MM/DD/YYYY.');
-                                    document.getElementById('inventory-addValue').value = '';
-                                    return;
+                        case 'Date':
+                            // Validate MM/DD/YYYY format
+                            const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+                            if (datePattern.test(addValueRaw)) {
+                                // Remove leading zeros from month and day
+                                addValue = addValueRaw.replace(/(^|\/)0+/g, '$1');
+                            } else {
+                                alert('Please enter a valid date in the format MM/DD/YYYY.');
+                                document.getElementById('inventory-addValue').value = '';
+                                return;
+                            }
+                            break;
+                        case 'Time':
+                            // Validate HH:MM AM/PM or HH:MM:SS AM/PM format
+                            const timePattern = /^([01]?[0-9]|2[0-3]):([0-5][0-9])(:([0-5][0-9]))?\s?(AM|PM)$/i;
+                            if (timePattern.test(addValueRaw)) {
+                                let [time, period] = addValueRaw.split(/\s+/);
+                                let [hours, minutes, seconds] = time.split(':');
+                        
+                                // Ensure seconds are present
+                                if (seconds === undefined) {
+                                    seconds = '00';
                                 }
-                                break;
-                            case 'Time':
-                                // Validate HH:MM AM/PM format
-                                const timePattern = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
-                                if (timePattern.test(addValueRaw)) {
-                                    addValue = addValueRaw.replace(/^0+/, '');
-                                } else {
-                                    alert('Please enter a valid time in the format HH:MM AM/PM.');
-                                    document.getElementById('inventory-addValue').value = '';
-                                    return;
-                                }
-                                break;
+                        
+                                // Convert period to uppercase
+                                period = period.toUpperCase();
+                        
+                                // Format time with seconds
+                                addValue = `${hours}:${minutes}:${seconds} ${period}`;
+                                addValue = addValue.replace(/^0/, '');
+                            } else {
+                                alert('Please enter a valid time in the format HH:MM:SS AM/PM.');
+                                document.getElementById('inventory-addValue').value = '';
+                                return;
+                            }
+                            break;
+                                
                         case 'String':
                         default:
                             addValue = addValueRaw;
@@ -1800,7 +1831,6 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Please provide a room, key, and value.');
         }
     });
-    
 
     document.getElementById('deleteButton').addEventListener('click', async function () {
         const selectedRoom = document.getElementById('roomSelected').value;
@@ -1835,7 +1865,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (selectedType === 'Date') {
             valueInput.placeholder = 'MM/DD/YYYY';
         } else if (selectedType === 'Time') {
-            valueInput.placeholder = 'HH:MM AM/PM';
+            valueInput.placeholder = 'HH:MM:SS AM/PM';
         } else if (selectedType === 'Boolean') {
             valueInput.placeholder = 'True/False only';
         } else {
