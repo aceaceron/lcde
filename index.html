@@ -10,7 +10,19 @@
 
 <body>
     <header>
+        <button class="menu-button">
+            <img src="img/menu.png" class="menuLogo">
+        </button>
         <a href="index.html"><img src="img/logo.jpg" class="logo"></a>
+        
+        <div class="dropdown-nav">
+            <a href="#reservation">RESERVATION</a>
+            <a href="#location">LOCATION</a>
+            <a href="#gallery">GALLERY</a>
+            <a href="#comments">COMMENTS</a>
+            <a href="#contact">CONTACT</a>
+            <a href="#aboutus">ABOUT US</a>
+        </div>
         <div class="nav">
             <a href="#reservation">RESERVATION</a>
             <a href="#location">LOCATION</a>
@@ -19,6 +31,7 @@
             <a href="#contact">CONTACT</a>
             <a href="#aboutus">ABOUT US</a>
         </div>
+        <div class="none"></div>
     </header>
 
     <div class="container" id="reservation">
@@ -45,119 +58,142 @@
                 </div>
             </div><br><br>
             <form action="" id="reservationForm">
-                LAST NAME: <br><input type="text" id="lastName"><br>
-                FIRST NAME: <br><input type="text" id="firstName"><br>
-                PHONE NUMBER: <br><input type="text" id="phoneNumber"><br>
-                EMAIL ADDRESS: <br><input type="email" id="emailAddress"><br>
-                <hr>
-                DATE: <input type="date" id="date" min="" required>
-                <form action="/submit" method="post">
-                    <br>STARTING TIME:
-                    <select id="dropdownTime" name="dropdown">
-                        <option value="8:00 AM" selected>8:00 AM</option>
-                        <option value="8:10 AM">8:10 AM</option>
-                        <option value="8:20 AM">8:20 AM</option>
-                        <option value="8:30 AM">8:30 AM</option>
-                        <option value="8:40 AM">8:40 AM</option>
-                        <option value="8:50 AM">8:50 AM</option>
-                        <option value="9:00 AM">9:00 AM</option>
-                        <option value="9:10 AM">9:10 AM</option>
-                        <option value="9:20 AM">9:20 AM</option>
-                        <option value="9:30 AM">9:30 AM</option>
-                        <option value="9:40 AM">9:40 AM</option>
-                        <option value="9:50 AM">9:50 AM</option>
-                        <option value="10:00 AM">10:00 AM</option>
-                        <option value="10:10 AM">10:10 AM</option>
-                        <option value="10:20 AM">10:20 AM</option>
-                        <option value="10:30 AM">10:30 AM</option>
-                        <option value="10:40 AM">10:40 AM</option>
-                        <option value="10:50 AM">10:50 AM</option>
-                        <option value="11:00 AM">11:00 AM</option>
-                        <option value="11:10 AM">11:10 AM</option>
-                        <option value="11:20 AM">11:20 AM</option>
-                        <option value="11:30 AM">11:30 AM</option>
-                        <option value="11:40 AM">11:40 AM</option>
-                        <option value="11:50 AM">11:50 AM</option>
-                        <option value="12:00 PM">12:00 PM</option>
-                        <option value="12:10 PM">12:10 PM</option>
-                        <option value="12:20 PM">12:20 PM</option>
-                        <option value="12:30 PM">12:30 PM</option>
-                        <option value="12:40 PM">12:40 PM</option>
-                        <option value="12:50 PM">12:50 PM</option>
-                        <option value="1:00 PM">1:00 PM</option>
-                        <option value="1:10 PM">1:10 PM</option>
-                        <option value="1:20 PM">1:20 PM</option>
-                        <option value="1:30 PM">1:30 PM</option>
-                        <option value="1:40 PM">1:40 PM</option>
-                        <option value="1:50 PM">1:50 PM</option>
-                        <option value="2:00 PM">2:00 PM</option>
-                        <option value="2:10 PM">2:10 PM</option>
-                        <option value="2:20 PM">2:20 PM</option>
-                        <option value="2:30 PM">2:30 PM</option>
-                        <option value="2:40 PM">2:40 PM</option>
-                        <option value="2:50 PM">2:50 PM</option>
-                        <option value="3:00 PM">3:00 PM</option>
-                        <option value="3:10 PM">3:10 PM</option>
-                        <option value="3:20 PM">3:20 PM</option>
-                        <option value="3:30 PM">3:30 PM</option>
-                        <option value="3:40 PM">3:40 PM</option>
-                        <option value="3:50 PM">3:50 PM</option>
-                        <option value="4:00 PM">4:00 PM</option>
-                        <option value="4:10 PM">4:10 PM</option>
-                        <option value="4:20 PM">4:20 PM</option>
-                        <option value="4:30 PM">4:30 PM</option>
-                        <option value="4:40 PM">4:40 PM</option>
-                        <option value="4:50 PM">4:50 PM</option>
-                        <option value="5:00 PM">5:00 PM</option>
-                        <option value="5:10 PM">5:10 PM</option>
-                        <option value="5:20 PM">5:20 PM</option>
-                        <option value="5:30 PM">5:30 PM</option>
-                        <option value="5:40 PM">5:40 PM</option>
-                        <option value="5:50 PM">5:50 PM</option>
-                        <option value="6:00 PM">6:00 PM</option>
-                        <option value="6:10 PM">6:10 PM</option>
-                        <option value="6:20 PM">6:20 PM</option>
-                        <option value="6:30 PM">6:30 PM</option>
-                        <option value="6:40 PM">6:40 PM</option>
-                        <option value="6:50 PM">6:50 PM</option>
-                        <option value="7:00 PM">7:00 PM</option>
-                        <option value="7:10 PM">7:10 PM</option>
-                        <option value="7:20 PM">7:20 PM</option>
-                        <option value="7:30 PM">7:30 PM</option>
-                        <option value="7:40 PM">7:40 PM</option>
-                        <option value="7:50 PM">7:50 PM</option>
-                        <option value="8:00 PM">8:00 PM</option>
-                    </select>
-                </form>
-                <form action="/submit" method="post">
-                    ROOM TYPE:
-                    <select id="dropdown0" name="dropdown">
-                        <option value="AIR-CONDITIONED ROOM" selected>AIR-CONDITIONED ROOM</option>
-                        <option value="STANDARD ROOM">STANDARD ROOM</option>
-                    </select>
-                </form>
-                <form action="/submit" method="post">
-                    DURATION:
-                    <select id="dropdown1" name="dropdown">
-                        <option value="3" selected>3 HOURS</option>
-                        <option value="6">6 HOURS</option>
-                        <option value="24">24 HOURS</option>
-                    </select>
-                </form>
-                <div id="infos">
-                    <form action="/submit" method="post">
-                    EXTENSION:
-                    <select id="dropdown2" name="dropdown">
-                        <option value="0" selected>NONE</option>
-                        <option value="1">1 HOUR</option>
-                        <option value="2">2 HOURS</option>
-                        <option value="3">3 HOURS</option>
-                    </select>
-                </form>
+                <div class="reservationInfo">
+                    <label>LAST NAME:</label><input type="text" id="lastName" required>
                 </div>
-                <div id="infos">
-                    <span class="infos">NUMBER OF GUESTS: </span><input type="number" id="numOfGuest" min="1" max="6" value="2" required>
+                <div class="reservationInfo">
+                    <label>FIRST NAME:</label><input type="text" id="firstName" required>
                 </div>
+                <div class="reservationInfo">
+                    <label>PHONE NUMBER:</label><input type="text" id="phoneNumber" required>
+                </div>
+                <div class="reservationInfo">
+                    <label>EMAIL ADDRESS: </label><input type="email" id="emailAddress" required>
+                </div>
+
+                <div class="reservationInfo">
+                    <label>DATE: </label><input type="date" id="date" min="" required>
+                </div>
+                <form action="/submit" method="post">
+                    <div class="reservationInfo">
+                        <label>STARTING TIME:</label>
+                        <select id="dropdownTime" name="dropdown">
+                            <option value="8:00 AM" selected>8:00 AM</option>
+                            <option value="8:10 AM">8:10 AM</option>
+                            <option value="8:20 AM">8:20 AM</option>
+                            <option value="8:30 AM">8:30 AM</option>
+                            <option value="8:40 AM">8:40 AM</option>
+                            <option value="8:50 AM">8:50 AM</option>
+                            <option value="9:00 AM">9:00 AM</option>
+                            <option value="9:10 AM">9:10 AM</option>
+                            <option value="9:20 AM">9:20 AM</option>
+                            <option value="9:30 AM">9:30 AM</option>
+                            <option value="9:40 AM">9:40 AM</option>
+                            <option value="9:50 AM">9:50 AM</option>
+                            <option value="10:00 AM">10:00 AM</option>
+                            <option value="10:10 AM">10:10 AM</option>
+                            <option value="10:20 AM">10:20 AM</option>
+                            <option value="10:30 AM">10:30 AM</option>
+                            <option value="10:40 AM">10:40 AM</option>
+                            <option value="10:50 AM">10:50 AM</option>
+                            <option value="11:00 AM">11:00 AM</option>
+                            <option value="11:10 AM">11:10 AM</option>
+                            <option value="11:20 AM">11:20 AM</option>
+                            <option value="11:30 AM">11:30 AM</option>
+                            <option value="11:40 AM">11:40 AM</option>
+                            <option value="11:50 AM">11:50 AM</option>
+                            <option value="12:00 PM">12:00 PM</option>
+                            <option value="12:10 PM">12:10 PM</option>
+                            <option value="12:20 PM">12:20 PM</option>
+                            <option value="12:30 PM">12:30 PM</option>
+                            <option value="12:40 PM">12:40 PM</option>
+                            <option value="12:50 PM">12:50 PM</option>
+                            <option value="1:00 PM">1:00 PM</option>
+                            <option value="1:10 PM">1:10 PM</option>
+                            <option value="1:20 PM">1:20 PM</option>
+                            <option value="1:30 PM">1:30 PM</option>
+                            <option value="1:40 PM">1:40 PM</option>
+                            <option value="1:50 PM">1:50 PM</option>
+                            <option value="2:00 PM">2:00 PM</option>
+                            <option value="2:10 PM">2:10 PM</option>
+                            <option value="2:20 PM">2:20 PM</option>
+                            <option value="2:30 PM">2:30 PM</option>
+                            <option value="2:40 PM">2:40 PM</option>
+                            <option value="2:50 PM">2:50 PM</option>
+                            <option value="3:00 PM">3:00 PM</option>
+                            <option value="3:10 PM">3:10 PM</option>
+                            <option value="3:20 PM">3:20 PM</option>
+                            <option value="3:30 PM">3:30 PM</option>
+                            <option value="3:40 PM">3:40 PM</option>
+                            <option value="3:50 PM">3:50 PM</option>
+                            <option value="4:00 PM">4:00 PM</option>
+                            <option value="4:10 PM">4:10 PM</option>
+                            <option value="4:20 PM">4:20 PM</option>
+                            <option value="4:30 PM">4:30 PM</option>
+                            <option value="4:40 PM">4:40 PM</option>
+                            <option value="4:50 PM">4:50 PM</option>
+                            <option value="5:00 PM">5:00 PM</option>
+                            <option value="5:10 PM">5:10 PM</option>
+                            <option value="5:20 PM">5:20 PM</option>
+                            <option value="5:30 PM">5:30 PM</option>
+                            <option value="5:40 PM">5:40 PM</option>
+                            <option value="5:50 PM">5:50 PM</option>
+                            <option value="6:00 PM">6:00 PM</option>
+                            <option value="6:10 PM">6:10 PM</option>
+                            <option value="6:20 PM">6:20 PM</option>
+                            <option value="6:30 PM">6:30 PM</option>
+                            <option value="6:40 PM">6:40 PM</option>
+                            <option value="6:50 PM">6:50 PM</option>
+                            <option value="7:00 PM">7:00 PM</option>
+                            <option value="7:10 PM">7:10 PM</option>
+                            <option value="7:20 PM">7:20 PM</option>
+                            <option value="7:30 PM">7:30 PM</option>
+                            <option value="7:40 PM">7:40 PM</option>
+                            <option value="7:50 PM">7:50 PM</option>
+                            <option value="8:00 PM">8:00 PM</option>
+                        </select>
+                    </div>
+                </form>
+                <form action="/submit" method="post">
+                    <div class="reservationInfo">
+                        <label>ROOM TYPE:</label>
+                        <select id="dropdown0" name="dropdown">
+                            <option value="AIR-CONDITIONED ROOM" selected>AIR-CONDITIONED ROOM</option>
+                            <option value="STANDARD ROOM">STANDARD ROOM</option>
+                        </select>
+                    </div>
+                </form>
+
+                <form action="/submit" method="post">
+                    <div class="reservationInfo">
+                        <label>DURATION:</label>
+                        <select id="dropdown1" name="dropdown">
+                            <option value="3" selected>3 HOURS</option>
+                            <option value="6">6 HOURS</option>
+                            <option value="24">24 HOURS</option>
+                        </select>
+                    </div>
+                </form>
+
+                <form action="/submit" method="post">
+                    <div class="reservationInfo">
+                        <label>EXTENSION:</label>
+                        <select id="dropdown2" name="dropdown">
+                            <option value="0" selected>NONE</option>
+                            <option value="1">1 HOUR</option>
+                            <option value="2">2 HOURS</option>
+                            <option value="3">3 HOURS</option>
+                        </select>
+                    </div>
+                </form>
+
+                <form action="/submit" method="post">
+                    <div class="reservationInfo">
+                        <label>NUMBER OF GUESTS: </label>
+                        <input type="number" id="numOfGuest" min="1" max="6" value="2" required>
+                    </div>
+                </form>
+
                 <br>
                 <input type="checkbox" class="checkbox" id="termsCheckbox"> I agree to the <a class="tac">terms and
                     condition</a> by checking this and confirming my reservation.
@@ -181,10 +217,9 @@
 
             <button class="confirm" type="submit">Confirm</button>
         </div>
-
-        <div class="backgroundphoto">
-            <img src="img/bg01.jpg">
-        </div>
+        
+        
+        <div class="backgroundphoto"></div>
     </div>
     <div class="container2" id="location">
         <div class="content">
@@ -305,7 +340,6 @@
     </div>
 
     <div class="container5" id="contact">
-        <hr>
         <h3>Contact info</h3>
         <ul>
             <a href="https://maps.app.goo.gl/AHUu62ghPErESMya8" target="_blank">
@@ -340,30 +374,41 @@
             <div class="container6-content1">
                 <div class="container6-content2">
                     <img src="img/user.png" class="staffphoto">
-                    <h3>Sarina B. Espeso</h3>
-                    <p>CO-OWNER</p>
+                    <div>
+                        <h3>Sarina B. Espeso</h3>
+                        <p>CO-OWNER</p>
+                    </div>
                 </div>
                 <div class="container6-content2">
                     <img src="img/user.png" class="staffphoto">
-                    <h3>Gary B. Espeso</h3>
-                    <p>CO-OWNER</p>
+                    <div>
+                        <h3>Gary B. Espeso</h3>
+                        <p>CO-OWNER</p>                   
+                    </div>
+
                 </div>
             </div>
             <div class="container6-content1">
                 <div class="container6-content2">
                     <img src="img/user.png" class="staffphoto">
-                    <h3>April E. Tan</h3>
-                    <p>EMPLOYEE</p>
+                    <div>
+                        <h3>April E. Tan</h3>
+                        <p>EMPLOYEE</p>
+                    </div>
                 </div>
                 <div class="container6-content2">
                     <img src="img/user.png" class="staffphoto">
-                    <h3>Madilyn E. Tan</h3>
-                    <p>EMPLOYEE</p>
+                    <div>
+                        <h3>Madilyn E. Tan</h3>
+                        <p>EMPLOYEE</p>
+                    </div>
                 </div>
                 <div class="container6-content2">
                     <img src="img/user.png" class="staffphoto">
-                    <h3>Melody Francisco</h3>
-                    <p>EMPLOYEE</p>
+                    <div>
+                        <h3>Melody Francisco</h3>
+                        <p>EMPLOYEE</p>
+                    </div>
                 </div>
             </div>
         </div>
