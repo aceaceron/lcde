@@ -709,4 +709,7 @@ footer {
     .container6-content2 div {
         width: 60%;
     }
+    .container6-content2 h1{
+        font-size: 30px;
+    }
 }
