@@ -36,14 +36,26 @@
                 </ul>
             </nav>
         </div>
+
         <div class="header-right">
+            <i class="fa-solid fa-list-check"></i>
             <h3 class="hello">Hello, Admin
                 <div class="date-time" id="dateTime"></div>
             </h3>
             <button id="logoutButton" class="logout-button"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
         </div>
     </div>
+
+    <div class="to-do-list">
+        <div class="to-do-list-container" id="toDoListContainer">
+            <div class="close-btn" id="closeBtnToDoList">&times;</div>
+        </div>
+    </div>
     
+    <div class="roomChecking">
+        <div class="roomChecking-container"></div>
+    </div>
+
     <div class="dashboard">
         <div class="reservation"><p class="noReservationsFound">No reservation found.</p></div>
         <div id="roomSelectionModal" class="roomSelectModal">
@@ -234,6 +246,8 @@
             <button type="button" id="extendHr">EXTEND 1 HOUR</button><br>
             <button type="button" id="timeOut">TIME OUT</button>
         </div>
+
+
         
         <div class="confirmationWindow">
             <div class="paymentConfirmation" id="popupPaymentWindow">
