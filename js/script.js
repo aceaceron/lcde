@@ -56,62 +56,6 @@ var dateInput = document.getElementById('date');
 dateInput.setAttribute('min', tomorrowFormatted);
 dateInput.setAttribute('max', maxDateFormatted);
 
-// Section 2: Comment Handling
-// function addComment() {
-//     const nameInput = document.getElementById('nameInput');
-//     const dateTimeInput = document.getElementById('dateTimeInput');
-//     const fileInput = document.getElementById('fileInput');
-//     const commentInput = document.getElementById('commentInput');
-//     const commentsList = document.getElementById('commentsList');
-
-//     if (nameInput.value.trim() && dateTimeInput.value.trim() && fileInput.files.length > 0 && commentInput.value.trim()) {
-//         const newComment = document.createElement('div');
-//         newComment.classList.add('comment');
-
-//         const profileIcon = document.createElement('img');
-//         profileIcon.src = 'img/user.png';
-//         profileIcon.alt = 'Profile Icon';
-
-//         const commentDetails = document.createElement('div');
-//         commentDetails.classList.add('comment-details');
-
-//         const name = document.createElement('div');
-//         name.classList.add('name');
-//         name.textContent = nameInput.value;
-
-//         const dateTime = document.createElement('div');
-//         dateTime.classList.add('date-time');
-//         dateTime.textContent = new Date(dateTimeInput.value).toLocaleString();
-
-//         const commentText = document.createElement('div');
-//         commentText.textContent = commentInput.value;
-
-//         const fileLink = document.createElement('a');
-//         fileLink.href = URL.createObjectURL(fileInput.files[0]);
-//         fileLink.classList.add('file-link');
-//         fileLink.textContent = 'View Proof of Visit';
-//         fileLink.target = '_blank';
-
-//         commentDetails.appendChild(name);
-//         commentDetails.appendChild(dateTime);
-//         commentDetails.appendChild(commentText);
-//         commentDetails.appendChild(fileLink);
-
-//         newComment.appendChild(profileIcon);
-//         newComment.appendChild(commentDetails);
-
-//         commentsList.appendChild(newComment);
-
-//         // Clear form fields
-//         nameInput.value = '';
-//         dateTimeInput.value = '';
-//         fileInput.value = '';
-//         commentInput.value = '';
-//     } else {
-//         alert('Please enter all fields.');
-//     }
-// }
-
 // Section 3: Terms and Conditions Popup
 const popup = document.getElementById('terms-popup');
 const tac = document.querySelector('.tac');
@@ -150,4 +94,23 @@ window.addEventListener('click', (event) => {
     if (event.target === popup) {
         popup2.style.display = 'none';
     }
+});
+
+
+document.querySelector('.menu-button').addEventListener('click', function () {
+    this.classList.toggle('active');
+
+    const dropdownMenu = document.querySelector('.dropdown-nav');
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+// Handle link clicks inside the dropdown to auto-hide
+document.querySelectorAll('.dropdown-nav a').forEach(link => {
+    link.addEventListener('click', function () {
+        // Hide the dropdown menu
+        document.querySelector('.dropdown-nav').style.display = 'none';
+
+        // Remove the active class from the menu button
+        document.querySelector('.menu-button').classList.remove('active');
+    });
 });
