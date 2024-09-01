@@ -45,6 +45,7 @@ function resetGuestCounts() {
 // Sliding panel functionality
 const slidingPanelAirconAvail = document.getElementById('slidingPanelAirconAvail');
 const slidingPanelNonAirconAvail = document.getElementById('slidingPanelNonAirconAvail');
+const slidingPanelUnavail = document.getElementById('slidingPanelUnavail');
 const closeBtnAircon = document.getElementById('closeBtnAircon');
 const closeBtnNonAircon = document.getElementById('closeBtnNonAircon');
 const closeBtnUnavail = document.getElementById('closeBtnUnavail');
@@ -219,7 +220,6 @@ document.getElementById('paymentConfirmationChkbox').addEventListener('change', 
     const yesBtn = document.getElementById('yesBtn');
     yesBtn.disabled = !this.checked;  // Enable the yes button only if the checkbox is checked
 });
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const toggleLists = document.querySelectorAll('.toggle-list');
