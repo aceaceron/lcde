@@ -567,11 +567,10 @@ footer {
         background-image: url('../img/bg01.jpg'); 
         background-size: cover;
         background-position: center;
-        filter: blur(3px); 
+        filter: blur(1px); 
         z-index: -1; 
     }
 
-    /* Content styles */
     .info {
         position: relative; 
         width: 95%;
@@ -579,6 +578,7 @@ footer {
         height: 100%;
         margin: 0;
         z-index: 1; 
+        background-color: rgba(255, 255, 255, 0.3);
     }
 
     #reservationForm {
