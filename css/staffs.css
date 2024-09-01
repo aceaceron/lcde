@@ -1361,7 +1361,7 @@ nav ul li:hover {
 
 @media screen and (max-width: 1000px) {
     .logo {
-        width: 120px;
+        width: 80px;
         height: auto;
         background: transparent;
     }
@@ -1377,7 +1377,7 @@ nav ul li:hover {
 
     .hello, #dateTime {
         font-size: 15px;
-        width: 19vw;
+        width: auto;
     }
 
     .menu-button {
@@ -1643,7 +1643,11 @@ nav ul li:hover {
     .form-group {
         flex-direction: column;
     }
+    .to-do-list-container {
+        width: 80%;
+    }
     .roomChecking-container {
+        width: 80%;
         label {
             width: 100%;
             text-align: center;
