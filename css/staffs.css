@@ -33,12 +33,233 @@ body {
     width: 100%;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 10px;
+    margin-right: 20px;
+}
+
 .hello {
     width: 18vw;
-    padding-right: 30px;
     font-size: 1.5vw;
 }
 
+.fa-list-check {
+    position: relative;
+    font-size: 30px;
+    padding: 8px 16px;
+}
+
+.fa-list-check.has-todo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    background-color: red;
+    border-radius: 50%;
+    border: 2px solid white; /* Optional: Adds a white border around the red circle */
+}
+
+.logout-button {
+    background-color: #f44336; 
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+.roomChecking, .to-do-list {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.roomChecking-container, .to-do-list-container {
+    background-color: white;
+    width: 50%;
+    height: 80%;
+    padding: 20px;
+    border-radius: 30px;
+}
+
+
+.to-do-list-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+}
+
+.to-do-list-container li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f9f9f9;
+    height: 5vh;
+    padding: 10px;
+    margin: 5px;
+    margin-bottom: 10px;
+    box-shadow: 1px 4px 6px rgba(0, 0, 0, 0.4);
+    border-radius: 30px;
+    font-size: 20px;
+}
+
+.to-do-list-container span {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#closeBtnToDoList {
+    border: 0;
+    background-color: transparent;
+    margin-top: 0;
+}
+
+.check-btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.check-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.roomChecking-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.roomChecking-header h3 {
+    margin: 0;
+}
+
+/* Styling for the form */
+.room-data-form {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    width: 20%;
+}
+
+input[type="text"], input[type="number"], select {
+    width: 80%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+.roomChecking-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#nextPage, #previousPage, #submitUpdatedValue {
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 10px 0 10px 0;
+    width: 100%;
+}
+.form-buttons {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+#previousPage {
+    background-color: rgb(255, 162, 56);
+}
+#previousPage:hover {
+    background-color: rgb(249, 135, 4);
+}
+#submitUpdatedValue {
+    background-color: green;
+}
+#submitUpdatedValue:hover {
+    background-color: rgb(2, 84, 2);
+}
+#nextPage {
+    background-color: #007bff;
+}
+#nextPage:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Summary page specific styling */
+.form-summary {
+    margin-top: 20px;
+}
+
+.form-summary h4 {
+    margin-bottom: 10px;
+}
+
+.form-summary ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.form-summary li {
+    padding: 5px 0;
+}
 
 .logo {
     width: 10vw;
@@ -134,31 +355,6 @@ nav ul li a {
 nav ul li:hover {
     color: lightgrey;
     transform: scale(1.1);
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    
-    margin-right: 20px;
-}
-
-.hello {
-    margin: 0;
-}
-
-.logout-button {
-    background-color: #f44336; /* Red background */
-    color: white; /* White text */
-    border: none;
-    border-radius: 30px;
-    padding: 8px 16px;
-    cursor: pointer;
-}
-
-.logout-button:hover {
-    background-color: #d32f2f; /* Darker red on hover */
 }
 
 .reservation {
@@ -1443,5 +1639,19 @@ nav ul li:hover {
         padding: 2%;
         width: 100%;
         margin-left: 0px;
+    }
+    .form-group {
+        flex-direction: column;
+    }
+    label {
+        width: 100%;
+        text-align: center;
+    }
+    input[type="text"], input[type="number"], select {
+        width: 100%;
+    }
+    #nextPage, #previousPage, #submitUpdatedValue {
+        font-size: 14px;
+        margin: 5px 0 5px 0;
     }
 }
