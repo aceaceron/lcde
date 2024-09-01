@@ -547,19 +547,40 @@ footer {
     .menu-button.active + .dropdown-nav {
         display: block;
     }
-    
     .container {
+        background-color: transparent;
+        position: relative; 
+        display: flex;
         flex-direction: column-reverse;
         align-items: center;
         width: 100%;
         padding-top: 50px;
+        overflow: hidden; 
     }
+
+    .background {
+        position: absolute; 
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('../img/bg01.jpg'); 
+        background-size: cover;
+        background-position: center;
+        filter: blur(3px); 
+        z-index: -1; 
+    }
+
+    /* Content styles */
     .info {
-        width: 90%;
+        position: relative; 
+        width: 95%;
         padding: 20px;
         height: 100%;
         margin: 0;
+        z-index: 1; 
     }
+
     #reservationForm {
         display: flex;
         flex-direction: column;
@@ -588,8 +609,7 @@ footer {
         opacity: 1;
     }
     .backgroundphoto {
-        height: 30vh;
-        width: 100%;
+        display: none;
     }
     .confirm {
         font-size: 14px;
