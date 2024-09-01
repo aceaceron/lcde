@@ -177,29 +177,29 @@ body {
     justify-content: space-between;
 }
 
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 14px;
-    width: 20%;
-}
-
-input[type="text"], input[type="number"], select {
-    width: 80%;
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 30px;
-    box-sizing: border-box;
-    align-items: center;
-}
-
-input[type="checkbox"] {
-    margin-right: 10px;
-}
 .roomChecking-container {
     display: flex;
     flex-direction: column;
+    label {
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        width: 20%;
+    }
+    
+    input[type="text"], input[type="number"], select {
+        width: 80%;
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 30px;
+        box-sizing: border-box;
+        align-items: center;
+    }
+    
+    input[type="checkbox"] {
+        margin-right: 10px;
+    }
 }
 
 #nextPage, #previousPage, #submitUpdatedValue {
@@ -1643,12 +1643,14 @@ nav ul li:hover {
     .form-group {
         flex-direction: column;
     }
-    label {
-        width: 100%;
-        text-align: center;
-    }
-    input[type="text"], input[type="number"], select {
-        width: 100%;
+    .roomChecking-container {
+        label {
+            width: 100%;
+            text-align: center;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+        }
     }
     #nextPage, #previousPage, #submitUpdatedValue {
         font-size: 14px;
