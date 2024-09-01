@@ -42,11 +42,21 @@ header a {
 
 .container {
     display: flex;
-    padding-top: 100px;
+    padding-top: 95px;
+    background-color: lightgreen;
+}
+
+.reservationInfo input::placeholder {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.reservationInfo label, .hide-label {
+    display: inline-block;
+    margin-bottom: 5px;
 }
 
 .info {
-    background-color: lightgreen;
     width: 50%;
     height: auto;
     padding-left: 70px;
@@ -62,52 +72,22 @@ header a {
     transform: translateY(0); /* Move to original position */
 }
 
-input {
-    padding: 10px;
-    margin-left: 10px;
-    width: 550px;
-    font-family: Tahoma;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-
-#date {
-    width: 500px;
-}
-#infos {
+.reservationInfo {
     display: flex;
     flex-direction: row;
     align-items: center;
     width: 100%;
+    margin-bottom: 10px;
 }
-.infos {
+.reservationInfo label {
     width: 30%;
+    margin: 0;
+    font-size: 14px;
 }
-#numOfGuest {
-    width: 80%;
-}
-#dropdownTime {
+.reservationInfo input, #date, #dropdownTime, #dropdown0, #dropdown1, #dropdown2, #numOfGuest  {
+    width: 100%;
+    margin: 0;
     padding: 10px;
-    width: 460px;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-#dropdown0 {
-    padding: 10px;
-    width: 485px;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-#dropdown1 {
-    padding: 10px;
-    width: 495px;
-    margin-bottom: 20px;
-    margin-top: 10px;
-}
-
-#dropdown2 {
-    padding: 10px;
-    width: 493px;
 }
 
 .checkbox {
@@ -181,7 +161,9 @@ input {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 130vh;
+    height: auto;
+    padding: 0;
+    margin: 0;
     width: 70%;
     opacity: 0; /* Initially hidden */
     transform: translateY(100px); /* Initially positioned below */
@@ -592,15 +574,26 @@ footer {
     .reservationInfo label {
         width: 30%;
         margin: 0;
+        font-size: 14px;
     }
     .reservationInfo input, #date, #dropdownTime, #dropdown0, #dropdown1, #dropdown2, #numOfGuest  {
-        width: 70%;
+        width: 100%;
         margin: 0;
-        margin-right: 20px;
+    }
+    .reservationInfo .hide-label {
+        display: none;
+    }
+    
+    .reservationInfo input::placeholder {
+        opacity: 1;
     }
     .backgroundphoto {
-        height: 20vh;
+        height: 30vh;
         width: 100%;
+    }
+    .confirm {
+        font-size: 14px;
+        width: auto;
     }
     .container2 {
         padding: 0;
@@ -617,11 +610,18 @@ footer {
         padding-top: 50px;
         padding-bottom: 20px;
     }
+    .content h1 {
+        font-size: 24px;
+    }
     .content p {
+        font-size: 16px;
+    }
+    .content p, .content h1 {
         margin: 50px 50px 0 50px;
     }
     iframe {
         width: 90%;
+        border-radius: 30px;
     }
     .container3 {
         width: 90%;
@@ -703,6 +703,7 @@ footer {
     .container6-content2 {
         display: flex;
         flex-direction: row;
+        align-items: center;
         width: 90%;
         padding-bottom: 20px;
     }
