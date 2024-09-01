@@ -1481,12 +1481,34 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Display value with or without icon
                         let displayValue = document.createElement('span');
                         displayValue.textContent = value;
-    
+
+                        // Check if the status key does not equal 'All Working'
                         if (key.toLowerCase().includes('status') && value !== 'All Working') {
                             const icon = document.createElement('i');
-                            icon.className = ' fa-solid fa-triangle-exclamation';
+                            icon.className = 'fa-solid fa-triangle-exclamation';
                             displayValue.appendChild(icon);
                         }
+
+                        // Additional checks for specific keys and their minimum quantities
+                        const quantityChecks = {
+                            blanketsQuantity: 2,
+                            bucketsQuantity: 1,
+                            carpetsQuantity: 2,
+                            chairsQuantity: 4,
+                            curtainsQuantity: 3,
+                            doorKnobsQuantity: 4,
+                            lightBulbsQuantity: 4,
+                            standFansQuantity: 1,
+                            tablesQuantity: 2
+                        };
+
+                        // Check if key exists in quantityChecks and if value is less than required minimum
+                        if (quantityChecks[key] !== undefined && value < quantityChecks[key]) {
+                            const icon = document.createElement('i');
+                            icon.className = 'fa-solid fa-triangle-exclamation';
+                            displayValue.appendChild(icon);
+                        }
+
     
                         tableHTML += `<tr><td>${key}</td><td>${displayValue.outerHTML}</td></tr>`;
     
@@ -1904,8 +1926,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (roomData) {
                     let roomStatusAlert = false;
+
                     for (const key in roomData) {
                         if (key.toLowerCase().includes('status') && roomData[key] !== 'All Working') {
+                            roomStatusAlert = true;
+                            break;
+                        }
+
+                        // Additional checks for specific keys and their minimum quantities
+                        const quantityChecks = {
+                            blanketsQuantity: 2,
+                            bucketsQuantity: 1,
+                            carpetsQuantity: 2,
+                            chairsQuantity: 4,
+                            curtainsQuantity: 3,
+                            doorKnobsQuantity: 4,
+                            lightBulbsQuantity: 4,
+                            standFansQuantity: 1,
+                            tablesQuantity: 2
+                        };
+
+                        if (quantityChecks[key] !== undefined && roomData[key] < quantityChecks[key]) {
                             roomStatusAlert = true;
                             break;
                         }
