@@ -33,6 +33,9 @@ header a {
     cursor: pointer;
     transition: all 0.3s ease;
 }
+.menu-button, .dropdown-nav {
+    display: none;
+}
 .logo {
     height: 80px;
 }
@@ -171,18 +174,15 @@ input {
     color: white;
 }
 
-.backgroundphoto img {
-    max-width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
 .backgroundphoto {
+    background-image: url('../img/bg01.jpg'); /* Path to your background image */
+    background-size: cover; /* Scale the image to cover the container */
+    background-position: center; /* Center the image in the container */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: auto;
+    height: 130vh;
+    width: 70%;
     opacity: 0; /* Initially hidden */
     transform: translateY(100px); /* Initially positioned below */
     transition: all 0.9s ease-out;
@@ -208,8 +208,8 @@ a:hover {
 
 .container2 {
     padding: 30px;
-    background-color: #ff0000;
     display: flex;
+    background-color: #ff0000;
 }
 .content {
     padding: 30px;
@@ -296,7 +296,6 @@ a:hover {
     justify-content: center;
     display: flex;
     flex-direction: column;
-
 }
 .comment-box {
     width: 100%;
@@ -384,9 +383,9 @@ a:hover {
 }
 
 .container5 {
-    padding: 100px;
+    padding: 70px;
     text-align: center;
-    font-size: 60px;
+    font-size: 30px;
     opacity: 0; /* Initially hidden */
     transform: translateY(50px); /* Initially positioned below */
     transition: all 0.5s ease-out;
@@ -400,7 +399,7 @@ a:hover {
     display: flex;
     align-items: center;
     font-size: 30px;
-    padding: 30px;
+    padding: 20px;
 }
 .container5 ul a {
     text-decoration: none;
@@ -461,7 +460,7 @@ a:hover {
 .container6-content3 {
     position: relative;
     z-index: 2;
-    color: white; /* Text color for better readability on the background image */
+    color: white; 
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -515,4 +514,199 @@ footer {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@media screen and (max-width: 1000px) {
+    .logo {
+        height: 50px;
+    }
+    header .nav {
+        display: none;
+    }
+    header {
+        justify-content: space-between;
+    }
+    /* Basic styling for the menu button */
+    .menu-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        display: block;
+    }
+    .menuLogo, .none {
+        width: 20px;
+    }
+    
+    .dropdown-nav {
+        display: none; 
+        position: absolute;
+        top: 70px; 
+        left: 0;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        border-radius: 4px;
+        z-index: 1;
+    }
+    
+    .dropdown-nav a {
+        display: block;
+        padding: 8px 12px;
+        text-decoration: none;
+        color: red;
+        width: 90%;
+    }
+    
+    .dropdown-nav a:hover {
+        background-color: #ddd;
+    }
+    
+    .menu-button.active + .dropdown-nav {
+        display: block;
+    }
+    
+    .container {
+        flex-direction: column-reverse;
+        align-items: center;
+        width: 100%;
+        padding-top: 50px;
+    }
+    .info {
+        width: 90%;
+        padding: 20px;
+        height: 100%;
+        margin: 0;
+    }
+    #reservationForm {
+        display: flex;
+        flex-direction: column;
+    }
+    .reservationInfo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .reservationInfo label {
+        width: 30%;
+        margin: 0;
+    }
+    .reservationInfo input, #date, #dropdownTime, #dropdown0, #dropdown1, #dropdown2, #numOfGuest  {
+        width: 70%;
+        margin: 0;
+        margin-right: 20px;
+    }
+    .backgroundphoto {
+        height: 20vh;
+        width: 100%;
+    }
+    .container2 {
+        padding: 0;
+        min-width: 95%;
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+        overflow-x: hidden;
+    }
+    .content {
+        margin: 0;
+        width: 100%;
+        padding-top: 50px;
+        padding-bottom: 20px;
+    }
+    .content p {
+        margin: 50px 50px 0 50px;
+    }
+    iframe {
+        width: 90%;
+    }
+    .container3 {
+        width: 90%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .container3 .container3-content {
+        width: 100%;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        margin-left: 25px;
+        margin-bottom: 25px;
+    }
+    .container3 .container3-content h1 {
+        font-size: 32px;
+    }
+    .container3 .container3-content .gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .container4 {
+        width: 100%;
+        align-items: center;
+        padding: 0;
+        padding-top: 40px;
+    }
+    .comment-box {
+        width: 90%;
+        padding: 20px;
+        margin: 0;
+    }  
+    .comment-box input, .comment-box textarea {
+        width: 90%;
+    }
+    .container5 {
+        padding: 10px;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 80px;
+    }
+    .container5 h3 {
+        font-size: 24px;
+        padding: 0;
+        margin: 0;
+    }
+    .container5 ul li {
+        font-size: 14px;
+        padding: 10px;
+        text-align: left;
+    }
+    .container5 ul li img {
+        width: 30px;
+        margin: 0;
+        margin-right: 10px;
+    }
+    .container6 {
+        height: 100%;
+    }
+    .container6-content1 {
+        flex-direction: column;
+    }
+    .staffphoto {
+        height: 100px;
+    }
+    .container6 h3{
+        font-size: 20px;
+    }
+    .container6 p {
+        font-size: 14px;
+    }
+    .container6-content1 {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .container6-content2 {
+        display: flex;
+        flex-direction: row;
+        width: 90%;
+        padding-bottom: 20px;
+    }
+    .container6-content2 div {
+        width: 60%;
+    }
 }
