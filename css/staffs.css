@@ -61,11 +61,12 @@ body {
     height: 12px;
     background-color: red;
     border-radius: 50%;
-    border: 2px solid white; /* Optional: Adds a white border around the red circle */
+    border: 2px solid white;
+    /* Optional: Adds a white border around the red circle */
 }
 
 .logout-button {
-    background-color: #f44336; 
+    background-color: #f44336;
     color: white;
     border: none;
     border-radius: 30px;
@@ -74,10 +75,12 @@ body {
 }
 
 .logout-button:hover {
-    background-color: #d32f2f; /* Darker red on hover */
+    background-color: #d32f2f;
+    /* Darker red on hover */
 }
 
-.roomChecking, .to-do-list {
+.roomChecking,
+.to-do-list {
     width: 100%;
     height: 100%;
     position: fixed;
@@ -90,7 +93,9 @@ body {
     justify-content: center;
     align-items: center;
 }
-.roomChecking-container, .to-do-list-container {
+
+.roomChecking-container,
+.to-do-list-container {
     background-color: white;
     width: 50%;
     height: 80%;
@@ -126,6 +131,7 @@ body {
     flex-direction: row;
     justify-content: space-between;
 }
+
 #closeBtnToDoList {
     border: 0;
     background-color: transparent;
@@ -133,7 +139,8 @@ body {
 }
 
 .check-btn {
-    background-color: #4CAF50; /* Green */
+    background-color: #4CAF50;
+    /* Green */
     color: white;
     border: none;
     border-radius: 30px;
@@ -144,7 +151,8 @@ body {
 }
 
 .check-btn:hover {
-    background-color: #45a049; /* Darker green on hover */
+    background-color: #45a049;
+    /* Darker green on hover */
 }
 
 .roomChecking-header {
@@ -180,14 +188,17 @@ body {
 .roomChecking-container {
     display: flex;
     flex-direction: column;
+
     label {
         margin-bottom: 5px;
         font-weight: bold;
         font-size: 14px;
         width: 20%;
     }
-    
-    input[type="text"], input[type="number"], select {
+
+    input[type="text"],
+    input[type="number"],
+    select {
         width: 80%;
         padding: 8px;
         font-size: 14px;
@@ -196,13 +207,15 @@ body {
         box-sizing: border-box;
         align-items: center;
     }
-    
+
     input[type="checkbox"] {
         margin-right: 10px;
     }
 }
 
-#nextPage, #previousPage, #submitUpdatedValue {
+#nextPage,
+#previousPage,
+#submitUpdatedValue {
     color: #ffffff;
     border: none;
     padding: 10px 15px;
@@ -212,6 +225,7 @@ body {
     margin: 10px 0 10px 0;
     width: 100%;
 }
+
 .form-buttons {
     margin-top: auto;
     display: flex;
@@ -222,18 +236,23 @@ body {
 #previousPage {
     background-color: rgb(255, 162, 56);
 }
+
 #previousPage:hover {
     background-color: rgb(249, 135, 4);
 }
+
 #submitUpdatedValue {
     background-color: green;
 }
+
 #submitUpdatedValue:hover {
     background-color: rgb(2, 84, 2);
 }
+
 #nextPage {
     background-color: #007bff;
 }
+
 #nextPage:hover {
     background-color: #0056b3;
 }
@@ -771,6 +790,7 @@ nav ul li:hover {
     justify-content: space-between;
 
 }
+
 #unavailDetails p,
 #unavailDetails span {
     font-size: 16px;
@@ -892,9 +912,11 @@ nav ul li:hover {
     border-radius: 30px;
     margin-top: 50px;
 }
+
 .accounts-container h1 {
     text-align: center;
 }
+
 .accounts-container {
     width: 40%;
     display: flex;
@@ -905,42 +927,55 @@ nav ul li:hover {
     padding-bottom: 30px;
     border-radius: 30px;
 }
+
 .accounts-container-inputs {
     display: flex;
     flex-direction: row;
     justify-content: center;
     width: 100%;
 }
-#workAccountLastName, #workAccountFirstName, #workAccountAddressPurok, #workAccountAddressBrgy, #workAccountAddressMunicipality, #workAccountAddressProvince {
+
+#workAccountLastName,
+#workAccountFirstName,
+#workAccountAddressPurok,
+#workAccountAddressBrgy,
+#workAccountAddressMunicipality,
+#workAccountAddressProvince {
     width: 8.7vw;
     margin: 10px;
 
 }
+
 .accounts-container input {
     width: 20vw;
     padding: 10px;
     font-size: 16px;
     margin: 10px;
     border-radius: 30px;
-} 
-#accountType, #createAccount {
+}
+
+#accountType,
+#createAccount {
     width: 64%;
     padding: 10px;
     font-size: 16px;
     margin: 10px;
     border-radius: 30px;
-} 
+}
+
 #createAccount {
     background-color: skyblue;
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
 #createAccount:hover {
     background-color: blue;
     transform: scale(1.1);
     color: white;
     cursor: pointer;
 }
+
 .displayAccounts {
     width: 59%;
     display: flex;
@@ -954,6 +989,7 @@ nav ul li:hover {
     gap: 20px;
     overflow-y: auto;
 }
+
 .account-card {
     background-color: #f9f9f9;
     padding: 10px;
@@ -964,15 +1000,18 @@ nav ul li:hover {
     align-items: center;
     width: 80%;
 }
+
 .account-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
+
 .account-info span {
     margin: 5px 0;
 }
-.delete-button {
+
+.delete-btn {
     padding: 10px 15px;
     background-color: #ff4d4d;
     color: white;
@@ -981,7 +1020,8 @@ nav ul li:hover {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-.delete-button:hover {
+
+.delete-btn:hover {
     background-color: #cc0000;
 }
 
@@ -1001,12 +1041,14 @@ nav ul li:hover {
     background: white;
     width: 12vw;
     width: 30%;
-    padding: 20px; 
+    padding: 20px;
     border-radius: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 550px;
 }
+
 .tableNames h1 {
     font-size: 20px;
 }
@@ -1040,7 +1082,7 @@ nav ul li:hover {
     margin: 5px;
     border: 1px solid black;
     border-radius: 30px;
-    opacity: 0; 
+    opacity: 0;
     display: none;
     text-align: center;
 }
@@ -1052,22 +1094,26 @@ nav ul li:hover {
 
 .tableNames ul li.show {
     display: block;
-    max-height: 100px; /* Adjust as needed */
-    opacity: 1; /* Fully visible */
-    transform: translateY(0); /* Slide to original position */
+    max-height: 100px;
+    /* Adjust as needed */
+    opacity: 1;
+    /* Fully visible */
+    transform: translateY(0);
+    /* Slide to original position */
 }
 
 .tableDatas {
     background: white;
     margin-left: 10px;
     min-width: 80%;
-    padding: 20px; 
+    padding: 20px;
     border-radius: 30px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     position: relative;
     overflow: auto;
+    height: 550px;
 }
 
 .info-message {
@@ -1078,45 +1124,83 @@ nav ul li:hover {
 }
 
 .sub-id-list {
-    margin-right: 20px; /* Space between the sub-id list and the table */
-    border-right: 1px solid #ddd; /* Optional: Add a border to the right of the list */
-    padding-right: 10px; /* Optional: Add some padding to the right of the list */
+    margin-right: 20px;
+    border-right: 1px solid #ddd;
+    padding-right: 10px;
     cursor: pointer;
     list-style: none;
+    display: flex;
+    flex-direction: column;
+    column-count: 2;
+    column-gap: 20px;
 }
 
-.sub-id-list li {
-    list-style-type: none;
+
+.sub-id-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    margin: 5px 0;
     background-color: white;
     color: black;
-    padding: 10px;
     border-radius: 30px;
     width: auto;
     border: 1px solid black;
-    margin: 5px;
+    cursor: pointer;
+    list-style-type: none;
+    text-align: center;
 }
+
+.sub-id-item:hover {
+    background-color: rgba(154, 154, 154, 0.586);
+}
+
+.sub-id-item span {
+    flex-grow: 1;
+}
+
+.delete-button {
+    background-color: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 10px;
+    font-size: 16px; /* Adjust size as needed */
+}
+
+.delete-button:hover {
+    color: darkred;
+}
+
 /* Style the table */
 .data-table {
     width: 100%;
-    border-collapse: collapse; /* Ensure borders are collapsed */
+    border-collapse: collapse;
+    /* Ensure borders are collapsed */
     font-size: 14px;
+
 }
 
 /* Style table headers */
-.data-table th, .data-table td {
-    border: 1px solid #ddd; /* Light grey border */
-    padding: 8px; /* Add some padding */
-    text-align: left; /* Align text to the left */
+.data-table th,
+.data-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
 }
 
 /* Add a background color to headers */
 .data-table th {
-    background-color: #f2f2f2; /* Light grey background */
+    background-color: #f2f2f2;
+    /* Light grey background */
 }
 
 /* Optional: Add alternating row colors */
 .data-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Light grey for even rows */
+    background-color: #f9f9f9;
+    /* Light grey for even rows */
 }
 
 .manualBooking {
@@ -1140,6 +1224,7 @@ nav ul li:hover {
     border-radius: 30px;
     background-color: white;
 }
+
 .manualBooking-content {
     display: flex;
     flex-direction: row;
@@ -1152,6 +1237,7 @@ nav ul li:hover {
     width: auto;
     flex-direction: column;
 }
+
 .manualBooking-content input {
     width: 90%;
     padding: 10px;
@@ -1272,13 +1358,58 @@ nav ul li:hover {
     justify-content: space-around;
     padding: 10px;
 }
+
 .inventory-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
     height: 100%;
-}  
+}
+
+.inventory-add {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+}
+
+#inventory-addValue,
+#minimumValueInput, #minimumValueInputAdd {
+    transition: width 0.3s; /* Smooth transition for width change */
+}
+
+#minimumValueInput, #minimumValueInputAdd {
+    position: relative;
+    width: 100%;
+}
+
+.info-button {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #007bff; 
+    padding: 0;
+}
+
+.info-button:hover {
+    color: #0056b3; /* Darker color on hover */
+}
+
 .inventory-data {
     width: 60%;
     margin-top: 30px;
@@ -1288,15 +1419,19 @@ nav ul li:hover {
     padding: 2%;
     overflow-y: auto;
 }
-#roomSelected, #tableFilter {
+
+#roomSelected,
+#tableFilter {
     font-size: 30px;
     margin: 10px;
     padding: 10px;
     border-radius: 30px;
 }
+
 #roomSelected option {
     min-height: 1000px;
 }
+
 .inventory-management {
     width: 30%;
     max-height: 400px;
@@ -1311,7 +1446,8 @@ nav ul li:hover {
     align-items: center;
 }
 
-.inventory-management button, .inventory-management select {
+.inventory-management button,
+.inventory-management select {
     padding: 10px;
     width: 95%;
     border-radius: 30px;
@@ -1319,14 +1455,34 @@ nav ul li:hover {
     cursor: pointer;
 }
 
-.inventory-management input {
+.inventory-management input, #inventory-addKey {
     padding: 10px;
     width: 90%;
     border-radius: 30px;
     margin: 1%;
 }
 
-.inventory-update, .inventory-add {
+.input-wrapper {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.prefix, .suffix {
+    background-color: #f0f0f0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-radius: 30px;
+    font-size: 14px;
+    color: #555;
+    user-select: none;
+    pointer-events: none;
+}
+
+.inventory-update,
+.inventory-add {
     width: 100%;
     text-align: center;
 }
@@ -1361,9 +1517,10 @@ nav ul li:hover {
 
 @media screen and (max-width: 1000px) {
     .logo {
-        width: 80px;
+        width: 100px;
         height: auto;
         background: transparent;
+        padding: 0;
     }
 
     .header {
@@ -1375,7 +1532,8 @@ nav ul li:hover {
         height: auto;
     }
 
-    .hello, #dateTime {
+    .hello,
+    #dateTime {
         font-size: 15px;
         width: auto;
     }
@@ -1439,6 +1597,7 @@ nav ul li:hover {
         height: 50px;
         width: 50px;
     }
+
     .reservation {
         width: 100%;
         margin-right: 0;
@@ -1456,7 +1615,7 @@ nav ul li:hover {
         font-size: 20px;
         padding: 15px;
     }
-    
+
     .roomSelectModal {
         top: 30%;
     }
@@ -1489,44 +1648,62 @@ nav ul li:hover {
         margin-top: 0;
         max-height: 100%;
     }
-    .accounts-container, .displayAccounts {
+
+    .accounts-container,
+    .displayAccounts {
         width: 100%;
         max-height: 100%;
     }
-    #accountType, #createAccount {
+
+    #accountType,
+    #createAccount {
         width: 80%;
         font-size: 14px;
         max-height: auto;
     }
+
     .displayAccounts {
-        overflow-y:visible;
+        overflow-y: visible;
         max-height: auto;
     }
+
     .account-card {
         flex-direction: column;
         align-items: flex-start;
         max-height: auto;
     }
-    .delete-button {
+
+    .delete-btn {
         width: 100%;
         margin-top: 10px;
     }
+
     .accounts-container-inputs {
         width: 100%;
         flex-direction: column;
         align-items: center;
     }
+
     .accounts-container input {
         width: 75%;
         font-size: 14px;
     }
-    #workAccountLastName, #workAccountFirstName, #workAccountAddressPurok, #workAccountAddressBrgy, #workAccountAddressMunicipality, #workAccountAddressProvince {
+
+    #workAccountLastName,
+    #workAccountFirstName,
+    #workAccountAddressPurok,
+    #workAccountAddressBrgy,
+    #workAccountAddressMunicipality,
+    #workAccountAddressProvince {
         width: 75%;
         margin: 10px;
     }
-    .displayAccounts h1, .accounts h1 {
+
+    .displayAccounts h1,
+    .accounts h1 {
         font-size: 16px;
     }
+
     .records {
         flex-direction: column;
         width: 80%;
@@ -1535,21 +1712,29 @@ nav ul li:hover {
         margin-top: 0;
         height: auto;
     }
+
     .tableNames {
         flex-direction: column;
         min-width: 90%;
+        height: 100%;
     }
+
     .tableNames ul {
         align-items: center;
         justify-content: center;
     }
+
     .tableNames ul li {
         width: 90%;
     }
+
     .tableDatas {
         margin-top: 2vh;
         width: 90%;
+        height: 100%;
+        display: none;
     }
+
     .data-table {
         font-size: 14px;
     }
@@ -1559,56 +1744,69 @@ nav ul li:hover {
         margin-top: 0;
         height: auto;
     }
+
     .manualBooking h1 {
         font-size: 18px;
     }
+
     .manualBooking-content {
         width: 100%;
         flex-direction: column;
     }
+
     .manualBooking-inputs {
         flex-direction: row;
         width: 100%;
         margin-right: 4vw;
     }
+
     .manualBooking-content input {
         width: 80%;
     }
+
     #saveManualBooking {
         font-size: 20px;
         width: 80%;
         float: none;
         margin-top: 0;
     }
+
     .comments {
         width: 80%;
         margin-top: 0;
         max-height: 100%;
     }
+
     .comments h1 {
         font-size: 18px;
     }
+
     .comments-container {
         overflow: visible;
     }
+
     .comment-card {
         width: 70%;
         flex-direction: column;
         align-items: center;
     }
+
     .comment-info {
         width: 100%;
     }
+
     .comments-delete-button {
         padding: 10px;
         font-size: 16px;
         width: 100%;
         height: auto;
     }
+
     .inventory {
         width: 80%;
         margin-top: 0px;
     }
+
     .inventory-header {
         flex-direction: column;
         font-size: 14px;
@@ -1616,11 +1814,13 @@ nav ul li:hover {
         align-items: center;
         justify-content: center;
     }
+
     .inventory-container {
         flex-direction: column;
         justify-content: center;
         align-items: center;
     }
+
     .inventory-data {
         width: 100%;
         height: auto;
@@ -1628,35 +1828,79 @@ nav ul li:hover {
         min-height: auto;
         overflow-y: visible;
     }
+
     .inventory-management {
         width: 100%;
         max-height: 100%;
         padding-top: 20px;
         padding-bottom: 20px;
     }
-    #roomSelected, #tableFilter {
+
+    .input-container {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0;
+    }
+
+    .input-container input {
+        width: 90%;
+    }
+
+    #minimumValueInput, #minimumValueInputAdd {
+        display: flex;
+        flex-direction: column;
+        align-items: center
+    }
+
+    .add-minimumValue {
+        position: absolute;
+        margin: 0;
+    }
+
+    .update-minimumValue {
+        position: absolute;
+        margin: 0;
+    }
+
+    .info-button {
+        right: 5px;
+    }
+
+    #roomSelected,
+    #tableFilter {
         font-size: 16px;
         padding: 2%;
         width: 100%;
         margin-left: 0px;
     }
+
     .form-group {
         flex-direction: column;
     }
+
     .to-do-list-container {
         width: 80%;
     }
+
     .roomChecking-container {
         width: 80%;
+
         label {
             width: 100%;
             text-align: center;
         }
-        input[type="text"], input[type="number"], select {
+
+        input[type="text"],
+        input[type="number"],
+        select {
             width: 100%;
         }
     }
-    #nextPage, #previousPage, #submitUpdatedValue {
+
+    #nextPage,
+    #previousPage,
+    #submitUpdatedValue {
         font-size: 14px;
         margin: 5px 0 5px 0;
     }
