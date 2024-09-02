@@ -364,7 +364,7 @@
                     <option value="all">All</option>
                     <option value="quantity">Quantities</option>
                     <option value="status">Status</option>
-                    <option value="present">Present</option>
+                    <option value="present">Presence</option>
                     <option value="forRepair">Need For Repair</option>
                     <option value="boolean">Booleans</option>
                 </select>
@@ -387,33 +387,69 @@
                         <option value="Not Working">Not Working</option>
                     </select>
 
-                    <input type="text" placeholder="" id="updateValue"><br>
+                    <select id="valueForBooleanTypeForUpdate" style="display: none;">
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
 
+                    <div class="input-container">
+                        <input type="text" placeholder="" id="updateValue">
+                        <div id="minimumValueInput" style="display: none;">
+                            <input type="text" placeholder="minimum Value" id="update-minimumValue">
+                        </div>
+                    </div>
                     <button id="updateButton">UPDATE</button>
                     <button id="deleteButton">DELETE</button>
                 </div>
                 <br>
                 <div class="inventory-add">
                     Add New Elements
-                    <input type="text" placeholder="Key" id="inventory-addKey">
                     <select id="valueDataType">
                         <option value="" disabled selected hidden>Select the data type for the value</option>
+                        <option value="equipmentQuantity" id="equipmentQuantity">Equipment Quantity</option>
+                        <option value="equipmentStatus" id="equipmentStatus">Equipment Status</option>
+                        <option value="equipmentPresence" id="equipmentPresence">Equipment Presence</option>
                         <option id="String">Text</option>
                         <option id="Number">Number</option>
-                        <option value="equipmentStatus" id="equipmentStatus">Equipment Status</option>
                         <option id="Boolean">Boolean</option>
                         <option id="Date">Date</option>
                         <option id="Time">Time</option>
                     </select>
-                    <input type="text" placeholder="Value" id="inventory-addValue">
+                
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <span id="presence-prefix" class="prefix">is</span>
+                            <input type="text" placeholder="Key" id="inventory-addKey">
+                            <span id="quantity-suffix" class="suffix">Quantity</span>
+                            <span id="status-suffix" class="suffix">Status</span>
+                            <span id="presence-suffix" class="suffix">Present</span>
+                        </div>
+                    </div>
+                    
+                
+                    <div class="input-container">
+                        <input type="text" placeholder="Value" id="inventory-addValue">
+                        <div id="minimumValueInputAdd" style="display: none;">
+                            <input type="text" placeholder="Minimum Value" id="add-minimumValue">
+                            <button id="infoButton" class="info-button" title="Click to know more about how minimum Value works"><i class="fa-solid fa-circle-info"></i></button>
+                        </div>
+                    </div>                    
+                
                     <select id="valueForStatusKeyTypeForAdd" style="display: none;">
                         <option value="All Working">All Working</option>
                         <option value="Some are working, some are broken">Some are working, some are broken</option>
                         <option value="Need cleaning">Need cleaning</option>
                         <option value="Not Working">Not Working</option>
                     </select>
+
+                    <select id="valueForBooleanTypeForAdd" style="display: none;">
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
+                
                     <button id="addButton">ADD</button>
                 </div>
+                
             </div>
         </div>
     </div>
