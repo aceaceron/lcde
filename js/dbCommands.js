@@ -961,7 +961,8 @@ document.querySelectorAll('.tableNames ul li').forEach(li => {
         const tableId = this.id; // Get the ID of the clicked <li>
         const tableDatasDiv = document.querySelector('.tableDatas');
         
-        // Clear previous data
+        tableDatasDiv.style.display = "flex";
+        // Clear previous data  
         tableDatasDiv.innerHTML = '';
         
         // Check if the clicked <li> is 'currentCheckIn'
@@ -975,6 +976,7 @@ document.querySelectorAll('.tableNames ul li').forEach(li => {
         }
     });
 });
+
 // Add event listener to #workAccounts element
 document.querySelector('#workAccounts').addEventListener('click', function() {
     fetchWorkAccountsData();
@@ -1095,7 +1097,7 @@ function fetchSubIdsAndDisplayData(tableId) {
 
     // Clear previous data
     tableDatasDiv.innerHTML = '';
-    
+
     // Create and append the message
     const message = document.createElement('p');
     message.textContent = 'Please select a date to view the data';
@@ -1119,16 +1121,35 @@ function fetchSubIdsAndDisplayData(tableId) {
 
             // Clear subIdList to remove any previous items
             subIdList.innerHTML = '';
-            
-            // Display sub-IDs as clickable elements
+
+            // Display sub-IDs as clickable elements with delete buttons
             subIds.forEach(subId => {
                 const listItem = document.createElement('li');
-                listItem.textContent = subId;
                 listItem.classList.add('sub-id-item');
-                listItem.dataset.subId = subId; // Store subId in a data attribute
-                listItem.addEventListener('click', function() {
+
+                // Create sub-ID text element
+                const subIdText = document.createElement('span');
+                subIdText.textContent = subId;
+                subIdText.dataset.subId = subId; // Store subId in a data attribute
+                subIdText.style.cursor = 'pointer';
+                subIdText.addEventListener('click', function () {
                     fetchAndDisplayData(tableId, this.dataset.subId);
                 });
+
+                // Create delete button
+                const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                deleteButton.classList.add('delete-button');
+                deleteButton.addEventListener('click', function (event) {
+                    event.stopPropagation(); // Prevent triggering the click event on the list item
+                    if (confirm(`Are you sure you want to delete all data for sub-ID: ${subId}?`)) {
+                        deleteDataForSubId(tableId, subId);
+                    }
+                });
+
+                // Append sub-ID text and delete button to list item
+                listItem.appendChild(subIdText);
+                listItem.appendChild(deleteButton);
                 subIdList.appendChild(listItem);
             });
         } else {
@@ -1136,6 +1157,20 @@ function fetchSubIdsAndDisplayData(tableId) {
         }
     }).catch((error) => {
         console.error("Error fetching sub-IDs: ", error);
+    });
+}
+
+// Function to delete all data for a specific sub-ID
+function deleteDataForSubId(tableId, subId) {
+    const subIdRef = ref(db, `${tableId}/${subId}`);
+
+    // Set the data at the specified sub-ID reference to null to delete it
+    set(subIdRef, null).then(() => {
+        alert(`Data for sub-ID: ${subId} has been deleted successfully.`);
+        // Refresh the sub-ID list after deletion
+        fetchSubIdsAndDisplayData(tableId);
+    }).catch((error) => {
+        console.error("Error deleting data: ", error);
     });
 }
 
@@ -1153,10 +1188,16 @@ function fetchAndDisplayData(tableId, subId) {
             const table = document.createElement('table');
             table.classList.add('data-table');
 
+            // Initialize variables for the summary
+            let totalAmountPaid = 0;
+            let totalGuests = 0;
+            let numOfRows = 0;
+
             // Create table headers based on the first record
             const headers = Object.keys(data[Object.keys(data)[0]]);
             const thead = document.createElement('thead');
             const headerRow = document.createElement('tr');
+
             // Add 'ID' column header
             const idHeader = document.createElement('th');
             idHeader.textContent = 'ID';
@@ -1169,22 +1210,51 @@ function fetchAndDisplayData(tableId, subId) {
             thead.appendChild(headerRow);
             table.appendChild(thead);
 
-            // Create table body with fetched data
+            
             const tbody = document.createElement('tbody');
+
             Object.entries(data).forEach(([id, record]) => {
                 const row = document.createElement('tr');
-                // Add ID cell
+                numOfRows++; 
+
                 const idCell = document.createElement('td');
                 idCell.textContent = id;
                 row.appendChild(idCell);
+                
                 headers.forEach(header => {
                     const td = document.createElement('td');
-                    td.textContent = record[header]; // Make sure to access specific properties
+                    td.textContent = record[header]; 
                     row.appendChild(td);
+
+                    // Calculate totals
+                    if (header === 'totalAmountPaid' && tableId === 'pastCheckIn') {
+                        totalAmountPaid += parseFloat(record[header]) || 0; 
+                    }
+                    if (header === 'numberOfGuests' && tableId === 'pastCheckIn') {
+                        totalGuests += parseInt(record[header]) || 0;
+                    }
                 });
                 tbody.appendChild(row);
             });
             table.appendChild(tbody);
+
+            // Create and display the summary above the table
+            if (tableId === 'pastCheckIn') {
+                const summaryHeader= document.createElement('h3');
+                summaryHeader.textContent = `Past Check Ins Summary For ${subId}`;
+                summaryHeader.classList.add('summary-header');
+                
+                const summaryDetails = document.createElement('p');
+                summaryDetails.innerHTML = `
+                    Number of Check Out Sessions: ${numOfRows}<br>
+                    Number of Combined Guests: ${totalGuests}<br>
+                    Overall Amount Paid: PHP ${totalAmountPaid.toFixed(2)}
+                `;
+                summaryDetails.classList.add('summary-details');
+                
+                tableDatasDiv.appendChild(summaryHeader);
+                tableDatasDiv.appendChild(summaryDetails);
+            }
 
             // Append the table to the .tableDatas div
             tableDatasDiv.appendChild(table);
@@ -1198,6 +1268,9 @@ function fetchAndDisplayData(tableId, subId) {
 
 document.querySelector('#clearData').addEventListener('click', async function() {
     document.querySelector('.tableDatas').textContent = '';
+    if (window.innerWidth < 1000) {
+        document.querySelector('.tableDatas').style.display = 'none';
+    }
 });
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1481,34 +1554,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Display value with or without icon
                         let displayValue = document.createElement('span');
                         displayValue.textContent = value;
+    
+                        const quantityMinRef = ref(db, `quantityMinimumValues/${key}`);
+                        const quantityMinSnapshot = await get(quantityMinRef);
+                        const minValue = quantityMinSnapshot.val();
 
-                        // Check if the status key does not equal 'All Working'
-                        if (key.toLowerCase().includes('status') && value !== 'All Working') {
+                        // Check if the status key does not equal 'All Working' or  if the value is less than the minimum and add an icon if necessary
+                        if (key.toLowerCase().includes('status') && value !== 'All Working' || key.toLowerCase().includes('present') && value !== true || minValue !== null && value < minValue) {
                             const icon = document.createElement('i');
                             icon.className = 'fa-solid fa-triangle-exclamation';
                             displayValue.appendChild(icon);
                         }
-
-                        // Additional checks for specific keys and their minimum quantities
-                        const quantityChecks = {
-                            blanketsQuantity: 2,
-                            bucketsQuantity: 1,
-                            carpetsQuantity: 2,
-                            chairsQuantity: 4,
-                            curtainsQuantity: 3,
-                            doorKnobsQuantity: 4,
-                            lightBulbsQuantity: 4,
-                            standFansQuantity: 1,
-                            tablesQuantity: 2
-                        };
-
-                        // Check if key exists in quantityChecks and if value is less than required minimum
-                        if (quantityChecks[key] !== undefined && value < quantityChecks[key]) {
-                            const icon = document.createElement('i');
-                            icon.className = 'fa-solid fa-triangle-exclamation';
-                            displayValue.appendChild(icon);
-                        }
-
     
                         tableHTML += `<tr><td>${key}</td><td>${displayValue.outerHTML}</td></tr>`;
     
@@ -1524,22 +1580,49 @@ document.addEventListener('DOMContentLoaded', function () {
     
                     const updateInput = document.querySelector('.inventory-update input[type="text"]');
                     const statusDropdown = document.getElementById('valueForStatusKeyType');
+                    const booleanDropdown = document.getElementById('valueForBooleanTypeForUpdate');
+                    const minimumValueInputContainer = document.getElementById('minimumValueInput');
+                    const updateMinimumValue = document.getElementById('update-minimumValue');
     
                     const firstOption = roomTableKeySelect.options[0];
-
+    
                     if (firstOption) {
+                        const key = firstOption.value.toLowerCase();
+                        const selectedValue = firstOption.dataset.value;
+    
                         // Automatically toggle input fields based on the filter
                         if (filter === 'status' || filter === 'forRepair') {
                             updateInput.style.display = 'none';
                             statusDropdown.style.display = 'inline';
-                            statusDropdown.value = firstOption.dataset.value !== undefined ? firstOption.dataset.value : null;
+                            minimumValueInputContainer.style.display = 'none';
+                            booleanDropdown.style.display = 'none';
+                            statusDropdown.value = selectedValue || null;
+                        } else if (filter === 'quantity' || key.includes('quantity')) {
+                            minimumValueInputContainer.style.display = 'flex';
+                            statusDropdown.style.display = 'none';
+                            updateInput.style.display = 'flex';
+                            booleanDropdown.style.display = 'none';
+    
+                            // Fetch the placeholder value for updateminimumValue
+                            const quantityMinimumRef = ref(db, `quantityMinimumValues/${firstOption.value}`);
+                            const quantityMinimumSnapshot = await get(quantityMinimumRef);
+                            const quantityMinimumValue = quantityMinimumSnapshot.val();
+    
+                            updateMinimumValue.placeholder = `Minimum value: ${quantityMinimumValue}` || "Enter Minimum Value";
+                        } else if (filter === 'present' || filter === 'boolean') {
+                            updateInput.style.display = 'none';
+                            statusDropdown.style.display = 'none';
+                            minimumValueInputContainer.style.display = 'none';
+                            booleanDropdown.style.display = 'flex'
+                            booleanDropdown.value = selectedValue || null;
                         } else {
                             updateInput.style.display = 'inline';
                             statusDropdown.style.display = 'none';
+                            minimumValueInputContainer.style.display = 'none';
+                            booleanDropdown.style.display = 'none';
                         }
-
-                        const selectedValue = firstOption.dataset.value;
-                        updateInput.placeholder = selectedValue || "Select a value";
+    
+                        updateInput.placeholder = `Current value: ${selectedValue}` || "Select a value";
                         updateInput.value = ''; // Clear the input field after update
                     } else {
                         // Handle the case where there are no options available
@@ -1558,16 +1641,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initial room selection event listener
     document.getElementById('roomSelected').addEventListener('change', function () {
         const selectedRoom = this.value;
-        const tableFilter = document.getElementById('tableFilter');
+        const selectedKey = document.getElementById('roomTableKey').value;
 
         if (selectedRoom === 'all') {
             displayCombinedRoomData();
-            tableFilter.disabled = true;
-        } else if (selectedRoom) {
+            document.getElementById('tableFilter').disabled = true;
+        } else {
             const filter = document.getElementById('tableFilter').value;
             updateInventoryData(selectedRoom, filter);
-            tableFilter.disabled = false;
+            document.getElementById('tableFilter').disabled = false;
         }
+
+        updateStyles(selectedKey);  // Call updateStyles when room is selected
     });
 
     async function displayCombinedRoomData() {
@@ -1621,28 +1706,38 @@ document.addEventListener('DOMContentLoaded', function () {
     // Filter event listener
     document.getElementById('tableFilter').addEventListener('change', function () {
         const selectedRoom = document.getElementById('roomSelected').value;
+        const selectedKey = document.getElementById('roomTableKey').value;
         const filter = this.value;
         updateInventoryData(selectedRoom, filter);
-
+        updateStyles(selectedKey);
     });
 
+    // Update button functionality
     document.getElementById('updateButton').addEventListener('click', async function () {
         const selectedRoom = document.getElementById('roomSelected').value;
         const selectedKey = document.getElementById('roomTableKey').value;
         const filter = document.getElementById('tableFilter').value;
     
         let newValueRaw;
+        let minimumValueRaw;
     
-        // Check if the selected key contains "status"
         if (selectedKey.toLowerCase().includes('status')) {
             // Use the value from the status dropdown
             newValueRaw = document.getElementById('valueForStatusKeyType').value;
+        } else if (selectedKey.toLowerCase().includes('present')) {
+            newValueRaw = document.getElementById('valueForBooleanTypeForUpdate').value;
+            newValueRaw = newValueRaw === 'true'; 
         } else {
             // Use the value from the input field
             newValueRaw = document.querySelector('.inventory-update input[type="text"]').value;
         }
     
-        if (selectedRoom && selectedKey && newValueRaw) {
+        // Check if the key contains "quantity" and get the minimum value if needed
+        if (selectedKey.toLowerCase().includes('quantity')) {
+            minimumValueRaw = document.getElementById('update-minimumValue').value;
+        }
+    
+        if (selectedRoom && selectedKey && newValueRaw !== undefined && newValueRaw !== null) {
             try {
                 const keyRef = ref(db, `rooms/${selectedRoom}/${selectedKey}`);
                 const keySnapshot = await get(keyRef);
@@ -1653,6 +1748,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // Convert the new value to match the current type
                 let newValue;
+    
                 switch (currentType) {
                     case 'number':
                         newValue = parseFloat(newValueRaw);
@@ -1663,25 +1759,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                         break;
                     case 'boolean':
-                        if (newValueRaw.toLowerCase() === 'true' || newValueRaw.toLowerCase() === 'false') {
-                            newValue = newValueRaw.toLowerCase() === 'true';
-                        } else {
-                            alert('Please enter a valid value (True or False only).');
-                            clearInputFields();
-                            return;
-                        }
+                        newValueRaw = document.getElementById('valueForBooleanTypeForUpdate').value;
+                        newValue = newValueRaw === 'true'; 
                         break;
-
-                            // Validate HH:MM AM/PM format
-                            const timePattern = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
-                            if (timePattern.test(newValueRaw)) {
-                                newValue = newValueRaw.replace(/^0+/, '');
-                            } else {
-                                alert('Please enter a valid time in the format HH:MM AM/PM.');
-                                clearInputFields();
-                                return;
-                            }
-                            break;
                     case 'string':
                         if (selectedKey.toLowerCase().includes('date')) {
                             // Validate MM/DD/YYYY format for date
@@ -1696,12 +1776,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         } else if (selectedKey.toLowerCase().includes('time')) {
                             // Validate HH:MM AM/PM format for time
-                            const timePattern = /^(0?[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
+                            const timePattern = /^([01]?[0-9]|2[0-3]):([0-5][0-9])\s?(AM|PM)$/i;
                             if (timePattern.test(newValueRaw)) {
                                 // Parse the input time
                                 let [time, period] = newValueRaw.split(/\s+/);
                                 let [hour, minute] = time.split(':');
-                                
+    
                                 // Combine with seconds and period
                                 newValue = `${hour}:${minute}:00 ${period.toUpperCase()}`;
                                 newValue = newValue.replace(/^0/, '');
@@ -1719,15 +1799,23 @@ document.addEventListener('DOMContentLoaded', function () {
                         clearInputFields();
                         return;
                 }
+    
+                // Update in Firebase
                 const userConfirmed = confirm(`Are you sure you want to update the value for ${selectedKey}?`);
                 if (userConfirmed) {
                     await set(keyRef, newValue);
+    
+                    // If it's a quantity key, also update minimum value in a separate path
+                    if (selectedKey.toLowerCase().includes('quantity') && minimumValueRaw !== '' && !isNaN(minimumValueRaw)) {
+                        const minimumValueRef = ref(db, `quantityMinimumValues/${selectedKey}`);
+                        await set(minimumValueRef, parseInt(minimumValueRaw));
+                    }
+    
                     alert('Value updated successfully');
                     updateInventoryData(selectedRoom, filter);
                     updateRoomSelectionOptions();
                     clearInputFields();
                 }
-
             } catch (error) {
                 console.error('Error updating key:', error);
             }
@@ -1735,53 +1823,139 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Please select a room, a key, and provide a value.');
         }
     });
-    
+
+    // Handle the change event on the roomTableKey select element
+    document.getElementById('roomTableKey').addEventListener('change', async function () {
+        const selectedKey = this.value;
+        const selectedValue = this.options[this.selectedIndex].dataset.value;
+        const selectedRoom = document.getElementById('roomSelected').value; 
+
+
+        const updateInput = document.querySelector('.inventory-update input[type="text"]');
+        const minimumValueInputContainer = document.getElementById('minimumValueInput');
+        const booleanDropdown = document.getElementById('valueForBooleanTypeForUpdate');
+        const statusDropdown = document.getElementById('valueForStatusKeyType');
+        const minimumValueInput = document.getElementById('update-minimumValue');
+
+        try {
+            // Fetch the current value for the selected key
+            const keyRef = ref(db, `rooms/${selectedRoom}/${selectedKey}`);
+            const keySnapshot = await get(keyRef);
+            const currentValue = keySnapshot.val();
+
+            // Determine the type of the current value
+            const currentType = typeof currentValue;
+
+            // Fetch the minimum value for quantities from Firebase
+            const quantityMinimumRef = ref(db, `quantityMinimumValues/${selectedKey}`);
+            const quantityMinimumSnapshot = await get(quantityMinimumRef);
+            const quantityMinimumValue = quantityMinimumSnapshot.val();
+
+            if (selectedKey.toLowerCase().includes('status')) {
+                updateInput.style.display = 'none';
+                statusDropdown.style.display = 'flex';
+                booleanDropdown.style.display = 'none';
+                minimumValueInputContainer.style.display = 'none';
+            } else if (currentType === 'boolean') {
+                updateInput.style.display = 'none';
+                booleanDropdown.style.display = 'flex';
+                statusDropdown.style.display = 'none';
+                minimumValueInputContainer.style.display = 'none';
+            } else if (selectedKey.toLowerCase().includes('quantity')) {
+                updateInput.style.display = 'flex';
+                statusDropdown.style.display = 'none';
+                booleanDropdown.style.display = 'none';
+                minimumValueInputContainer.style.display = 'flex';
+
+                minimumValueInput.placeholder = `Minimum value: ${quantityMinimumValue}` || "Enter Minimum Value";
+                updateInput.placeholder = `Current value: ${selectedValue}` || "Select a value";
+                updateInput.value = "";
+
+                if (quantityMinimumSnapshot.exists()) {
+                    const minimumValue = quantityMinimumSnapshot.val();
+                    minimumValueInput.placeholder = `Minimum value: ${minimumValue}` || "Enter Minimum Value";
+                } else {
+                    minimumValueInput.placeholder = "Enter Minimum Value";
+                }
+            } else {
+                updateInput.style.display = 'inline';
+                statusDropdown.style.display = 'none';
+                booleanDropdown.style.display = 'none';
+                minimumValueInputContainer.style.display = 'none';
+                
+                updateInput.placeholder = selectedValue;
+                updateInput.value = "";
+            }
+        } catch (error) {
+            console.error('Error fetching minimum value or current value:', error);
+            minimumValueInput.placeholder = "Enter Minimum Value";
+        }
+
+        // Adjust styling for different conditions
+        updateStyles(this.value);
+    });
+
     // Utility function to clear input fields
     function clearInputFields() {
         document.querySelector('.inventory-update input[type="text"]').value = '';
+        document.querySelector('.inventory-update input[type="text"]').value = '';
         document.getElementById('valueForStatusKeyType').value = 'All Working';
+        document.getElementById('update-minimumValue').value = '';
     }
-
-    // Handle the change event on the roomTableKey select element
-    document.getElementById('roomTableKey').addEventListener('change', function () {
-        const selectedKey = this.value;
-        const selectedValue = this.options[this.selectedIndex].dataset.value;
-    
-        if (selectedKey.toLowerCase().includes('status')) {
-            document.querySelector('.inventory-update input[type="text"]').style.display = 'none';
-            document.getElementById('valueForStatusKeyType').style.display = 'inline';
-        } else {
-            document.querySelector('.inventory-update input[type="text"]').style.display = 'inline';
-            document.getElementById('valueForStatusKeyType').style.display = 'none';
-            const updateInput = document.querySelector('.inventory-update input[type="text"]');
-            updateInput.placeholder = selectedValue;
-            updateInput.value = "";
-        }
-    });
 
     document.getElementById('addButton').addEventListener('click', async function () {
         const valueDataTypeSelect = document.getElementById('valueDataType');
         const selectedRoom = document.getElementById('roomSelected').value;
-        const addKey = document.getElementById('inventory-addKey').value;
+        const addKeyInput = document.getElementById('inventory-addKey');
+        let addKey = addKeyInput.value;
         const addValueRaw = document.getElementById('inventory-addValue').value;
         const statusDropdown = document.getElementById('valueForStatusKeyTypeForAdd');
+        const booleanDropdown = document.getElementById('valueForBooleanTypeForAdd');
         const filter = document.getElementById('tableFilter').value;
         const selectedType = valueDataTypeSelect.value;
+    
+        let minimumValue;
+
+        if (selectedType === 'equipmentQuantity') {
+            addKey = addKey.toLowerCase() + 'Quantity';
+        } else if (selectedType === 'equipmentStatus') {
+            addKey = addKey.toLowerCase() + 'Status';
+        } else if (selectedType === 'equipmentPresence') {
+            addKey = 'is' + addKey.charAt(0).toUpperCase() + addKey.slice(1).toLowerCase() + 'Present';
+        }
         
+    
         if ((selectedRoom && addKey && addValueRaw) || selectedType) {
             try {
                 const roomRef = ref(db, `rooms/${selectedRoom}/${addKey}`);
+                const minimumValueRef = ref(db, `quantityMinimumValues/${addKey}`);
                 const keySnapshot = await get(roomRef);
                 const existingValue = keySnapshot.val();
                 let addValue;
     
                 if (existingValue !== null) {
-                    alert("Key exists in the database! Update if you want to change the value.");
-                    document.getElementById('inventory-addKey').value = '';
+                    alert("Please provide a room, key, and value.");
+                    addKeyInput.value = '';
                     document.getElementById('inventory-addValue').value = '';
                     return;
                 } else {
                     switch (selectedType) {
+                        case 'equipmentQuantity':
+                            addValue = parseInt(addValueRaw);
+                            minimumValue = parseInt(document.getElementById('add-minimumValue').value);
+    
+                            if (isNaN(addValue) || isNaN(minimumValue)) {
+                                alert('Please enter valid numeric values for Quantity and Minimum Value.');
+                                document.getElementById('inventory-addValue').value = '';
+                                return;
+                            }
+                            break;
+                        case 'equipmentStatus':
+                            addValue = statusDropdown.value;
+                            break;
+                        case 'equipmentPresence':
+                            addValue = booleanDropdown.value === 'true';
+                            break;
                         case 'Number':
                             addValue = parseFloat(addValueRaw);
                             if (isNaN(addValue)) {
@@ -1790,23 +1964,12 @@ document.addEventListener('DOMContentLoaded', function () {
                                 return;
                             }
                             break;
-                        case 'equipmentStatus': // Matching the correct value
-                            addValue = statusDropdown.value; // Use the selected value from the dropdown
-                            break;
                         case 'Boolean':
-                            if (addValueRaw.toLowerCase() === 'true' || addValueRaw.toLowerCase() === 'false') {
-                                addValue = addValueRaw.toLowerCase() === 'true';
-                            } else {
-                                alert('Please enter a valid value (True or False only).');
-                                document.getElementById('inventory-addValue').value = '';
-                                return;
-                            }
+                            addValue = booleanDropdown.value === 'true';
                             break;
                         case 'Date':
-                            // Validate MM/DD/YYYY format
                             const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
                             if (datePattern.test(addValueRaw)) {
-                                // Remove leading zeros from month and day
                                 addValue = addValueRaw.replace(/(^|\/)0+/g, '$1');
                             } else {
                                 alert('Please enter a valid date in the format MM/DD/YYYY.');
@@ -1815,21 +1978,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                             break;
                         case 'Time':
-                            // Validate HH:MM AM/PM or HH:MM:SS AM/PM format
                             const timePattern = /^([01]?[0-9]|2[0-3]):([0-5][0-9])(:([0-5][0-9]))?\s?(AM|PM)$/i;
                             if (timePattern.test(addValueRaw)) {
                                 let [time, period] = addValueRaw.split(/\s+/);
                                 let [hours, minutes, seconds] = time.split(':');
-                        
-                                // Ensure seconds are present
                                 if (seconds === undefined) {
                                     seconds = '00';
                                 }
-                        
-                                // Convert period to uppercase
                                 period = period.toUpperCase();
-                        
-                                // Format time with seconds
                                 addValue = `${hours}:${minutes}:${seconds} ${period}`;
                                 addValue = addValue.replace(/^0/, '');
                             } else {
@@ -1838,19 +1994,27 @@ document.addEventListener('DOMContentLoaded', function () {
                                 return;
                             }
                             break;
-                                
                         case 'String':
                         default:
                             addValue = addValueRaw;
                             break;
                     }
                 }
-                const userConfirmed = confirm(`Are you sure you want to add Key: ${addKey}, Value: ${addValue}?`);
+    
+                const userConfirmed = confirm(`Are you sure you want to add Key: ${addKey}, Value: ${JSON.stringify(addValue)}?`);
+    
                 if (userConfirmed) {
-                    await set(roomRef, addValue);
+                    // Save only the quantity to roomRef
+                    if (selectedType === 'equipmentQuantity') {
+                        await set(roomRef, addValue); // Save quantity
+                        await set(minimumValueRef, minimumValue); // Save minimumValue separately
+                    } else {
+                        await set(roomRef, addValue); // Save other types normally
+                    }
+    
                     updateInventoryData(selectedRoom, filter);
                     alert('Key and value added successfully');
-                    document.getElementById('inventory-addKey').value = '';
+                    addKeyInput.value = '';
                     document.getElementById('inventory-addValue').value = '';
                     updateRoomSelectionOptions();
                 }
@@ -1860,6 +2024,10 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             alert('Please provide a room, key, and value.');
         }
+    });
+    
+    document.getElementById('infoButton').addEventListener('click', function () {
+        alert('The minimum Value is used to specify a threshold or condition for certain equipment. If the equipment quantity falls below this value, a notification or minimum can be triggered.');
     });
 
     document.getElementById('deleteButton').addEventListener('click', async function () {
@@ -1873,6 +2041,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 const userConfirmed = confirm(`Are you sure you want to delete Key: ${selectedKey}?`);
                 if (userConfirmed) {
                     await remove(keyRef);
+                    if (selectedKey.toLowerCase().includes('quantity')) {
+                        const minimumValueRef = ref(db, `quantityMinimumValues/${selectedKey}`);
+                        await remove(minimumValueRef);
+                    }
                     console.log('Key removed successfully');
                     updateInventoryData(selectedRoom, filter); 
                     // Clear the input field after update
@@ -1889,28 +2061,91 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update placeholder based on selected data type
     document.getElementById('valueDataType').addEventListener('change', function () {
-        const valueInput = document.getElementById('inventory-addValue');
-        valueInput.value = "";
-        const selectedType = document.getElementById('valueDataType').value;
-        if (selectedType === 'Date') {
-            valueInput.placeholder = 'MM/DD/YYYY';
-        } else if (selectedType === 'Time') {
-            valueInput.placeholder = 'HH:MM:SS AM/PM';
-        } else if (selectedType === 'Boolean') {
-            valueInput.placeholder = 'True/False only';
-        } else {
-            valueInput.placeholder = 'Value';
-        }
+        const selectedType = this.value;
+        const minimumValueInput = document.getElementById('minimumValueInputAdd');
+        const addValue = document.getElementById('inventory-addValue');
+        const infoButton = document.getElementById('infoButton');
+        const addKeyInput = document.getElementById('inventory-addKey');
 
-        const valueDataType = this.value; // Get the selected value of the dropdown
-        const equipmentStatusValue = 'equipmentStatus'; // String to compare with
+        const presencePrefix = document.getElementById('presence-prefix');
+        const quantitySuffix = document.getElementById('quantity-suffix');
+        const statusSuffix = document.getElementById('status-suffix');
+        const presenceSuffix = document.getElementById('presence-suffix');
+        
+
+        presencePrefix.style.display = 'none';
+        quantitySuffix.style.display = 'none';
+        statusSuffix.style.display = 'none';
+        presenceSuffix.style.display = 'none';
+        
+        if (selectedType === 'equipmentQuantity') {
+            addKeyInput.value = ''; 
+            quantitySuffix.style.display = 'inline'; 
+            addKeyInput.placeholder = 'Enter equipment name'; 
+        } else if (selectedType === 'equipmentStatus') {
+            addKeyInput.value = ''; 
+            statusSuffix.style.display = 'inline'; 
+            addKeyInput.placeholder = 'Enter equipment name'; 
+        } else if (selectedType === 'equipmentPresence') {
+            addKeyInput.value = ''; 
+            presencePrefix.style.display = 'inline'; 
+            presenceSuffix.style.display = 'inline'; 
+            addKeyInput.placeholder = 'Enter equipment name'; 
+        } 
+        else {
+            presencePrefix.style.display = 'none';
+            quantitySuffix.style.display = 'none';
+            statusSuffix.style.display = 'none';
+            presenceSuffix.style.display = 'none';
+            addKeyInput.placeholder = 'Key';
+        }
     
-        if (valueDataType === equipmentStatusValue) {
-            document.getElementById('valueForStatusKeyTypeForAdd').style.display = 'inline';
-            document.getElementById('inventory-addValue').style.display = 'none';
+        // Reset the input field value and placeholder
+        addValue.value = "";
+        if (selectedType === 'Date') {
+            addValue.placeholder = 'MM/DD/YYYY';
+        } else if (selectedType === 'Time') {
+            addValue.placeholder = 'HH:MM:SS AM/PM';
         } else {
-            document.getElementById('valueForStatusKeyTypeForAdd').style.display = 'none';
-            document.getElementById('inventory-addValue').style.display = 'inline';
+            addValue.placeholder = 'Value';
+        }
+    
+        // Show or hide the additional input field based on the selected type
+        if (selectedType === 'equipmentQuantity') {
+            document.querySelector(".input-wrapper").style.width = '95%';
+            minimumValueInput.style.display = 'flex';
+            addValue.style.width = '50%';
+            minimumValueInput.style.width = '40%';
+            infoButton.style.width = '10%'
+            if (window.innerWidth < 1000) {
+                // Adjust styles for smaller screens
+                addValue.style.width = '90%'; // Adjusted width for smaller screens
+                minimumValueInput.style.width = '100%';
+                document.querySelector(".input-wrapper").style.width = '100%';
+            } else {
+                // Styles for screens wider than 1000px
+                addValue.style.width = '90%';
+                minimumValueInput.style.width = '100%';
+                infoButton.style.width = '10%';
+            }
+        } else {
+            minimumValueInput.style.display = 'none';
+            document.querySelector(".input-wrapper").style.width = '100%';
+            addValue.style.width = '90%'; // Reset width to default
+        }
+    
+        // Handle the equipmentStatus specific dropdown visibility
+        const valueForStatusDropdown = document.getElementById('valueForStatusKeyTypeForAdd');
+        const valueForBooleanDropdown = document.getElementById('valueForBooleanTypeForAdd');
+        if (selectedType === 'equipmentStatus') {
+            valueForStatusDropdown.style.display = 'inline';
+            addValue.style.display = 'none';
+        } else if (selectedType === 'equipmentPresence' || selectedType === 'Boolean') {
+            valueForBooleanDropdown.style.display = 'inline';
+            addValue.style.display = 'none';
+        } else {
+            valueForStatusDropdown.style.display = 'none';
+            addValue.style.display = 'inline';
         }
     });
 
@@ -1928,25 +2163,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     let roomStatusAlert = false;
 
                     for (const key in roomData) {
-                        if (key.toLowerCase().includes('status') && roomData[key] !== 'All Working') {
-                            roomStatusAlert = true;
-                            break;
-                        }
-
-                        // Additional checks for specific keys and their minimum quantities
-                        const quantityChecks = {
-                            blanketsQuantity: 2,
-                            bucketsQuantity: 1,
-                            carpetsQuantity: 2,
-                            chairsQuantity: 4,
-                            curtainsQuantity: 3,
-                            doorKnobsQuantity: 4,
-                            lightBulbsQuantity: 4,
-                            standFansQuantity: 1,
-                            tablesQuantity: 2
-                        };
-
-                        if (quantityChecks[key] !== undefined && roomData[key] < quantityChecks[key]) {
+                        const quantityMinRef = ref(db, `quantityMinimumValues/${key}`);
+                        const quantityMinSnapshot = await get(quantityMinRef);
+                        const minValue = quantityMinSnapshot.val();
+    
+                        // Check if the value is less than the minimum and set roomStatusAlert if necessary
+                        if (key.toLowerCase().includes('status') && roomData[key] !== 'All Working' || key.toLowerCase().includes('present') && roomData[key] !== true  || minValue !== null && roomData[key] < minValue) {
                             roomStatusAlert = true;
                             break;
                         }
@@ -1972,11 +2194,34 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error updating room selection options:', error);
         }
     }
+    
+    function updateStyles(selectedKey) {
+        const updateInput = document.querySelector('.inventory-update input[type="text"]');
+        const minimumValueInputContainer = document.getElementById('minimumValueInput');
 
+        if (selectedKey.toLowerCase().includes('quantity')) {
+            minimumValueInputContainer.style.display = 'flex';
+            updateInput.style.width = '100%';
+            minimumValueInputContainer.style.width = '100%';
+
+            if (window.innerWidth < 1000) {
+                updateInput.style.width = '90%';
+                minimumValueInputContainer.style.width = '100%';
+            }
+        } else {
+            minimumValueInputContainer.style.display = 'none';
+            updateInput.style.width = '90%';
+        }
+    }
     // Call the function to update room selection options
     updateRoomSelectionOptions();
+    document.getElementById('presence-prefix').style.display = 'none';
+    document.getElementById('quantity-suffix').style.display = 'none';
+    document.getElementById('status-suffix').style.display = 'none';
+    document.getElementById('presence-suffix').style.display = 'none';
     
 });
+
 const recentRooms = new Set(); // To keep track of rooms that have just become available
 
 // Listen for changes in the isRoomAvailable field for all rooms
