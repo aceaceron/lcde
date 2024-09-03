@@ -102,9 +102,9 @@ export async function saveCheckInData(roomNum, initialDuration, checkInDate, che
     }
 }
 
-window.fetchRoomData = async function(roomNum) {
+window.fetchRoomData = async function (roomNum) {
     try {
-        const roomRef = ref(db, 'currentCheckIn'); 
+        const roomRef = ref(db, 'currentCheckIn');
         const snapshot = await get(roomRef);
 
         if (snapshot.exists()) {
@@ -126,7 +126,7 @@ window.fetchRoomData = async function(roomNum) {
                     extensionStatus = 'NONE';
                 } else if (extension === 1) {
                     extensionStatus = extension + " HOUR";
-                }else {
+                } else {
                     extensionStatus = extension + " HOURS";
                 }
 
@@ -183,7 +183,7 @@ function startCountdown(initialDuration, roomButton, checkInId, roomId) {
             roomButton.style.color = 'black';
             roomButton.querySelector('.availability-text').textContent = "Available";
             saveRoomState(roomId, true); // 'true' indicates the room is now available
-            
+
             moveDataToPastCheckIn(checkInId);
         } else {
             initialDuration -= 1000;
@@ -195,7 +195,7 @@ async function moveDataToPastCheckIn(checkInId) {
     try {
         // Reference to the current check-in/check-out data using the unique ID
         const checkInCheckOutRef = ref(db, `currentCheckIn/${checkInId}`);
-        
+
         // Get the data
         const checkInCheckOutSnapshot = await get(checkInCheckOutRef);
         const checkInCheckOutData = checkInCheckOutSnapshot.val();
@@ -203,20 +203,20 @@ async function moveDataToPastCheckIn(checkInId) {
         if (checkInCheckOutData) {
             // Get the current date and time
             const now = new Date();
-            
+
             // Format the check-out time as HH:MM:SS AM/PM
             const hours = now.getHours() % 12 || 12; // Convert 0 to 12 for AM/PM
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
             const formattedTime = `${hours}:${minutes}:${seconds} ${ampm}`;
-            
+
             // Format the check-out date as MM/DD/YYYY or M/DD/YYYY
             const month = now.getMonth() + 1; // getMonth() is zero-based
             const day = now.getDate();
             const year = now.getFullYear();
             const formattedDate = `${month}/${day}/${year}`;
-            
+
             // Overwrite the checkOutTime and checkOutDate
             checkInCheckOutData.checkOutTime = formattedTime;
             checkInCheckOutData.checkOutDate = formattedDate;
@@ -226,10 +226,10 @@ async function moveDataToPastCheckIn(checkInId) {
 
             // Save the data to the pastCheckIn table under the current date using the unique ID
             const pastCheckInRef = ref(db, `pastCheckIn/${checkOutDateDirectory}/${checkInId}`);
-            
+
             // Save the data to the pastCheckIn table
             await set(pastCheckInRef, checkInCheckOutData);
-            
+
             // Remove the old data from currentCheckIn
             await remove(checkInCheckOutRef);
         }
@@ -243,7 +243,7 @@ async function moveDataToPastCheckIn(checkInId) {
 const ADDITIONAL_EXTENSIONFEE_NON_AIRCON = 100;
 const ADDITIONAL_EXTENSIONFEE_AIRCON = 150;
 
-document.getElementById('extendHr').addEventListener('click', async function() {
+document.getElementById('extendHr').addEventListener('click', async function () {
     try {
         // Show confirmation dialog to the user
         const confirmed = confirm('Are you sure you that the guest paid to extend the check-out time by one hour?');
@@ -302,7 +302,7 @@ document.getElementById('extendHr').addEventListener('click', async function() {
 
         // Construct the ISO 8601 date-time string
         const isoDateTimeStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hours24.toString().padStart(2, '0')}:${minutes}:${seconds}`;
-        
+
         // Log the formatted ISO date-time string for debugging
         console.log('Combining check-out date and time:', isoDateTimeStr);
 
@@ -316,7 +316,7 @@ document.getElementById('extendHr').addEventListener('click', async function() {
 
         // Add one hour to the check-out time
         checkOutDateTime.setHours(checkOutDateTime.getHours() + 1);
-        
+
         // Convert the updated Date object to ISO string and local date/time strings
         const newCheckoutTimeISO = checkOutDateTime.toISOString();
         const newCheckoutDate = checkOutDateTime.toLocaleDateString();
@@ -337,7 +337,7 @@ document.getElementById('extendHr').addEventListener('click', async function() {
             checkOutDate: newCheckoutDate,
             checkOutTime: newCheckoutTime,
             extension: newExtension,
-            totalDuration: newTotalDuration, 
+            totalDuration: newTotalDuration,
             totalAmountPaid: newTotalAmount
         });
 
@@ -354,14 +354,14 @@ document.getElementById('extendHr').addEventListener('click', async function() {
     }
 });
 
-document.getElementById('timeOut').addEventListener('click', async function() {
+document.getElementById('timeOut').addEventListener('click', async function () {
     // Confirm action with the user
     const confirmed = confirm('Are you sure you want to mark this room as checked out? This action cannot be undone.');
 
     if (confirmed) {
         // Proceed if user pressed OK
         const checkInId = document.getElementById('UnavailCheckInId').textContent; // Fetch the displayed unique ID
-        
+
         // Reset the room's UI
         const roomButton = document.querySelector(`.room[data-room="${roomNum}"]`);
         if (roomButton) {
@@ -369,7 +369,7 @@ document.getElementById('timeOut').addEventListener('click', async function() {
             roomButton.style.color = 'black';
             roomButton.querySelector('.availability-text').textContent = "Available";
         }
-        
+
         try {
             // Update the room's availability and "wasRecentlyAvailable" status in Firebase
             await saveRoomState(roomNum, true);
@@ -379,7 +379,7 @@ document.getElementById('timeOut').addEventListener('click', async function() {
 
             // Hide the sliding panel
             document.getElementById('slidingPanelUnavail').classList.remove('show');
-            
+
             // Clear the countdown interval
             clearInterval(countdown);
 
@@ -438,7 +438,7 @@ export async function initializeRoom(roomElement, roomId) {
         changeAvailability(roomElement);
     }
 
-    roomElement.addEventListener('click', async function() {
+    roomElement.addEventListener('click', async function () {
         if (window.yesBtnPressed) {
             // Save the room state to Firebase
             await saveRoomState(roomId, false);
@@ -479,7 +479,7 @@ async function displayReservations() {
                     } else {
                         extensionStatus = reservationData.extension + " HOURS";
                     }
-                    
+
                     reservationDivElement.innerHTML = `
                         <p><strong>Reservation ID:</strong><br>${reservationId}</p>
                         <p><strong>Reservation Date:</strong><br>${reservationData.reservationCheckInDate}</p>
@@ -508,49 +508,49 @@ async function displayReservations() {
                         invalidButtons.forEach(button => button.style.display = 'none');
                     }
 
-                    reservationDivElement.querySelector('.btn-book').addEventListener('click', function() {
+                    reservationDivElement.querySelector('.btn-book').addEventListener('click', function () {
                         const today = new Date();
                         const checkInDate = new Date(reservationData.reservationCheckInDate);
                         const checkInTime = reservationData.reservationCheckInTime;
                         const amountToPay = reservationData.amountToPay;
-                    
+
                         // Parsing the check-in time considering AM/PM
                         const [time, modifier] = checkInTime.split(' ');
                         let [checkInHour, checkInMinute] = time.split(':').map(Number);
-                    
+
                         if (modifier === 'PM' && checkInHour < 12) {
                             checkInHour += 12;
                         } else if (modifier === 'AM' && checkInHour === 12) {
                             checkInHour = 0;
                         }
-                    
+
                         // Combine the check-in date and time into a single Date object
                         const checkInDateTime = new Date(checkInDate.getFullYear(), checkInDate.getMonth(), checkInDate.getDate(), checkInHour, checkInMinute);
-                    
+
                         // Calculate the differences
                         const timeDifference = checkInDateTime - today;
                         const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
                         const minutesDifference = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60));
-                        
+
                         console.log(minutesDifference);
-                    
+
                         if (daysDifference > 0) {
                             alert(`Reservation check-in date for ID: ${reservationId} is not yet today. \nIt will be ${daysDifference} day/s to go.`);
                         } else if (daysDifference === 0 && minutesDifference > 10) {
                             alert(`Reservation for ID: ${reservationId} is not yet in this time. \n${minutesDifference} minutes to go.`);
                         } else if (daysDifference === 0 && minutesDifference <= 10) {
                             const roomElement = reservationDivElement.querySelector('p:nth-child(4)');
-                            
+
                             if (roomElement) {
                                 const roomText = roomElement.textContent.trim();
-                        
+
                                 // Extract the room type by splitting based on the colon and trimming
                                 const roomTypeMatch = roomText.match(/Room Type:\s*(.*)/);
                                 const roomType = roomTypeMatch ? roomTypeMatch[1].trim() : 'Unknown';
-                        
+
                                 // Ask if the customer has paid the amount
                                 const isPaid = confirm(`Has the customer paid the amount PHP ${amountToPay}.00, for Reservation ID: ${reservationId}?\nThis action can not be undone!`);
-                        
+
                                 if (isPaid) {
                                     showRoomSelectionModal(roomType, reservationData, reservationId);
                                 } else {
@@ -562,20 +562,20 @@ async function displayReservations() {
                         } else if (daysDifference === 0 || minutesDifference < 0 && minutesDifference >= -10) {
 
                             const continueBooking = confirm(`The reservation for ID: ${reservationId} check-in time has passed less than 10 minutes.\nDo the customer what to continue the booking? `);
-                            
+
                             if (continueBooking) {
                                 const roomElement = reservationDivElement.querySelector('p:nth-child(4)');
-                                
+
                                 if (roomElement) {
                                     const roomText = roomElement.textContent.trim();
-                            
+
                                     // Extract the room type by splitting based on the colon and trimming
                                     const roomTypeMatch = roomText.match(/Room Type:\s*(.*)/);
                                     const roomType = roomTypeMatch ? roomTypeMatch[1].trim() : 'Unknown';
-                            
+
                                     // Ask if the customer has paid the amount
                                     const isPaid = confirm(`Has the customer paid the amount PHP ${amountToPay}.00, for Reservation ID: ${reservationId}?\nThis action can not be undone!`);
-                            
+
                                     if (isPaid) {
                                         showRoomSelectionModal(roomType, reservationData, reservationId);
                                     } else {
@@ -584,7 +584,7 @@ async function displayReservations() {
                                 }
                             } else {
                                 const failedBooking = confirm(`The reservation for ID: ${reservationId} will be invalid if continue.`);
-                                if (failedBooking) {  
+                                if (failedBooking) {
                                     const reservationCheckInDate = reservationData.reservationCheckInDate;
                                     const reason = 'Customer showed passed the check-out time and decide to discontinue booking.';
                                     moveToFailedReservations(reservationId, reservationCheckInDate, reason);
@@ -596,30 +596,30 @@ async function displayReservations() {
                         }
                     });
 
-                    reservationDivElement.querySelector('.btn-no-show').addEventListener('click', function() {
+                    reservationDivElement.querySelector('.btn-no-show').addEventListener('click', function () {
                         const today = new Date();
                         const checkInDate = new Date(reservationData.reservationCheckInDate);
                         const checkInTime = reservationData.reservationCheckInTime;
                         const reservationCheckInDate = reservationData.reservationCheckInDate;
-                    
+
                         // Parsing the check-in time considering AM/PM
                         const [time, modifier] = checkInTime.split(' ');
                         let [checkInHour, checkInMinute] = time.split(':').map(Number);
-                    
+
                         if (modifier === 'PM' && checkInHour < 12) {
                             checkInHour += 12;
                         } else if (modifier === 'AM' && checkInHour === 12) {
                             checkInHour = 0;
                         }
-                    
+
                         // Combine the check-in date and time into a single Date object
                         const checkInDateTime = new Date(checkInDate.getFullYear(), checkInDate.getMonth(), checkInDate.getDate(), checkInHour, checkInMinute);
-                    
+
                         // Calculate the differences
                         const timeDifference = checkInDateTime - today;
                         const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
                         const minutesDifference = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60));
-                    
+
                         if (daysDifference > 0) {
                             alert(`Reservation check-in date for ID: ${reservationId} is not yet today. \nIt will be ${daysDifference} day/s to go.`);
                         } else if (daysDifference === 0 && minutesDifference > 10) {
@@ -633,10 +633,10 @@ async function displayReservations() {
                         }
                     });
 
-                    reservationDivElement.querySelector('.btn-invalid').addEventListener('click', function() {
+                    reservationDivElement.querySelector('.btn-invalid').addEventListener('click', function () {
                         openInvalidModal(reservationId, reservationData);
                     });
-                    
+
                 }
             }
         } else {
@@ -779,10 +779,10 @@ async function moveToCompletedReservations(reservationId, reservationCheckInDate
         if (reservationSnapshot.exists()) {
             const reservationDetails = reservationSnapshot.val();
             reservationDetails.checkInId = checkInId; // Add the checkInId to the reservation details
-            
+
             await set(completedReservationRef, reservationDetails);
             await remove(reservationRef);
-            
+
             location.reload(true);
         } else {
             console.error('Reservation data does not exist for ID:', reservationId);
@@ -805,10 +805,10 @@ async function moveToFailedReservations(reservationId, reservationDate, reason) 
         if (reservationSnapshot.exists()) {
             const reservationDetails = reservationSnapshot.val();
             reservationDetails.reasonForFailure = reason; // Add the reason to the reservation details
-            
+
             await set(failedReservationRef, reservationDetails);
             await remove(reservationRef);
-            
+
             console.log('Reservation moved to failedReservations successfully.');
             location.reload(true);
         } else {
@@ -861,15 +861,15 @@ function openInvalidModal(reservationId, reservationData) {
 
     const editReservationValueInput = document.querySelector('#editReservationValue');
     editReservationValueInput.value = reservationData.lastName;
-    
+
     // Show the invalid reservation modal
     invalidModal.style.display = 'flex'; // Show the modal
 }
 
 // Handle move to failed reservations
-moveToFailedBtn.onclick = async function() {
+moveToFailedBtn.onclick = async function () {
     const reason = document.querySelector('.reasonOfFailure').value.trim();
-    
+
     if (reason === '') {
         alert('Please provide a reason for the failure.');
         return;
@@ -880,12 +880,12 @@ moveToFailedBtn.onclick = async function() {
 };
 
 // Handle editing reservation values
-editReservationKey.addEventListener('change', function() {
+editReservationKey.addEventListener('change', function () {
     const selectedKey = editReservationKey.value;
     editReservationValue.value = currentReservationData[selectedKey] || '';
 });
 
-editReservationBtn.onclick = async function() {
+editReservationBtn.onclick = async function () {
     const selectedKey = editReservationKey.value;
     const newValue = editReservationValue.value.trim();
 
@@ -918,11 +918,11 @@ editReservationBtn.onclick = async function() {
     }
 };
 // Close the modal when the user clicks on the close button
-closeInvalidModal.onclick = function() {
+closeInvalidModal.onclick = function () {
     invalidModal.style.display = 'none';
 };
 
-document.getElementById('closeRoomSelectionModal').addEventListener('click', function() {
+document.getElementById('closeRoomSelectionModal').addEventListener('click', function () {
     document.getElementById('roomSelectionModal').style.display = 'none';
 });
 
@@ -941,7 +941,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Function to listen for WebSocket errors
-window.addEventListener('error', function(event) {
+window.addEventListener('error', function (event) {
     // Check if the error is related to WebSocket or Firebase and if it includes "ERR_NETWORK_CHANGED"
     if (event.message && event.message.includes('ERR_NETWORK_CHANGED')) {
         alert('No internet connection. Please check your network and try again.');
@@ -949,7 +949,7 @@ window.addEventListener('error', function(event) {
 });
 
 // Alternatively, listen specifically for unhandled rejections (often includes network errors)
-window.addEventListener('unhandledrejection', function(event) {
+window.addEventListener('unhandledrejection', function (event) {
     if (event.reason && event.reason.message && event.reason.message.includes('ERR_NETWORK_CHANGED')) {
         alert('No internet connection. Please check your network and try again.');
     }
@@ -957,14 +957,14 @@ window.addEventListener('unhandledrejection', function(event) {
 
 // Add event listeners to <li> elements
 document.querySelectorAll('.tableNames ul li').forEach(li => {
-    li.addEventListener('click', function() {
+    li.addEventListener('click', function () {
         const tableId = this.id; // Get the ID of the clicked <li>
         const tableDatasDiv = document.querySelector('.tableDatas');
-        
+
         tableDatasDiv.style.display = "flex";
         // Clear previous data  
         tableDatasDiv.innerHTML = '';
-        
+
         // Check if the clicked <li> is 'currentCheckIn'
         if (tableId === 'currentCheckIn') {
             // Specific logic for 'currentCheckIn'
@@ -978,17 +978,17 @@ document.querySelectorAll('.tableNames ul li').forEach(li => {
 });
 
 // Add event listener to #workAccounts element
-document.querySelector('#workAccounts').addEventListener('click', function() {
+document.querySelector('#workAccounts').addEventListener('click', function () {
     fetchWorkAccountsData();
 });
 
 // Function to fetch and display 'workAccounts' data
 function fetchWorkAccountsData() {
     const tableDatasDiv = document.querySelector('.tableDatas');
-    
+
     // Clear previous data
     tableDatasDiv.innerHTML = '';
-    
+
     // Replace 'workAccounts' with the appropriate path in your database
     const dataRef = ref(db, 'workAccounts');
     get(dataRef).then((snapshot) => {
@@ -1001,7 +1001,7 @@ function fetchWorkAccountsData() {
             const headers = Object.keys(data[Object.keys(data)[0]]);
             const thead = document.createElement('thead');
             const headerRow = document.createElement('tr');
-            
+
             // Create table headers without ID
             headers.forEach(header => {
                 const th = document.createElement('th');
@@ -1037,7 +1037,7 @@ function fetchWorkAccountsData() {
 // Function to fetch and display 'currentCheckIn' data
 function fetchCurrentCheckInData() {
     const tableDatasDiv = document.querySelector('.tableDatas');
-    
+
     // Replace 'currentCheckIn' with the appropriate path in your database
     const dataRef = ref(db, 'currentCheckIn');
     get(dataRef).then((snapshot) => {
@@ -1210,25 +1210,25 @@ function fetchAndDisplayData(tableId, subId) {
             thead.appendChild(headerRow);
             table.appendChild(thead);
 
-            
+
             const tbody = document.createElement('tbody');
 
             Object.entries(data).forEach(([id, record]) => {
                 const row = document.createElement('tr');
-                numOfRows++; 
+                numOfRows++;
 
                 const idCell = document.createElement('td');
                 idCell.textContent = id;
                 row.appendChild(idCell);
-                
+
                 headers.forEach(header => {
                     const td = document.createElement('td');
-                    td.textContent = record[header]; 
+                    td.textContent = record[header];
                     row.appendChild(td);
 
                     // Calculate totals
                     if (header === 'totalAmountPaid' && tableId === 'pastCheckIn') {
-                        totalAmountPaid += parseFloat(record[header]) || 0; 
+                        totalAmountPaid += parseFloat(record[header]) || 0;
                     }
                     if (header === 'numberOfGuests' && tableId === 'pastCheckIn') {
                         totalGuests += parseInt(record[header]) || 0;
@@ -1240,10 +1240,10 @@ function fetchAndDisplayData(tableId, subId) {
 
             // Create and display the summary above the table
             if (tableId === 'pastCheckIn') {
-                const summaryHeader= document.createElement('h3');
+                const summaryHeader = document.createElement('h3');
                 summaryHeader.textContent = `Past Check Ins Summary For ${subId}`;
                 summaryHeader.classList.add('summary-header');
-                
+
                 const summaryDetails = document.createElement('p');
                 summaryDetails.innerHTML = `
                     Number of Check Out Sessions: ${numOfRows}<br>
@@ -1251,7 +1251,7 @@ function fetchAndDisplayData(tableId, subId) {
                     Overall Amount Paid: PHP ${totalAmountPaid.toFixed(2)}
                 `;
                 summaryDetails.classList.add('summary-details');
-                
+
                 tableDatasDiv.appendChild(summaryHeader);
                 tableDatasDiv.appendChild(summaryDetails);
             }
@@ -1266,17 +1266,17 @@ function fetchAndDisplayData(tableId, subId) {
     });
 }
 
-document.querySelector('#clearData').addEventListener('click', async function() {
+document.querySelector('#clearData').addEventListener('click', async function () {
     document.querySelector('.tableDatas').textContent = '';
     if (window.innerWidth < 1000) {
         document.querySelector('.tableDatas').style.display = 'none';
     }
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     displayReservations();
     displayComments();
-    
+
     // Get elements
     const dashboardSection = document.querySelector('.dashboard');
     const accountsSection = document.querySelector('.accounts');
@@ -1295,7 +1295,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // Add click event listeners
-    document.querySelector('#dashboard').addEventListener('click', function() {
+    document.querySelector('#dashboard').addEventListener('click', function () {
         dashboardSection.style.display = 'flex';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
@@ -1304,7 +1304,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inventorySection.style.display = 'none';
     });
 
-    document.querySelector('#accounts').addEventListener('click', function() {
+    document.querySelector('#accounts').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'flex';
         recordsSection.style.display = 'none';
@@ -1313,7 +1313,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inventorySection.style.display = 'none';
     });
 
-    document.querySelector('#records').addEventListener('click', function() {
+    document.querySelector('#records').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'flex';
@@ -1321,7 +1321,7 @@ document.addEventListener('DOMContentLoaded', function() {
         commentsSection.style.display = 'none';
         inventorySection.style.display = 'none';
     });
-    document.querySelector('#commentsList').addEventListener('click', function() {
+    document.querySelector('#commentsList').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
@@ -1329,7 +1329,7 @@ document.addEventListener('DOMContentLoaded', function() {
         commentsSection.style.display = 'flex';
         inventorySection.style.display = 'none';
     });
-    document.querySelector('#mnlBooking').addEventListener('click', function() {
+    document.querySelector('#mnlBooking').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
@@ -1337,7 +1337,7 @@ document.addEventListener('DOMContentLoaded', function() {
         commentsSection.style.display = 'none';
         inventorySection.style.display = 'none';
     });
-    document.querySelector('#inventory').addEventListener('click', function() {
+    document.querySelector('#inventory').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
@@ -1345,7 +1345,7 @@ document.addEventListener('DOMContentLoaded', function() {
         commentsSection.style.display = 'none';
         inventorySection.style.display = 'flex';
     });
-    document.querySelector('#dashboardBtn').addEventListener('click', function() {
+    document.querySelector('#dashboardBtn').addEventListener('click', function () {
         dashboardSection.style.display = 'flex';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
@@ -1354,7 +1354,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inventorySection.style.display = 'none';
     });
 
-    document.querySelector('#accountsBtn').addEventListener('click', function() {
+    document.querySelector('#accountsBtn').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'flex';
         recordsSection.style.display = 'none';
@@ -1363,7 +1363,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inventorySection.style.display = 'none';
     });
 
-    document.querySelector('#recordsBtn').addEventListener('click', function() {
+    document.querySelector('#recordsBtn').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'flex';
@@ -1371,7 +1371,7 @@ document.addEventListener('DOMContentLoaded', function() {
         commentsSection.style.display = 'none';
         inventorySection.style.display = 'none';
     });
-    document.querySelector('#mnlBookingBtn').addEventListener('click', function() {
+    document.querySelector('#mnlBookingBtn').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
@@ -1379,7 +1379,7 @@ document.addEventListener('DOMContentLoaded', function() {
         commentsSection.style.display = 'none';
         inventorySection.style.display = 'none';
     });
-    document.querySelector('#commentsListBtn').addEventListener('click', function() {
+    document.querySelector('#commentsListBtn').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
@@ -1387,7 +1387,7 @@ document.addEventListener('DOMContentLoaded', function() {
         commentsSection.style.display = 'flex';
         inventorySection.style.display = 'none';
     });
-    document.querySelector('#inventoryBtn').addEventListener('click', function() {
+    document.querySelector('#inventoryBtn').addEventListener('click', function () {
         dashboardSection.style.display = 'none';
         accountsSection.style.display = 'none';
         recordsSection.style.display = 'none';
@@ -1487,111 +1487,131 @@ function displayComments() {
     });
 }
 
-document.querySelector('#saveManualBooking').addEventListener('click', async function() {
+document.querySelector('#saveManualBooking').addEventListener('click', async function () {
     const saveBooking = confirm('Are you sure the data is correct and accurate?\nThis action cannot be undone once saved.');
 
-        if (saveBooking) {
-            // Get input values
-            const checkInDate = document.getElementById('mbCheckInDate').value;
-            const checkInTime = document.getElementById('mbCheckInTime').value;
-            const checkOutDate = document.getElementById('mbCheckOutDate').value;
-            const checkOutTime = document.getElementById('mbCheckOutTime').value;
-            const roomNum = document.getElementById('mbRoomNum').value;
+    if (saveBooking) {
+        // Get input values
+        const checkInDate = document.getElementById('mbCheckInDate').value;
+        const checkInTime = document.getElementById('mbCheckInTime').value;
+        const checkOutDate = document.getElementById('mbCheckOutDate').value;
+        const checkOutTime = document.getElementById('mbCheckOutTime').value;
+        const roomNum = document.getElementById('mbRoomNum').value;
 
-            // Convert numeric inputs
-            const numberOfGuests = parseInt(document.getElementById('mbNumOfGuests').value, 10);
-            const extension = parseInt(document.getElementById('mbExtension').value, 10);
-            const initialDuration = parseInt(document.getElementById('mbInitialDuration').value, 10);
-            const totalDuration = parseInt(document.getElementById('mbTotalDuration').value, 10);
-            const totalAmountPaid = parseFloat(document.getElementById('mbTotalAmountPaid').value); 
-    
-            try {
-                // Save the check-in data
-                await saveCheckInData(
-                    roomNum,
-                    initialDuration,
-                    checkInDate,
-                    checkInTime,
-                    checkOutDate,
-                    checkOutTime,
-                    extension,
-                    totalDuration,
-                    numberOfGuests,
-                    totalAmountPaid,
-                    true
-                );
-            } catch (error) {
-            }
+        // Convert numeric inputs
+        const numberOfGuests = parseInt(document.getElementById('mbNumOfGuests').value, 10);
+        const extension = parseInt(document.getElementById('mbExtension').value, 10);
+        const initialDuration = parseInt(document.getElementById('mbInitialDuration').value, 10);
+        const totalDuration = parseInt(document.getElementById('mbTotalDuration').value, 10);
+        const totalAmountPaid = parseFloat(document.getElementById('mbTotalAmountPaid').value);
+
+        try {
+            // Save the check-in data
+            await saveCheckInData(
+                roomNum,
+                initialDuration,
+                checkInDate,
+                checkInTime,
+                checkOutDate,
+                checkOutTime,
+                extension,
+                totalDuration,
+                numberOfGuests,
+                totalAmountPaid,
+                true
+            );
+        } catch (error) {
         }
+    }
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    document.getElementById('clearInventoryData').addEventListener('click', function () {
+        if (window.innerWidth < 1000) {
+            document.querySelector('.inventory-data').innerHTML = '';
+            document.querySelector('.inventory-data').style.display = 'none';
+        } else {
+            document.querySelector('.inventory-data').innerHTML = '';
+        }
+    });
+    
     // Function to fetch and update inventory data with filtering
     async function updateInventoryData(selectedRoom, filter) {
+        document.querySelector('.inventory-data').style.display = 'flex';
         if (selectedRoom) {
             try {
                 const roomRef = ref(db, `rooms/${selectedRoom}`);
                 const roomSnapshot = await get(roomRef);
                 const roomData = roomSnapshot.val();
-    
+
                 if (roomData) {
+                    // Fetch all quantityMinimumValues in one go
+                    const quantityMinRef = ref(db, `quantityMinimumValues`);
+                    const quantityMinSnapshot = await get(quantityMinRef);
+                    const quantityMinValues = quantityMinSnapshot.val() || {};
+
                     let tableHTML = '<table class="data-table">';
                     tableHTML += '<thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>';
-    
+
                     const roomTableKeySelect = document.getElementById('roomTableKey');
                     roomTableKeySelect.innerHTML = ''; // Clear previous options
-    
+
                     for (const key in roomData) {
                         const value = roomData[key];
-    
+                        const minValue = quantityMinValues[key] || null;
+
+                        // Display value with or without icon
+                        let displayValue = document.createElement('span');
+                        displayValue.textContent = value;
+
+                        let hasExclamationIcon = false;
+
+                        // Check if the status key does not equal 'All Working' or if the value is less than the minimum and add an icon if necessary
+                        if (
+                            (key.toLowerCase().includes('status') && value !== 'All Working') ||
+                            (key.toLowerCase().includes('present') && value !== true) ||
+                            (minValue !== null && value < minValue)
+                        ) {
+                            const icon = document.createElement('i');
+                            icon.className = 'fa-solid fa-triangle-exclamation';
+                            displayValue.appendChild(icon);
+                            hasExclamationIcon = true;
+                        }
+
                         // Apply the filter
                         if (filter === 'quantity' && !key.toLowerCase().includes('quantity')) continue;
                         if (filter === 'status' && !key.toLowerCase().includes('status')) continue;
                         if (filter === 'present' && !key.toLowerCase().includes('present')) continue;
                         if (filter === 'boolean' && typeof value !== 'boolean') continue;
-                        if (filter === 'forRepair' && (!key.toLowerCase().includes('status') || value === 'All Working')) continue;
-    
-                        // Display value with or without icon
-                        let displayValue = document.createElement('span');
-                        displayValue.textContent = value;
-    
-                        const quantityMinRef = ref(db, `quantityMinimumValues/${key}`);
-                        const quantityMinSnapshot = await get(quantityMinRef);
-                        const minValue = quantityMinSnapshot.val();
+                        if (filter === 'forRepair' && !hasExclamationIcon) continue;
 
-                        // Check if the status key does not equal 'All Working' or  if the value is less than the minimum and add an icon if necessary
-                        if (key.toLowerCase().includes('status') && value !== 'All Working' || key.toLowerCase().includes('present') && value !== true || minValue !== null && value < minValue) {
-                            const icon = document.createElement('i');
-                            icon.className = 'fa-solid fa-triangle-exclamation';
-                            displayValue.appendChild(icon);
-                        }
-    
                         tableHTML += `<tr><td>${key}</td><td>${displayValue.outerHTML}</td></tr>`;
-    
+
                         const option = document.createElement('option');
                         option.value = key;
                         option.textContent = key;
                         option.dataset.value = value !== undefined ? value : null;
                         roomTableKeySelect.appendChild(option);
                     }
-    
+
                     tableHTML += '</tbody></table>';
                     document.querySelector('.inventory-data').innerHTML = tableHTML;
-    
+
                     const updateInput = document.querySelector('.inventory-update input[type="text"]');
                     const statusDropdown = document.getElementById('valueForStatusKeyType');
                     const booleanDropdown = document.getElementById('valueForBooleanTypeForUpdate');
                     const minimumValueInputContainer = document.getElementById('minimumValueInput');
                     const updateMinimumValue = document.getElementById('update-minimumValue');
-    
+
                     const firstOption = roomTableKeySelect.options[0];
-    
+
                     if (firstOption) {
                         const key = firstOption.value.toLowerCase();
                         const selectedValue = firstOption.dataset.value;
-    
+
                         // Automatically toggle input fields based on the filter
-                        if (filter === 'status' || filter === 'forRepair') {
+                        if (filter === 'status' || key.includes('status')) {
                             updateInput.style.display = 'none';
                             statusDropdown.style.display = 'inline';
                             minimumValueInputContainer.style.display = 'none';
@@ -1602,18 +1622,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             statusDropdown.style.display = 'none';
                             updateInput.style.display = 'flex';
                             booleanDropdown.style.display = 'none';
-    
-                            // Fetch the placeholder value for updateminimumValue
-                            const quantityMinimumRef = ref(db, `quantityMinimumValues/${firstOption.value}`);
-                            const quantityMinimumSnapshot = await get(quantityMinimumRef);
-                            const quantityMinimumValue = quantityMinimumSnapshot.val();
-    
+
+                            const quantityMinimumValue = quantityMinValues[firstOption.value];
                             updateMinimumValue.placeholder = `Minimum value: ${quantityMinimumValue}` || "Enter Minimum Value";
-                        } else if (filter === 'present' || filter === 'boolean') {
+                        } else if (filter === 'present' || filter === 'boolean' || key.includes('present')) {
                             updateInput.style.display = 'none';
                             statusDropdown.style.display = 'none';
                             minimumValueInputContainer.style.display = 'none';
-                            booleanDropdown.style.display = 'flex'
+                            booleanDropdown.style.display = 'flex';
                             booleanDropdown.value = selectedValue || null;
                         } else {
                             updateInput.style.display = 'inline';
@@ -1621,15 +1637,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             minimumValueInputContainer.style.display = 'none';
                             booleanDropdown.style.display = 'none';
                         }
-    
+
                         updateInput.placeholder = `Current value: ${selectedValue}` || "Select a value";
-                        updateInput.value = ''; // Clear the input field after update
+                        updateInput.value = '';
                     } else {
                         // Handle the case where there are no options available
                         updateInput.style.display = 'inline';
                         statusDropdown.style.display = 'none';
+                        booleanDropdown.style.display = 'none';
+                        minimumValueInputContainer.style.display = 'none';
                         updateInput.placeholder = "No options available";
-                        updateInput.value = ''; // Clear the input field after update
+                        updateInput.value = '';
                     }
                 }
             } catch (error) {
@@ -1637,7 +1655,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-    
+
     // Initial room selection event listener
     document.getElementById('roomSelected').addEventListener('change', function () {
         const selectedRoom = this.value;
@@ -1659,15 +1677,15 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const roomNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'eventHall'];
             let combinedData = {};
-    
+
             const fetchPromises = roomNumbers.map(async (roomNumber) => {
                 const roomRef = ref(db, `rooms/${roomNumber === 'eventHall' ? 'eventHall' : roomNumber}`);
                 const roomSnapshot = await get(roomRef);
                 return roomSnapshot.val();
             });
-    
+
             const allRoomsData = await Promise.all(fetchPromises);
-    
+
             allRoomsData.forEach(roomData => {
                 if (roomData) {
                     Object.keys(roomData).forEach(key => {
@@ -1680,29 +1698,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 }
             });
-    
+
             displayData(combinedData);
         } catch (error) {
             console.error('Error fetching and combining room data:', error);
             alert('An error occurred while fetching and combining data.');
         }
     }
-    
+
     function displayData(data) {
-        const outputElement = document.querySelector('.inventory-data'); // Target the .inventory-data container
-        outputElement.innerHTML = ''; // Clear any previous content
-        
+        const outputElement = document.querySelector('.inventory-data');
+        outputElement.innerHTML = '';
+
         let tableHTML = '<table class="data-table">';
         tableHTML += '<thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>';
-        
+
         for (const [key, value] of Object.entries(data)) {
             tableHTML += `<tr><td>${key}</td><td>${value}</td></tr>`;
         }
-        
+
         tableHTML += '</tbody></table>';
-        outputElement.innerHTML = tableHTML; // Insert the generated HTML into the container
+        outputElement.innerHTML = tableHTML;
     }
-    
+
     // Filter event listener
     document.getElementById('tableFilter').addEventListener('change', function () {
         const selectedRoom = document.getElementById('roomSelected').value;
@@ -1717,38 +1735,38 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedRoom = document.getElementById('roomSelected').value;
         const selectedKey = document.getElementById('roomTableKey').value;
         const filter = document.getElementById('tableFilter').value;
-    
+
         let newValueRaw;
         let minimumValueRaw;
-    
+
         if (selectedKey.toLowerCase().includes('status')) {
             // Use the value from the status dropdown
             newValueRaw = document.getElementById('valueForStatusKeyType').value;
         } else if (selectedKey.toLowerCase().includes('present')) {
             newValueRaw = document.getElementById('valueForBooleanTypeForUpdate').value;
-            newValueRaw = newValueRaw === 'true'; 
+            newValueRaw = newValueRaw === 'true';
         } else {
             // Use the value from the input field
             newValueRaw = document.querySelector('.inventory-update input[type="text"]').value;
         }
-    
+
         // Check if the key contains "quantity" and get the minimum value if needed
         if (selectedKey.toLowerCase().includes('quantity')) {
             minimumValueRaw = document.getElementById('update-minimumValue').value;
         }
-    
+
         if (selectedRoom && selectedKey && newValueRaw !== undefined && newValueRaw !== null) {
             try {
                 const keyRef = ref(db, `rooms/${selectedRoom}/${selectedKey}`);
                 const keySnapshot = await get(keyRef);
                 const currentValue = keySnapshot.val();
-    
+
                 // Determine the type of the existing value
                 const currentType = typeof currentValue;
-    
+
                 // Convert the new value to match the current type
                 let newValue;
-    
+
                 switch (currentType) {
                     case 'number':
                         newValue = parseFloat(newValueRaw);
@@ -1760,7 +1778,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         break;
                     case 'boolean':
                         newValueRaw = document.getElementById('valueForBooleanTypeForUpdate').value;
-                        newValue = newValueRaw === 'true'; 
+                        newValue = newValueRaw === 'true';
                         break;
                     case 'string':
                         if (selectedKey.toLowerCase().includes('date')) {
@@ -1781,7 +1799,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 // Parse the input time
                                 let [time, period] = newValueRaw.split(/\s+/);
                                 let [hour, minute] = time.split(':');
-    
+
                                 // Combine with seconds and period
                                 newValue = `${hour}:${minute}:00 ${period.toUpperCase()}`;
                                 newValue = newValue.replace(/^0/, '');
@@ -1799,18 +1817,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         clearInputFields();
                         return;
                 }
-    
+
                 // Update in Firebase
                 const userConfirmed = confirm(`Are you sure you want to update the value for ${selectedKey}?`);
                 if (userConfirmed) {
                     await set(keyRef, newValue);
-    
+
                     // If it's a quantity key, also update minimum value in a separate path
                     if (selectedKey.toLowerCase().includes('quantity') && minimumValueRaw !== '' && !isNaN(minimumValueRaw)) {
                         const minimumValueRef = ref(db, `quantityMinimumValues/${selectedKey}`);
                         await set(minimumValueRef, parseInt(minimumValueRaw));
                     }
-    
+
                     alert('Value updated successfully');
                     updateInventoryData(selectedRoom, filter);
                     updateRoomSelectionOptions();
@@ -1828,7 +1846,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('roomTableKey').addEventListener('change', async function () {
         const selectedKey = this.value;
         const selectedValue = this.options[this.selectedIndex].dataset.value;
-        const selectedRoom = document.getElementById('roomSelected').value; 
+        const selectedRoom = document.getElementById('roomSelected').value;
 
 
         const updateInput = document.querySelector('.inventory-update input[type="text"]');
@@ -1882,7 +1900,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 statusDropdown.style.display = 'none';
                 booleanDropdown.style.display = 'none';
                 minimumValueInputContainer.style.display = 'none';
-                
+
                 updateInput.placeholder = selectedValue;
                 updateInput.value = "";
             }
@@ -1908,45 +1926,57 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedRoom = document.getElementById('roomSelected').value;
         const addKeyInput = document.getElementById('inventory-addKey');
         let addKey = addKeyInput.value;
-        const addValueRaw = document.getElementById('inventory-addValue').value;
+        let addValueRaw = document.getElementById('inventory-addValue').value;
         const statusDropdown = document.getElementById('valueForStatusKeyTypeForAdd');
         const booleanDropdown = document.getElementById('valueForBooleanTypeForAdd');
         const filter = document.getElementById('tableFilter').value;
         const selectedType = valueDataTypeSelect.value;
-    
+
         let minimumValue;
 
+        addKey = addKey.replace(/\s+/g, ' ').toLowerCase();
+
+        addKey = addKey.replace(/\b\w/g, (match) => match.toUpperCase()).replace(/\s+/g, '');
+        addKey = addKey.charAt(0).toLowerCase() + addKey.slice(1)
+
+        // Append the appropriate suffix based on selectedType
         if (selectedType === 'equipmentQuantity') {
-            addKey = addKey.toLowerCase() + 'Quantity';
+            addKey = addKey + 'Quantity';
         } else if (selectedType === 'equipmentStatus') {
-            addKey = addKey.toLowerCase() + 'Status';
+            addKey = addKey + 'Status';
+            addValueRaw = statusDropdown.value;
         } else if (selectedType === 'equipmentPresence') {
-            addKey = 'is' + addKey.charAt(0).toUpperCase() + addKey.slice(1).toLowerCase() + 'Present';
+            addKey = 'is' + addKey.charAt(0).toUpperCase() + addKey.slice(1) + 'Present';
+            addValueRaw = booleanDropdown.value === 'true';
+        } else if (selectedType === 'Boolean') {
+            addValueRaw = booleanDropdown.value === 'true';
         }
-        
-    
-        if ((selectedRoom && addKey && addValueRaw) || selectedType) {
+
+        if (selectedRoom !== "" && addKey && addKey !== "Quantity" && addKey !== "Status" && addKey !== "isPresent" && addValueRaw && selectedType)
+            {
             try {
                 const roomRef = ref(db, `rooms/${selectedRoom}/${addKey}`);
                 const minimumValueRef = ref(db, `quantityMinimumValues/${addKey}`);
                 const keySnapshot = await get(roomRef);
                 const existingValue = keySnapshot.val();
                 let addValue;
-    
+
                 if (existingValue !== null) {
-                    alert("Please provide a room, key, and value.");
+                    alert("Key already in the database!");
                     addKeyInput.value = '';
                     document.getElementById('inventory-addValue').value = '';
+                    document.getElementById('add-minimumValue').value = '';
                     return;
                 } else {
                     switch (selectedType) {
                         case 'equipmentQuantity':
                             addValue = parseInt(addValueRaw);
                             minimumValue = parseInt(document.getElementById('add-minimumValue').value);
-    
+
                             if (isNaN(addValue) || isNaN(minimumValue)) {
                                 alert('Please enter valid numeric values for Quantity and Minimum Value.');
                                 document.getElementById('inventory-addValue').value = '';
+                                document.getElementById('add-minimumValue').value = '';
                                 return;
                             }
                             break;
@@ -2000,9 +2030,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             break;
                     }
                 }
-    
+
                 const userConfirmed = confirm(`Are you sure you want to add Key: ${addKey}, Value: ${JSON.stringify(addValue)}?`);
-    
+
                 if (userConfirmed) {
                     // Save only the quantity to roomRef
                     if (selectedType === 'equipmentQuantity') {
@@ -2011,7 +2041,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else {
                         await set(roomRef, addValue); // Save other types normally
                     }
-    
+
                     updateInventoryData(selectedRoom, filter);
                     alert('Key and value added successfully');
                     addKeyInput.value = '';
@@ -2023,11 +2053,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } else {
             alert('Please provide a room, key, and value.');
+            addKeyInput.value = '';
+            document.getElementById('inventory-addValue').value = '';
+            document.getElementById('add-minimumValue').value = '';
         }
     });
-    
+
     document.getElementById('infoButton').addEventListener('click', function () {
-        alert('The minimum Value is used to specify a threshold or condition for certain equipment. If the equipment quantity falls below this value, a notification or minimum can be triggered.');
+        alert('The Minimum Value is used to specify a minimum quantity for certain equipment. If the equipment quantity falls below this value, a notification or minimum can be triggered.');
     });
 
     document.getElementById('deleteButton').addEventListener('click', async function () {
@@ -2046,7 +2079,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         await remove(minimumValueRef);
                     }
                     console.log('Key removed successfully');
-                    updateInventoryData(selectedRoom, filter); 
+                    updateInventoryData(selectedRoom, filter);
                     // Clear the input field after update
                     document.querySelector('.inventory-update input[type="text"]').value = '';
                     updateRoomSelectionOptions();
@@ -2071,27 +2104,35 @@ document.addEventListener('DOMContentLoaded', function () {
         const quantitySuffix = document.getElementById('quantity-suffix');
         const statusSuffix = document.getElementById('status-suffix');
         const presenceSuffix = document.getElementById('presence-suffix');
-        
+
 
         presencePrefix.style.display = 'none';
         quantitySuffix.style.display = 'none';
         statusSuffix.style.display = 'none';
         presenceSuffix.style.display = 'none';
-        
+
         if (selectedType === 'equipmentQuantity') {
-            addKeyInput.value = ''; 
-            quantitySuffix.style.display = 'inline'; 
-            addKeyInput.placeholder = 'Enter equipment name'; 
+            addKeyInput.value = '';
+            quantitySuffix.style.display = 'inline';
+            presencePrefix.style.display = 'none';
+            statusSuffix.style.display = 'none';
+            presenceSuffix.style.display = 'none';
+            addKeyInput.placeholder = 'Enter equipment name';
         } else if (selectedType === 'equipmentStatus') {
-            addKeyInput.value = ''; 
-            statusSuffix.style.display = 'inline'; 
-            addKeyInput.placeholder = 'Enter equipment name'; 
+            addKeyInput.value = '';
+            statusSuffix.style.display = 'inline';
+            presencePrefix.style.display = 'none';
+            quantitySuffix.style.display = 'none';
+            presenceSuffix.style.display = 'none';
+            addKeyInput.placeholder = 'Enter equipment name';
         } else if (selectedType === 'equipmentPresence') {
-            addKeyInput.value = ''; 
-            presencePrefix.style.display = 'inline'; 
-            presenceSuffix.style.display = 'inline'; 
-            addKeyInput.placeholder = 'Enter equipment name'; 
-        } 
+            addKeyInput.value = '';
+            presencePrefix.style.display = 'inline';
+            presenceSuffix.style.display = 'inline';
+            quantitySuffix.style.display = 'none';
+            statusSuffix.style.display = 'none';
+            addKeyInput.placeholder = 'Enter equipment name';
+        }
         else {
             presencePrefix.style.display = 'none';
             quantitySuffix.style.display = 'none';
@@ -2099,7 +2140,7 @@ document.addEventListener('DOMContentLoaded', function () {
             presenceSuffix.style.display = 'none';
             addKeyInput.placeholder = 'Key';
         }
-    
+
         // Reset the input field value and placeholder
         addValue.value = "";
         if (selectedType === 'Date') {
@@ -2109,7 +2150,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             addValue.placeholder = 'Value';
         }
-    
+
         // Show or hide the additional input field based on the selected type
         if (selectedType === 'equipmentQuantity') {
             document.querySelector(".input-wrapper").style.width = '95%';
@@ -2133,18 +2174,22 @@ document.addEventListener('DOMContentLoaded', function () {
             document.querySelector(".input-wrapper").style.width = '100%';
             addValue.style.width = '90%'; // Reset width to default
         }
-    
+
         // Handle the equipmentStatus specific dropdown visibility
         const valueForStatusDropdown = document.getElementById('valueForStatusKeyTypeForAdd');
         const valueForBooleanDropdown = document.getElementById('valueForBooleanTypeForAdd');
+
         if (selectedType === 'equipmentStatus') {
             valueForStatusDropdown.style.display = 'inline';
+            valueForBooleanDropdown.style.display = 'none';
             addValue.style.display = 'none';
         } else if (selectedType === 'equipmentPresence' || selectedType === 'Boolean') {
             valueForBooleanDropdown.style.display = 'inline';
+            valueForStatusDropdown.style.display = 'none';
             addValue.style.display = 'none';
         } else {
             valueForStatusDropdown.style.display = 'none';
+            valueForBooleanDropdown.style.display = 'none';
             addValue.style.display = 'inline';
         }
     });
@@ -2153,39 +2198,45 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const roomNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'eventHall'];
             const roomSelected = document.getElementById('roomSelected');
-            
+    
+            // Fetch all rooms data in one go
+            const roomsRef = ref(db, `rooms`);
+            const roomsSnapshot = await get(roomsRef);
+            const roomsData = roomsSnapshot.val() || {};
+    
+            // Fetch all quantity minimum values in one go
+            const quantityMinRef = ref(db, `quantityMinimumValues`);
+            const quantityMinSnapshot = await get(quantityMinRef);
+            const quantityMinValues = quantityMinSnapshot.val() || {};
+    
             for (const roomNumber of roomNumbers) {
-                const roomRef = ref(db, `rooms/${roomNumber === 'eventHall' ? 'eventHall' : roomNumber}`);
-                const roomSnapshot = await get(roomRef);
-                const roomData = roomSnapshot.val();
-
+                const roomData = roomsData[roomNumber === 'eventHall' ? 'eventHall' : roomNumber];
+    
                 if (roomData) {
                     let roomStatusAlert = false;
-
+    
                     for (const key in roomData) {
-                        const quantityMinRef = ref(db, `quantityMinimumValues/${key}`);
-                        const quantityMinSnapshot = await get(quantityMinRef);
-                        const minValue = quantityMinSnapshot.val();
+                        const minValue = quantityMinValues[key] || null;
     
                         // Check if the value is less than the minimum and set roomStatusAlert if necessary
-                        if (key.toLowerCase().includes('status') && roomData[key] !== 'All Working' || key.toLowerCase().includes('present') && roomData[key] !== true  || minValue !== null && roomData[key] < minValue) {
+                        if (
+                            (key.toLowerCase().includes('status') && roomData[key] !== 'All Working') ||
+                            (key.toLowerCase().includes('present') && roomData[key] !== true) ||
+                            (minValue !== null && roomData[key] < minValue)
+                        ) {
                             roomStatusAlert = true;
                             break;
                         }
                     }
-
+    
                     // Update the option text with the warning icon if needed
                     const option = roomSelected.querySelector(`option[value="${roomNumber}"]`);
-                    
+    
                     if (option) {
-                        if (roomNumber === `eventHall` && roomStatusAlert) {
-                            option.textContent = `Event Hall ⚠️`;
-                        } else if (roomNumber === `eventHall` && !roomStatusAlert) {
-                            option.textContent = `Event Hall`;
-                        } else if (roomStatusAlert) {
-                            option.textContent = `Room ${roomNumber} ⚠️`;
+                        if (roomNumber === `eventHall`) {
+                            option.textContent = roomStatusAlert ? `Event Hall ⚠️` : `Event Hall`;
                         } else {
-                            option.textContent = `Room ${roomNumber}`;
+                            option.textContent = roomStatusAlert ? `Room ${roomNumber} ⚠️` : `Room ${roomNumber}`;
                         }
                     }
                 }
@@ -2219,7 +2270,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('quantity-suffix').style.display = 'none';
     document.getElementById('status-suffix').style.display = 'none';
     document.getElementById('presence-suffix').style.display = 'none';
-    
+
 });
 
 const recentRooms = new Set(); // To keep track of rooms that have just become available
@@ -2371,13 +2422,13 @@ async function updateRoomData(roomNumber) {
                     let formHTML = '<div class="roomChecking-header">';
                     formHTML += `<h3>Room ${roomNumber}</h3>`;
                     formHTML += `<div class="close-btn" id="closeBtnRoomChecking">&times;</div>`;
-                    const currentSection = currentPage === 0 ? "Equipment Quantity" 
-                                    : currentPage === 1 ? "Equipment Status" 
-                                    : currentPage === 2 ? "Equipment Presence" 
-                                    : "Summary of Changes";
+                    const currentSection = currentPage === 0 ? "Equipment Quantity"
+                        : currentPage === 1 ? "Equipment Status"
+                            : currentPage === 2 ? "Equipment Presence"
+                                : "Summary of Changes";
                     formHTML += `</div>`;
                     formHTML += `<p>Room Checking - ${currentSection}</p>`;
-    
+
                     if (currentPage === 3) {
                         // Summary page
                         formHTML += '<div class="form-summary"><h4>Summary of Changes</h4><ul>';
@@ -2399,7 +2450,7 @@ async function updateRoomData(roomNumber) {
                         const currentKeySet = Object.keys(pages)[currentPage];
                         pages[currentKeySet].forEach(({ key, value }) => {
                             formHTML += `<div class="form-group"><label for="${key}">${key}</label>`;
-                
+
                             if (typeof value === 'boolean') {
                                 formHTML += `<input type="checkbox" id="${key}" name="${key}" ${value ? 'checked' : ''} />`;
                             } else if (typeof value === 'number') {
@@ -2424,22 +2475,22 @@ async function updateRoomData(roomNumber) {
                         }
                         formHTML += '</div>';
                     }
-                
+
                     console.log('Rendered Form HTML:', formHTML); // Debugging statement
                     document.querySelector('.roomChecking-container').innerHTML = formHTML;
-                
+
                     // Handle navigation
                     document.getElementById('nextPage')?.addEventListener('click', function () {
                         saveCurrentPageValues();
                         currentPage++;
                         renderPage();
                     });
-                
+
                     document.getElementById('previousPage')?.addEventListener('click', function () {
                         currentPage--;
                         renderPage();
                     });
-                
+
                     // Handle form submission on the summary page
                     if (currentPage === 3) {
                         document.getElementById('submitUpdatedValue')?.addEventListener('click', async function () {
@@ -2450,10 +2501,10 @@ async function updateRoomData(roomNumber) {
                                 pages.summary.forEach(({ key, newValue }) => {
                                     updates[key] = newValue;
                                 });
-                
+
                                 // Set wasRecentlyAvailable to false
                                 updates.wasRecentlyAvailable = false;
-                
+
                                 await update(roomRef, updates);
                                 alert('Room data updated successfully!');
                                 document.querySelector('.roomChecking').style.display = 'none';
@@ -2464,24 +2515,24 @@ async function updateRoomData(roomNumber) {
                             }
                         });
                     }
-                
+
                     // Handle close button
                     document.getElementById('closeBtnRoomChecking').addEventListener('click', function () {
                         document.querySelector('.roomChecking').style.display = 'none';
                     });
                 }
-                
+
                 // Save the values from the current page before moving to the next one
                 function saveCurrentPageValues() {
                     const currentKeySet = Object.keys(pages)[currentPage];
                     pages[currentKeySet].forEach(({ key, value }) => {
                         const element = document.getElementById(key);
-                
+
                         if (!element) {
                             console.warn(`Element with id ${key} not found.`);
                             return;
                         }
-                
+
                         let newValue;
                         if (element.type === 'checkbox') {
                             newValue = element.checked;
@@ -2492,7 +2543,7 @@ async function updateRoomData(roomNumber) {
                         } else {
                             newValue = element.value;
                         }
-                
+
                         // Find the corresponding item in the pages array
                         const pageItem = pages[currentKeySet].find(item => item.key === key);
                         if (pageItem) {
@@ -2509,12 +2560,12 @@ async function updateRoomData(roomNumber) {
                             pageItem.value = newValue; // Update the current value
                         }
                     });
-                
+
                     // Debugging
                     console.log('Updated Pages Summary:', pages.summary);
                 }
-                
-                
+
+
                 // Render the first page initially
                 renderPage();
             } else {
