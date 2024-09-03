@@ -1180,7 +1180,6 @@ nav ul li:hover {
     border-collapse: collapse;
     /* Ensure borders are collapsed */
     font-size: 14px;
-
 }
 
 /* Style table headers */
@@ -1358,6 +1357,29 @@ nav ul li:hover {
     justify-content: space-around;
     padding: 10px;
 }
+.inventory-header div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.inventory-header div div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.clear-btn {
+    height: 50px;
+    width: 50px;
+    padding: 15px;
+    border-radius: 30px;
+    background-color: red;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+}
 
 .inventory-container {
     display: flex;
@@ -1367,7 +1389,7 @@ nav ul li:hover {
     height: 100%;
 }
 
-.inventory-add {
+.inventory-add, .inventory-update {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1418,6 +1440,7 @@ nav ul li:hover {
     background-color: white;
     padding: 2%;
     overflow-y: auto;
+    min-height: 100%;
 }
 
 #roomSelected,
@@ -1464,6 +1487,7 @@ nav ul li:hover {
 
 .input-wrapper {
     display: inline-flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -1814,7 +1838,14 @@ nav ul li:hover {
         align-items: center;
         justify-content: center;
     }
-
+    .inventory-header div {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .inventory-header div div {
+        width: 100%;
+    }
     .inventory-container {
         flex-direction: column;
         justify-content: center;
@@ -1827,6 +1858,7 @@ nav ul li:hover {
         padding: 10px;
         min-height: auto;
         overflow-y: visible;
+        display: none;
     }
 
     .inventory-management {
@@ -1869,7 +1901,7 @@ nav ul li:hover {
 
     #roomSelected,
     #tableFilter {
-        font-size: 16px;
+        font-size: 20px;
         padding: 2%;
         width: 100%;
         margin-left: 0px;
