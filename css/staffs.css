@@ -1229,16 +1229,37 @@ nav ul li:hover {
     flex-direction: row;
     padding: 10px;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .manualBooking-inputs {
-    width: auto;
+    width: 90%;
+    display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.manualBooking-content input {
+.manualBooking-inputs div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     width: 90%;
+}
+
+.manualBooking-inputs div label {
+    text-align: left;
+    width: auto;
+}
+.manualBooking-inputs div input, .manualBooking-inputs div select {
+    width: 70%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 30px;
+}
+.manualBooking-inputs input {
+    width: 85%;
     padding: 10px;
     margin: 10px;
     border-radius: 30px;
@@ -1779,7 +1800,7 @@ nav ul li:hover {
     }
 
     .manualBooking-inputs {
-        flex-direction: row;
+        flex-direction: column;
         width: 100%;
         margin-right: 4vw;
     }

@@ -464,18 +464,74 @@
             </p>
             <div class="manualBooking-content">
                 <div class="manualBooking-inputs">
-                    <input type="text" id="mbRoomNum" placeholder="Room Number" required>
-                    <input type="text" id="mbCheckInDate" placeholder="Check-In Date: MM/DD/YYYY" required>
-                    <input type="text" id="mbCheckInTime" placeholder="Check-In Time: HH:MM:SS AM/PM" required>
-                    <input type="text" id="mbCheckOutDate" placeholder="Check-Out Date: MM/DD/YYYY" required>
-                    <input type="text" id="mbCheckOutTime" placeholder="Check-Out Time: HH:MM:SS AM/PM" required>
+                    <div>
+                        <label for="mbRoomNum">Room Number</label>
+                        <select id="mbRoomNum" required>
+                            <option value="" disabled selected hidden>Select a room number</option>
+                            <option value="1">Room 1</option>
+                            <option value="2">Room 2</option>
+                            <option value="3">Room 3</option>
+                            <option value="4">Room 4</option>
+                            <option value="5">Room 5</option>
+                            <option value="6">Room 6</option>
+                            <option value="7">Room 7</option>
+                            <option value="8">Room 8</option>
+                            <option value="9">Room 9</option>
+                            <option value="10">Room 10</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label>Check-In Date</label>
+                        <input type="text" id="mbCheckInDate" placeholder="MM/DD/YYYY" required>
+                    </div>
+                    <div>
+                        <label>Check-In Time</label>
+                        <input type="text" id="mbCheckInTime" placeholder="HH:MM AM/PM">
+                    </div>
+                    <div>
+                        <label>Check-Out Date</label>
+                        <input type="text" id="mbCheckOutDate" placeholder="MM/DD/YYYY" required>
+                    </div>
+                    <div>
+                        <label>Check-Out Time</label>
+                        <input type="text" id="mbCheckOutTime" placeholder="HH:MM AM/PM" required>
+                    </div>
                 </div>
                 <div class="manualBooking-inputs">
-                    <input type="number" id="mbNumOfGuests" placeholder="Number of Guests" required>
-                    <input type="number" id="mbExtension" placeholder="Extension" required>
-                    <input type="number" id="mbInitialDuration" placeholder="Duration" required>
-                    <input type="number" id="mbTotalDuration" placeholder="Total Duration with Extension" required>
-                    <input type="number" id="mbTotalAmountPaid" placeholder="Total Amount Paid" required>      
+                    <div>
+                        <label for="mbNumOfGuests">Number of Guests</label>
+                        <select id="mbNumOfGuests" required>
+                            <option value="" disabled selected hidden>Select number of guests</option>
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5 Guests</option>
+                            <option value="6">6 Guests</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Initial Duration</label>
+                        <select id="mbInitialDuration">
+                            <option value="" disabled selected hidden>Select duration</option>
+                            <option value="3">3 Hours</option>
+                            <option value="6">6 Hours</option>
+                            <option value="24">24 Hours</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Extension</label>
+                        <input type="number" id="mbExtension" placeholder="in hours" required>
+                    </div>
+                    <div>
+                        <label>Total Duration</label>
+                        <input type="number" id="mbTotalDuration" placeholder="Duration + Extension" required>
+                    </div>
+                    <div>
+                        <label>Total Amount Paid</label>     
+                        <input type="number" id="mbTotalAmountPaid" placeholder="PHP" required>    
+                    </div>  
                 </div>
             </div>
             <button id="saveManualBooking">SAVE</button>
@@ -491,6 +547,13 @@
     <script type="module" src="js/userAccountManagement.js"></script>
     <script type="module" src="js/roomManagement.js"></script>
     <script type="module" src="js/authorization.js"></script>
+    <script type="module" src="js/checkInCheckOutManagement.js"></script>
+    <script type="module" src="js/reservationManagement.js"></script>
+    <script type="module" src="js/recordsManagement.js"></script>
+    <script type="module" src="js/manualSavingOfCheckOutManagement.js"></script>
+    <script type="module" src="js/manageComments.js"></script>
+    <script type="module" src="js/roomEquipmentChecking.js"></script>
+    <script type="module" src="js/roomEquipmentManagement.js"></script>
     
     <script src="js/staffs.js"></script>
     <script src="https://kit.fontawesome.com/b629388bc1.js" crossorigin="anonymous"></script>
