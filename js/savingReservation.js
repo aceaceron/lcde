@@ -211,7 +211,7 @@ document.querySelector('.confirm').addEventListener('click', async function (eve
             termsCheckbox.checked = false;
         } catch (error) {
             console.error("Error writing to Firebase: ", error);
-            hideLoadingScreenLoadingScreen();
+            hideLoadingScreen();
         } finally {
             // Hide the loading screen
             hideLoadingScreen();
@@ -223,12 +223,10 @@ document.querySelector('.confirm').addEventListener('click', async function (eve
 });
 
 function showLoadingScreen() {
-    console.log('Showing loading screen');
     document.getElementById('loadingScreen').style.display = 'block';
 }
 
 function hideLoadingScreen() {
-    console.log('Hiding loading screen');
     document.getElementById('loadingScreen').style.display = 'none';
 }
 

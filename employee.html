@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin | La Casa de Espeso</title>
     <link rel="stylesheet" href="css/staffs.css">
 </head>
+
 <body>
     <div class="bg"></div>
-    
+
     <div class="header">
+
+        <button id="copyDataButton" style="display: none;">Copy Data</button>
         <div class="menu-container">
             <button class="menu-button" style="display: none;"><img src="img/menu.png" class="menuLogo"></button>
-            
+
             <img src="img/logo.png" class="logo">
         </div>
-        
+
         <div class="header-right">
             <i class="fa-solid fa-list-check"></i>
             <h3 class="hello">Hello, Employee
                 <div class="date-time" id="dateTime"></div>
             </h3>
-            <button id="logoutButton" class="logout-button"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+            <button id="logoutButton" class="logout-button"><i
+                    class="fa-solid fa-arrow-right-from-bracket"></i></button>
         </div>
     </div>
 
@@ -30,13 +35,15 @@
             <div class="close-btn" id="closeBtnToDoList">&times;</div>
         </div>
     </div>
-    
+
     <div class="roomChecking">
         <div class="roomChecking-container"></div>
     </div>
-    
+
     <div class="dashboard">
-        <div class="reservation"><p class="noReservationsFound">No reservation found.</p></div>
+        <div class="reservation">
+            <p class="noReservationsFound">No reservation found.</p>
+        </div>
         <div id="roomSelectionModal" class="roomSelectModal">
             <div class="roomSelectModal-content">
                 <h3>Select a room to assign the reservation:</h3>
@@ -77,12 +84,13 @@
                     </select>
                     <input type="text" class="editReservationValue" id="editReservationValue">
                 </div>
-                
+
                 <button id="editReservation">Edit Value</button>
                 <hr>
-                <p style="color: red;">The following values can not be edited. If the invalid value/s is/are found at the following. it is recommended to pass another reservation.</p>
+                <p style="color: red;">The following values can not be edited. If the invalid value/s is/are found at
+                    the following. it is recommended to pass another reservation.</p>
                 <div class="reservationInfo">
-                    
+
                     <div class="reservationInfo-content">
                         <p>Reservation ID: <span id="reservationInfoId"></span></p>
                         <p>Date of Check-in: <span id="reservationInfoCheckInDate"></span></p>
@@ -95,10 +103,10 @@
                         <p>Number of Guest: <span id="reservationInfoNumOfGuest"></span></p>
                         <p>Amount to pay: <span id="reservationInfoTotalAmountPaid"></span></p>
                     </div>
-                    
+
                 </div>
-                
-                
+
+
             </div>
         </div>
         <div class="rooms-content">
@@ -166,14 +174,18 @@
                 <input type="text" id="numberOfGuestNonAircon" value="2" oninput="validateInput(this)">
                 <button onclick="updateGuestCount('numberOfGuestNonAircon', true)">+</button>
             </div>
-            <p style="color: red;">If the number of guests exceed 2 guests, additional fee of <b>PHP 200.00</b> per guest, maximum of 6 guests per room.</p>
+            <p style="color: red;">If the number of guests exceed 2 guests, additional fee of <b>PHP 200.00</b> per
+                guest, maximum of 6 guests per room.</p>
         </div>
-        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Standard Room', 3, 300)">3 HOURS<br>PHP 300.00</button>
-        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Standard Room', 6, 500)">6 HOURS<br>PHP 500.00</button>
-        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Standard Room', 24, 1000)">24 HOURS<br>PHP 1000.00</button>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Standard Room', 3, 300)">3 HOURS<br>PHP
+            300.00</button>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Standard Room', 6, 500)">6 HOURS<br>PHP
+            500.00</button>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Standard Room', 24, 1000)">24
+            HOURS<br>PHP 1000.00</button>
     </div>
-    
-    <div class="sliding-panel" id="slidingPanelAirconAvail">    
+
+    <div class="sliding-panel" id="slidingPanelAirconAvail">
         <div class="close-btn" id="closeBtnAircon">&times;</div>
         <div id="roomInfoNonAircon">Select a room to see the details.</div>
         <h3>AIR-CONDITIONED ROOM</h3>
@@ -184,19 +196,23 @@
                 <input type="text" id="numberOfGuestAircon" value="2" oninput="validateInput(this)">
                 <button onclick="updateGuestCount('numberOfGuestAircon', true)">+</button>
             </div>
-            <p style="color: red;">If the number of guests exceed 2 guests, additional fee of <b>PHP 250.00</b> per guest, maximum of 6 guests per room.</p>
+            <p style="color: red;">If the number of guests exceed 2 guests, additional fee of <b>PHP 250.00</b> per
+                guest, maximum of 6 guests per room.</p>
         </div>
-        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Air-conditioned Room', 3, 500)">3 HOURS<br>PHP 500.00</button>
-        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Air-conditioned Room', 6, 800)">6 HOURS<br>PHP 800.00</button>
-        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Air-conditioned Room', 24, 1500)">24 HOURS<br>PHP 1500.00</button>
-        
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Air-conditioned Room', 3, 500)">3
+            HOURS<br>PHP 500.00</button>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Air-conditioned Room', 6, 800)">6
+            HOURS<br>PHP 800.00</button>
+        <button class="duration" type="submit" onclick="openPopUpPaymentWindow('Air-conditioned Room', 24, 1500)">24
+            HOURS<br>PHP 1500.00</button>
+
     </div>
 
     <div class="sliding-panel" id="slidingPanelUnavail">
         <div class="close-btn" id="closeBtnUnavail">&times;</div>
         <div id="roomInfoUnavail">Select a room to see the details.</div>
         <h2 style="color: red;">OCCUPIED</h2>
-        
+
         <div id="unavailDetails">
             <div class="unavailDetails-content">
                 <p>ID:<br><span id="UnavailCheckInId"></span></p>
@@ -207,7 +223,7 @@
                 <p>Time In:<br><span id="UnavailCheckInTime"></span></p>
             </div>
             <div class="unavailDetails-content">
-                
+
                 <p>Extension:<br><span id="UnavailExtension"></span></p>
                 <p>Date of Check-out:<br><span id="UnavailCheckOutDate"></span></p>
                 <p>Time Out:<br><span id="UnavailCheckOutTime"></span></p>
@@ -215,13 +231,13 @@
                 <p>Number of Guest:<br><span id="UnavailNumOfGuest"></span></p>
                 <p>Amount paid:<br><span id="UnavailTotalAmountPaid"></span></p>
             </div>
-            
-            
+
+
         </div>
         <button type="button" id="extendHr">EXTEND 1 HOUR</button><br>
         <button type="button" id="timeOut">TIME OUT</button>
     </div>
-    
+
     <div class="confirmationWindow">
         <div class="paymentConfirmation" id="popupPaymentWindow">
             <h3>Are you sure the customer paid for the following:</h3>
@@ -238,11 +254,12 @@
                 <hr>
                 <div id="ConfirmationAmountPaid">Room Rate: </div>
                 <div id="ConfirmationNumOfGuest">Number of Guest: </div>
-                
+
                 <div id="ConfirmationTotalAmountPaid">Total Amount Paid: </div>
                 <p style="color: red;">
                     <input type="checkbox" id="paymentConfirmationChkbox">
-                    As the admin, I have read all the information above and if I agree to this action, it will be unreversable.
+                    As the admin, I have read all the information above and if I agree to this action, it will be
+                    unreversable.
                 </p>
                 <div class="btnConfirmation">
                     <button type="button" id="yesBtn" disabled>YES</button>
@@ -250,47 +267,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="uselessDivs" style="display: none;">
-        <div id="workAccounts"></div>
-        <div id="dashboard"></div>
-        <div id="accounts"></div>
-        <div id="records"></div>
-        <div id="clearData"></div>
-        <div id="saveManualBooking"></div>
-        <div id="dashboardBtn"></div>
-        <div id="accountsBtn"></div>
-        <div id="recordsBtn"></div>
-        <div id="mnlBookingBtn"></div>
-        <div id="commentsList"></div>
-        <div id="commentsListBtn"></div>
-        <div id="mnlBooking"></div>
-        <div id="roomTableKey"></div>
-        <div id="inventory"></div>
-        <div id="inventoryBtn"></div>
-        <div id="roomSelected"></div>
-        <div id="tableFilter"></div>
-        <div id="updateButton"></div>
-        <div id="addButton"></div>
-        <div id="deleteButton"></div>
-        <div id="valueDataType"></div>
-        <div id="inventory-addValue"></div>
-        <div id="clearInventoryData"></div>
-        <div id="presence-prefix"></div>
-        <div id="infoButton"></div>
-        <div id="quantity-suffix"></div>
-        <div id="status-suffix"></div>
-        <div id="presence-suffix"></div>
-        <div id="infoButton"></div>
-        <div class="dashboard"></div>
-        <div class="accounts"></div>
-        <div class="records"></div>
-        <div class="comments"></div>
-        <div class="inventory"></div>
-        <div class="comments-container"></div>       
-        <div class="manualBooking"></div>
-        <div class="dropdown-menu"></div>
     </div>
 
     <div id="loadingScreen" class="loading-screen">
@@ -301,8 +277,12 @@
     <script type="module" src="js/dbCommands.js"></script>
     <script type="module" src="js/roomManagement.js"></script>
     <script type="module" src="js/authorization.js"></script>
-    
+    <script type="module" src="js/checkInCheckOutManagement.js"></script>
+    <script type="module" src="js/roomChecking.js"></script>
+
+
     <script src="js/staffs.js"></script>
     <script src="https://kit.fontawesome.com/b629388bc1.js" crossorigin="anonymous"></script>
 </body>
+
 </html>

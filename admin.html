@@ -12,6 +12,8 @@
     <div class="bg"></div>
     
     <div class="header">
+        <button id="copyDataButton" style="display: none;">Copy Data</button>
+
         <div class="menu-container">
             <button class="menu-button"><img src="img/menu.png" class="menuLogo"></button>
             <div class="dropdown-menu">
@@ -22,7 +24,9 @@
                 <a href="#" id="commentsList">COMMENTS</a>
                 <a href="#" id="mnlBooking">MANUAL BOOKING</a>
             </div>
-            <img src="img/logo.png" class="logo">
+            <a href="index.html">
+                <img src="img/logo.png" class="logo">
+            </a>
         </div>
         <div class="navigation">
             <nav>
@@ -110,9 +114,9 @@
                             <p>Date of Check-in: <span id="reservationInfoCheckInDate"></span></p>
                             <p>Time of Check-in: <span id="reservationInfoCheckInTime"></span></p>
                             <p>Room Type: <span id="reservationInfoRoomType"></span></p>
-                            <p>Duration: <span id="reservationInfoDuration"></span></p>
                         </div>
                         <div class="reservationInfo-content">
+                            <p>Duration: <span id="reservationInfoDuration"></span></p>
                             <p>Extension: <span id="reservationInfoExtension"></span></p>
                             <p>Number of Guest: <span id="reservationInfoNumOfGuest"></span></p>
                             <p>Amount to pay: <span id="reservationInfoTotalAmountPaid"></span></p>
@@ -356,6 +360,7 @@
                     <option value="9" data-room="9">Room 9</option>
                     <option value="10" data-room="10">Room 10</option>
                     <option value="eventHall" data-room="11">Event Hall</option>
+                    <option value="stockRoom">Stock Room</option>
                     <option value="all">All Rooms</option>
                 </select>
                 <div>
@@ -365,10 +370,11 @@
                         <option value="quantity">Quantities</option>
                         <option value="status">Status</option>
                         <option value="present">Presence</option>
-                        <option value="forRepair">Need For Repair</option>
+                        <option value="forRepair">Need For Checking</option>
                         <option value="boolean">Booleans</option>
                     </select>
                     <button class="clear-btn" id="clearInventoryData"><i class="fa-solid fa-broom"></i></button>
+                    <button class="roomcheck-btn" id="makeAllRoomsToCheck"><i class="fa-solid fa-building-circle-check"></i></button>
                 </div>
             </div>
         </div>
@@ -397,7 +403,7 @@
                     <div class="input-container">
                         <input type="text" placeholder="" id="updateValue">
                         <div id="minimumValueInput" style="display: none;">
-                            <input type="text" placeholder="minimum Value" id="update-minimumValue">
+                            <input type="text" placeholder="Minimum Value" id="update-minimumValue">
                         </div>
                     </div>
                     <button id="updateButton">UPDATE</button>
@@ -432,7 +438,7 @@
                         <input type="text" placeholder="Value" id="inventory-addValue">
                         <div id="minimumValueInputAdd" style="display: none;">
                             <input type="text" placeholder="Minimum Value" id="add-minimumValue">
-                            <button id="infoButton" class="info-button" title="Click to know more about how minimum Value works"><i class="fa-solid fa-circle-info"></i></button>
+                            <button id="infoButton" class="info-button" title="Click to know more about how Minimum Value works"><i class="fa-solid fa-circle-info"></i></button>
                         </div>
                     </div>                    
                 
@@ -543,7 +549,7 @@
         <p>Connecting to the database...</p>
     </div>
 
-    <script type="module" src="js/dbCommands.js"></script>
+    <script type="module" src="js/adminStartUpFunction.js"></script>
     <script type="module" src="js/userAccountManagement.js"></script>
     <script type="module" src="js/roomManagement.js"></script>
     <script type="module" src="js/authorization.js"></script>
@@ -552,7 +558,7 @@
     <script type="module" src="js/recordsManagement.js"></script>
     <script type="module" src="js/manualSavingOfCheckOutManagement.js"></script>
     <script type="module" src="js/manageComments.js"></script>
-    <script type="module" src="js/roomEquipmentChecking.js"></script>
+    <script type="module" src="js/roomChecking.js"></script>
     <script type="module" src="js/roomEquipmentManagement.js"></script>
     
     <script src="js/staffs.js"></script>

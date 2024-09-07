@@ -213,6 +213,10 @@ body {
     }
 }
 
+.to-do-list-container {
+    overflow-y: auto;
+}
+
 #nextPage,
 #previousPage,
 #submitUpdatedValue {
@@ -1391,15 +1395,23 @@ nav ul li:hover {
     justify-content: center;
     width: 100%;
 }
-.clear-btn {
+.clear-btn, .roomcheck-btn {
     height: 50px;
     width: 50px;
     padding: 15px;
     border-radius: 30px;
-    background-color: red;
     color: white;
     cursor: pointer;
     text-align: center;
+    margin-left: 5px;
+}
+
+.clear-btn {
+    background-color: red;
+}
+
+.roomcheck-btn {
+    background-color: #007bff;
 }
 
 .inventory-container {
@@ -1489,6 +1501,14 @@ nav ul li:hover {
     justify-content: center;
     align-items: center;
 }
+
+.inventory-management.disabled {
+    opacity: 0.8;
+    pointer-events: none;
+    background-color: #f0f0f0;
+    color: #a0a0a0; 
+}
+
 
 .inventory-management button,
 .inventory-management select {

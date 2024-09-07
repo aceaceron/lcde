@@ -18,16 +18,85 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app); // Initialize the Realtime Database
 
 document.addEventListener('DOMContentLoaded', function () {
-
     document.getElementById('clearInventoryData').addEventListener('click', function () {
+        const inventoryData = document.querySelector('.inventory-data');
+
+        // Clear the inventory data container
+        inventoryData.innerHTML = '';
+
         if (window.innerWidth < 1000) {
-            document.querySelector('.inventory-data').innerHTML = '';
-            document.querySelector('.inventory-data').style.display = 'none';
+            inventoryData.style.display = 'none';
         } else {
-            document.querySelector('.inventory-data').innerHTML = '';
+            inventoryData.style.display = '';
+        }
+
+        document.getElementById('roomSelected').value = '';
+        document.getElementById('tableFilter').value = '';
+
+        const roomTableKeySelect = document.getElementById('roomTableKey');
+        const updateValue = document.getElementById('updateValue');
+        const statusDropdown = document.getElementById('valueForStatusKeyType');
+        const booleanDropdown = document.getElementById('valueForBooleanTypeForUpdate');
+        const minimumValueInputContainer = document.getElementById('minimumValueInput');
+
+        updateValue.style.display = 'inline';
+        statusDropdown.style.display = 'none';
+        minimumValueInputContainer.style.display = 'none';
+        booleanDropdown.style.display = 'none';
+
+        roomTableKeySelect.innerHTML = '';
+        updateValue.innerHTML = '';
+        updateValue.placeholder = '';
+
+        roomTableKeySelect.value = '';
+        updateValue.value = '';
+    });
+
+    document.getElementById('makeAllRoomsToCheck').addEventListener('click', async function () {
+        // Show confirmation dialog
+        const userConfirmed = confirm('Force all rooms to be check by the employee?');
+
+        if (!userConfirmed) {
+            return; // Exit the function if the user cancels
+        }
+
+        try {
+            // Reference to the rooms collection
+            const roomsRef = ref(db, 'rooms');
+            const roomsSnapshot = await get(roomsRef);
+
+            if (roomsSnapshot.exists()) {
+                const roomsData = roomsSnapshot.val();
+
+                // Iterate through each room and update the 'wasCleanedToday' key
+                const updatePromises = Object.keys(roomsData).map(async roomId => {
+                    const roomRef = ref(db, `rooms/${roomId}`);
+                    const roomSnapshot = await get(roomRef);
+
+                    if (roomSnapshot.exists()) {
+                        let roomData = roomSnapshot.val();
+
+                        // Update 'wasCleanedToday' key to false
+                        roomData.wasCleanedToday = false;
+
+                        // Write the updated data back to the database
+                        await set(roomRef, roomData);
+                    }
+                });
+
+                // Wait for all update operations to complete
+                await Promise.all(updatePromises);
+
+                alert('All rooms are task to be checked.');
+            } else {
+                alert('No rooms found in the database.');
+            }
+        } catch (error) {
+            console.error('Error updating rooms:', error);
+            alert('Error updating rooms. Check the console for more details.');
         }
     });
-    
+
     // Function to fetch and update inventory data with filtering
     async function updateInventoryData(selectedRoom, filter) {
         document.querySelector('.inventory-data').style.display = 'flex';
@@ -63,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (
                             (key.toLowerCase().includes('status') && value !== 'All Working') ||
                             (key.toLowerCase().includes('present') && value !== true) ||
+                            (key === 'wasCleanedToday' && value === false) ||
                             (minValue !== null && value < minValue)
                         ) {
                             const icon = document.createElement('i');
@@ -102,6 +172,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         const key = firstOption.value.toLowerCase();
                         const selectedValue = firstOption.dataset.value;
 
+                        let isBoolean = false;
+                        if (selectedValue === 'true' || selectedValue === 'false') {
+                            isBoolean = true;
+                        }
+
                         // Automatically toggle input fields based on the filter
                         if (filter === 'status' || key.includes('status')) {
                             updateInput.style.display = 'none';
@@ -117,7 +192,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             const quantityMinimumValue = quantityMinValues[firstOption.value];
                             updateMinimumValue.placeholder = `Minimum value: ${quantityMinimumValue}` || "Enter Minimum Value";
-                        } else if (filter === 'present' || filter === 'boolean' || key.includes('present')) {
+                        } else if (
+                            isBoolean ||
+                            filter === 'present' ||
+                            filter === 'boolean' ||
+                            key.includes('present')
+                        ) {
                             updateInput.style.display = 'none';
                             statusDropdown.style.display = 'none';
                             minimumValueInputContainer.style.display = 'none';
@@ -153,25 +233,35 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedRoom = this.value;
         const selectedKey = document.getElementById('roomTableKey').value;
 
+        const inventoryManagement = document.querySelector('.inventory-management');
+
+        // Handle the case when "All" is selected
         if (selectedRoom === 'all') {
             displayCombinedRoomData();
             document.getElementById('tableFilter').disabled = true;
+            inventoryManagement.classList.add('disabled');
         } else {
+            // Handle the case for specific rooms
             const filter = document.getElementById('tableFilter').value;
             updateInventoryData(selectedRoom, filter);
             document.getElementById('tableFilter').disabled = false;
+            inventoryManagement.classList.remove('disabled');
         }
 
-        updateStyles(selectedKey);  // Call updateStyles when room is selected
+        updateStyles(selectedKey);
     });
+
+
 
     async function displayCombinedRoomData() {
         try {
-            const roomNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'eventHall'];
+            const roomNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'eventHall', 'stockRoom'];
             let combinedData = {};
 
             const fetchPromises = roomNumbers.map(async (roomNumber) => {
-                const roomRef = ref(db, `rooms/${roomNumber === 'eventHall' ? 'eventHall' : roomNumber}`);
+                const roomRef = ref(db, `rooms/${roomNumber === 'eventHall' ? 'eventHall'
+                    : roomNumber === 'stockRoom' ? 'stockRoom'
+                        : roomNumber}`);
                 const roomSnapshot = await get(roomRef);
                 return roomSnapshot.val();
             });
@@ -444,8 +534,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addValueRaw = booleanDropdown.value === 'true';
         }
 
-        if (selectedRoom !== "" && addKey && addKey !== "Quantity" && addKey !== "Status" && addKey !== "isPresent" && addValueRaw && selectedType)
-            {
+        if (selectedRoom !== "" && addKey && addKey !== "Quantity" && addKey !== "Status" && addKey !== "isPresent" && addValueRaw && selectedType) {
             try {
                 const roomRef = ref(db, `rooms/${selectedRoom}/${addKey}`);
                 const minimumValueRef = ref(db, `quantityMinimumValues/${addKey}`);
@@ -538,6 +627,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     alert('Key and value added successfully');
                     addKeyInput.value = '';
                     document.getElementById('inventory-addValue').value = '';
+                    document.getElementById('add-minimumValue').value = '';
                     updateRoomSelectionOptions();
                 }
             } catch (error) {
@@ -688,56 +778,64 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function updateRoomSelectionOptions() {
         try {
-            const roomNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'eventHall'];
+            const roomNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'eventHall', 'stockRoom'];
             const roomSelected = document.getElementById('roomSelected');
-    
+
             // Fetch all rooms data in one go
             const roomsRef = ref(db, `rooms`);
             const roomsSnapshot = await get(roomsRef);
             const roomsData = roomsSnapshot.val() || {};
-    
+
             // Fetch all quantity minimum values in one go
             const quantityMinRef = ref(db, `quantityMinimumValues`);
             const quantityMinSnapshot = await get(quantityMinRef);
             const quantityMinValues = quantityMinSnapshot.val() || {};
-    
+
             for (const roomNumber of roomNumbers) {
-                const roomData = roomsData[roomNumber === 'eventHall' ? 'eventHall' : roomNumber];
-    
+                const roomData = roomsData[
+                    roomNumber === 'eventHall' ? 'eventHall'
+                        : roomNumber === 'stockRoom' ? 'stockRoom'
+                            : roomNumber
+                ];
+
                 if (roomData) {
                     let roomStatusAlert = false;
-    
+
                     for (const key in roomData) {
                         const minValue = quantityMinValues[key] || null;
-    
+
                         // Check if the value is less than the minimum and set roomStatusAlert if necessary
                         if (
                             (key.toLowerCase().includes('status') && roomData[key] !== 'All Working') ||
                             (key.toLowerCase().includes('present') && roomData[key] !== true) ||
+                            (key === 'wasCleanedToday' && roomData[key] === false) ||
                             (minValue !== null && roomData[key] < minValue)
                         ) {
                             roomStatusAlert = true;
                             break;
                         }
                     }
-    
+
                     // Update the option text with the warning icon if needed
                     const option = roomSelected.querySelector(`option[value="${roomNumber}"]`);
-    
+
                     if (option) {
-                        if (roomNumber === `eventHall`) {
-                            option.textContent = roomStatusAlert ? `Event Hall ⚠️` : `Event Hall`;
+                        if (roomNumber === 'eventHall') {
+                            option.textContent = roomStatusAlert ? 'Event Hall ⚠️' : 'Event Hall';
+                        } else if (roomNumber === 'stockRoom') {
+                            option.textContent = roomStatusAlert ? 'Stock Room ⚠️' : 'Stock Room';
                         } else {
                             option.textContent = roomStatusAlert ? `Room ${roomNumber} ⚠️` : `Room ${roomNumber}`;
                         }
                     }
+
                 }
             }
         } catch (error) {
             console.error('Error updating room selection options:', error);
         }
     }
-    
+
     function updateStyles(selectedKey) {
         const updateInput = document.querySelector('.inventory-update input[type="text"]');
         const minimumValueInputContainer = document.getElementById('minimumValueInput');

@@ -3,14 +3,7 @@ document.querySelector('.menuLogo').addEventListener('click', function () {
     dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
 });
 
-window.onclick = function (event) {
-    if (!event.target.matches('.menuLogo')) {
-        const dropdownMenu = document.querySelector('.dropdown-menu');
-        if (dropdownMenu.style.display === 'block') {
-            dropdownMenu.style.display = 'none';
-        }
-    }
-};
+
 
 function updateGuestCount(inputId, isIncrement) {
     let input = document.getElementById(inputId);
@@ -221,19 +214,25 @@ document.getElementById('paymentConfirmationChkbox').addEventListener('change', 
     yesBtn.disabled = !this.checked;  // Enable the yes button only if the checkbox is checked
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+
+    hideLoadingScreen();
+    
     const toggleLists = document.querySelectorAll('.toggle-list');
 
     toggleLists.forEach(list => {
-        list.addEventListener('click', function() {
+        list.addEventListener('click', function () {
             // Toggle visibility of the <ul> element
             const isVisible = list.classList.contains('show');
             toggleLists.forEach(l => l.classList.remove('show')); // Hide all lists
             if (!isVisible) {
                 list.classList.add('show'); // Show the clicked list
-                
+
             }
         });
     });
 });
 
+function hideLoadingScreen() {
+    document.getElementById('loadingScreen').style.display = 'none';
+}

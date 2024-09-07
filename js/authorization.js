@@ -18,6 +18,9 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase();
 const auth = getAuth();
 
+// Cache for user account data
+let cachedAccountData = null;
+
 // Redirect based on the current page
 const currentPage = window.location.pathname.split('/').pop();
 
@@ -39,26 +42,32 @@ function displayUserName(firstName) {
 }
 
 // Check if user is authenticated and redirect based on account type
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
-        const email = user.email;
-        const sanitizedEmail = email.replace('.', ','); // Replace '.' with ',' in email to use as key
+        if (cachedAccountData) {
+            handleRedirect(cachedAccountData.accountType);
+            displayUserName(cachedAccountData.firstName);
+        } else {
+            try {
+                const email = user.email;
+                const sanitizedEmail = email.replace('.', ','); // Replace '.' with ',' in email to use as key
+                const snapshot = await get(ref(database, 'workAccounts/' + sanitizedEmail));
 
-        get(ref(database, 'workAccounts/' + sanitizedEmail)).then((snapshot) => {
-            if (snapshot.exists()) {
-                const accountData = snapshot.val();
-                const accountType = accountData.accountType;
-                const firstName = accountData.firstName;
+                if (snapshot.exists()) {
+                    cachedAccountData = snapshot.val();
+                    const accountType = cachedAccountData.accountType;
+                    const firstName = cachedAccountData.firstName;
 
-                handleRedirect(accountType);
-                displayUserName(firstName); // Display the user's first name
-            } else {
-                window.location.href = 'login.html'; // Redirect if no account data
+                    handleRedirect(accountType);
+                    displayUserName(firstName); // Display the user's first name
+                } else {
+                    window.location.href = 'login.html'; // Redirect if no account data
+                }
+            } catch (error) {
+                console.error('Error fetching account type:', error);
+                window.location.href = 'login.html'; // Redirect on error
             }
-        }).catch((error) => {
-            console.error('Error fetching account type:', error);
-            window.location.href = 'login.html'; // Redirect on error
-        });
+        }
     } else {
         window.location.href = 'login.html'; // Redirect if not authenticated
     }
@@ -70,10 +79,51 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutButton) {
         logoutButton.addEventListener('click', () => {
             signOut(auth).then(() => {
+                cachedAccountData = null; // Clear cached data on logout
                 window.location.href = 'login.html'; // Redirect to login page or homepage
             }).catch((error) => {
                 console.error('Logout error:', error);
             });
         });
     }
+});
+
+
+// Define the timeout duration
+const INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+
+let inactivityTimer;
+
+// Function to reset the inactivity timer
+function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(logOutUser, INACTIVITY_TIMEOUT); 
+}
+
+// Function to log out the user and show an alert
+function logOutUser() {
+    signOut(auth).then(() => {
+        alert("You have been logged out due to inactivity.");
+        window.location.href = "login.html";
+    }).catch((error) => {
+        console.error("Logout error:", error);
+    });
+}
+
+// Add event listeners to detect user activity
+document.addEventListener('mousemove', resetInactivityTimer);
+document.addEventListener('keypress', resetInactivityTimer);
+document.addEventListener('click', resetInactivityTimer);
+document.addEventListener('scroll', resetInactivityTimer);
+
+// Initialize the inactivity timer when the page loads
+document.addEventListener('DOMContentLoaded', resetInactivityTimer);
+
+// Add event listener for logout button (optional)
+document.getElementById('logoutButton').addEventListener('click', () => {
+    signOut(auth).then(() => {
+        window.location.href = 'login.html';  // Redirect to login page
+    }).catch((error) => {
+        console.error("Logout error:", error);
+    });
 });
