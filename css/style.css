@@ -587,6 +587,7 @@ body.dark-mode .contactinfo {
 
 .staffphoto {
     height: 200px;
+    border-radius: 50%;
 }
 
 footer {

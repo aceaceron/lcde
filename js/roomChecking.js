@@ -176,7 +176,10 @@ async function updateRoomData(roomNumber) {
 
                 function renderPage() {
                     let formHTML = '<div class="roomChecking-header">';
-                    formHTML += `<h3>Room ${roomNumber}</h3>`;
+                    const roomDisplayName = roomNumber === 'stockRoom' ? 'Stock Room' :
+                                            roomNumber === 'eventHall' ? 'Event Hall' :
+                                            `Room ${roomNumber}`;
+                    formHTML += `<h3>${roomDisplayName}</h3>`;
                     formHTML += `<div class="close-btn" id="closeBtnRoomChecking">&times;</div>`;
                     const currentSection = currentPage === 0 ? "Equipment Quantity"
                         : currentPage === 1 ? "Equipment Status"

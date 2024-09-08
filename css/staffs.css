@@ -1776,6 +1776,11 @@ nav ul li:hover {
         min-height: auto;
         margin-top: 0;
         height: auto;
+        font-size: 14px;
+    }
+
+    .records h1 {
+        font-size: 16px;
     }
 
     .tableNames {
@@ -1871,6 +1876,10 @@ nav ul li:hover {
         width: 80%;
         margin-top: 0px;
     }
+    
+    .inventory h1 {
+        font-size: 16px;
+    }
 
     .inventory-header {
         flex-direction: column;
@@ -1942,7 +1951,7 @@ nav ul li:hover {
 
     #roomSelected,
     #tableFilter {
-        font-size: 20px;
+        font-size: 16px;
         padding: 2%;
         width: 100%;
         margin-left: 0px;

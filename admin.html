@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin | La Casa de Espeso</title>
     <link rel="stylesheet" href="css/staffs.css">
+    <link rel="icon" type="image/jpg" href="/img/logo.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 </head>
@@ -496,28 +497,6 @@
                         <input type="text" id="mbCheckInTime" placeholder="HH:MM AM/PM">
                     </div>
                     <div>
-                        <label>Check-Out Date</label>
-                        <input type="text" id="mbCheckOutDate" placeholder="MM/DD/YYYY" required>
-                    </div>
-                    <div>
-                        <label>Check-Out Time</label>
-                        <input type="text" id="mbCheckOutTime" placeholder="HH:MM AM/PM" required>
-                    </div>
-                </div>
-                <div class="manualBooking-inputs">
-                    <div>
-                        <label for="mbNumOfGuests">Number of Guests</label>
-                        <select id="mbNumOfGuests" required>
-                            <option value="" disabled selected hidden>Select number of guests</option>
-                            <option value="1">1 Guest</option>
-                            <option value="2">2 Guests</option>
-                            <option value="3">3 Guests</option>
-                            <option value="4">4 Guests</option>
-                            <option value="5">5 Guests</option>
-                            <option value="6">6 Guests</option>
-                        </select>
-                    </div>
-                    <div>
                         <label>Initial Duration</label>
                         <select id="mbInitialDuration">
                             <option value="" disabled selected hidden>Select duration</option>
@@ -529,6 +508,27 @@
                     <div>
                         <label>Extension</label>
                         <input type="number" id="mbExtension" placeholder="in hours" required>
+                    </div>
+                </div>
+                <div class="manualBooking-inputs">
+                    <div>
+                        <label for="mbNumOfGuests">Number of Guests</label>
+                        <select id="mbNumOfGuests" required>
+                            <option value="1">1 Guest</option>
+                            <option value="2" selected>2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5 Guests</option>
+                            <option value="6">6 Guests</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Check-Out Date</label>
+                        <input type="text" id="mbCheckOutDate" placeholder="MM/DD/YYYY" required>
+                    </div>
+                    <div>
+                        <label>Check-Out Time</label>
+                        <input type="text" id="mbCheckOutTime" placeholder="HH:MM AM/PM" required>
                     </div>
                     <div>
                         <label>Total Duration</label>
@@ -549,7 +549,7 @@
         <p>Connecting to the database...</p>
     </div>
 
-    <script type="module" src="js/adminStartUpFunction.js"></script>
+    <script type="module" src="js/adminFunctions.js"></script>
     <script type="module" src="js/userAccountManagement.js"></script>
     <script type="module" src="js/roomManagement.js"></script>
     <script type="module" src="js/authorization.js"></script>
@@ -561,7 +561,7 @@
     <script type="module" src="js/roomChecking.js"></script>
     <script type="module" src="js/roomEquipmentManagement.js"></script>
     
-    <script src="js/staffs.js"></script>
+    <script src="js/otherFunctions.js"></script>
     <script src="https://kit.fontawesome.com/b629388bc1.js" crossorigin="anonymous"></script>
 </body>
 </html>

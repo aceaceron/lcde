@@ -378,7 +378,7 @@ document.getElementById('timeOut').addEventListener('click', async function () {
             console.error('Error during time-out process:', error);
         }
     } else {
-        console.log('Time-out action canceled by user.');
+        alert('Time-out action canceled.');
     }
 });
 
@@ -397,7 +397,6 @@ export async function saveRoomState(roomNum, isRoomAvailable) {
         }
 
         await update(roomRef, updates);
-        console.log(`Room ${roomNum} availability updated to ${isRoomAvailable}`);
     } catch (error) {
         console.error('Error saving room state:', error);
     }
